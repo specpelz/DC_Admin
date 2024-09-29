@@ -19,9 +19,19 @@
 
 body {
   margin: 0;
-  display: flex;
-  justify-content: center;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  padding: 0;
+  /* display: flex; */
+  /* justify-content: center; */
+  /* place-items: center; */
+  /* min-width: 320px; */
+  /* min-height: 100vh; */
+}
+
+html {
+  font-size: 10px;
+}
+
+* {
+  font-size: 1.4rem;
+  font-family: "Manrope", sans-serif;
 }
