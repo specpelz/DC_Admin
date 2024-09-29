@@ -32,7 +32,6 @@ const DashboardLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
           />
         </div>
         <div
-          // md:min-w-[89rem]
           className={`w-full  bg-[#f9f7f7] ${
             collapsed ? "ml-[10rem]" : "ml-[23rem]"
           }`}
