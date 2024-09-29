@@ -1,8 +1,21 @@
+import { ConfigProvider } from "antd";
+import "./App.css";
+import AppRoutes from "./routes/AppRoutes";
+import { BrowserRouter } from "react-router-dom";
+
 function App() {
   return (
-    <>
-      <h1 className="font-bold text-2xl">Datacab Admin</h1>
-    </>
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: "0F7BEF",
+        },
+      }}
+    >
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </ConfigProvider>
   );
 }
 
