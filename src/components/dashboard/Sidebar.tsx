@@ -35,7 +35,7 @@ const SideBar: React.FC<SideBarProps> = ({
 
   return (
     <div
-      className={`h-screen bg-[#fff] py-2 px-1 flex flex-col justify-between`}
+      className={`h-screen bg-[#fff] py-2 px-1 lg:px-[1rem] flex flex-col justify-between `}
     >
       <div>
         <Link to="/">
@@ -72,7 +72,7 @@ const SideBar: React.FC<SideBarProps> = ({
           <Link
             to="/admin"
             className={`flex gap-2 items-center cursor-pointer pl-[3.2rem] pr-[2rem]  py-[1rem] ${
-              activeTab === "/admin" && "bg-BrandLightPrimary  rounded-r-[2rem]"
+              activeTab === "/admin" && "bg-BrandLightPrimary  rounded-[0.4rem]"
             }`}
           >
             {collapsed ? (
@@ -85,7 +85,7 @@ const SideBar: React.FC<SideBarProps> = ({
             ) : (
               <div
                 className={`flex gap-[1rem] items-center cursor-pointer  ${
-                  activeTab === "/admin" && " rounded-r-[2rem]"
+                  activeTab === "/admin" && " rounded-[0.4rem]"
                 }`}
               >
                 {" "}
@@ -111,7 +111,7 @@ const SideBar: React.FC<SideBarProps> = ({
             to="/admin/multimedia"
             className={`flex gap-2 items-center cursor-pointer pl-[3.2rem] pr-[2rem]  ${
               activeTab === "/admin/multimedia" &&
-              "bg-BrandLightPrimary  rounded-r-[2rem]"
+              "bg-BrandLightPrimary  rounded-[0.4rem]"
             }`}
           >
             {collapsed ? (
@@ -126,7 +126,7 @@ const SideBar: React.FC<SideBarProps> = ({
             ) : (
               <div
                 className={`flex gap-[1rem] items-center cursor-pointer  py-[1rem] ${
-                  activeTab === "/admin/multimedia" && "  rounded-r-[2rem]"
+                  activeTab === "/admin/multimedia" && "  rounded-[0.4rem]"
                 }`}
               >
                 {" "}
@@ -154,7 +154,7 @@ const SideBar: React.FC<SideBarProps> = ({
             to="/admin/blog"
             className={`flex gap-2 items-center cursor-pointer pl-[3.2rem] pr-[2rem]  ${
               activeTab === "/admin/blog" &&
-              "bg-BrandLightPrimary  rounded-r-[2rem]"
+              "bg-BrandLightPrimary  rounded-[0.4rem]"
             }`}
           >
             {collapsed ? (
@@ -169,7 +169,7 @@ const SideBar: React.FC<SideBarProps> = ({
             ) : (
               <div
                 className={`flex gap-[1rem] items-center cursor-pointer  py-[1rem] ${
-                  activeTab === "/admin/blog" && " rounded-r-[2rem]"
+                  activeTab === "/admin/blog" && " rounded-[0.4rem]"
                 }`}
               >
                 {" "}
@@ -197,7 +197,7 @@ const SideBar: React.FC<SideBarProps> = ({
             to="/admin/content"
             className={`flex gap-2 items-center cursor-pointer pl-[3.2rem] pr-[2rem]  ${
               activeTab === "/admin/content" &&
-              "bg-BrandLightPrimary  rounded-r-[2rem]"
+              "bg-BrandLightPrimary  rounded-[0.4rem]"
             }`}
           >
             {collapsed ? (
@@ -212,7 +212,7 @@ const SideBar: React.FC<SideBarProps> = ({
             ) : (
               <div
                 className={`flex gap-[1rem] items-center cursor-pointer  py-[1rem] ${
-                  activeTab === "/admin/content" && "  rounded-r-[2rem]"
+                  activeTab === "/admin/content" && "  rounded-[0.4rem]"
                 }`}
               >
                 {" "}
