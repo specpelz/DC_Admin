@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
-import logo from "@assets/images/logo.svg";
+import logo from "@assets/images/datacablogo.svg";
 import signout from "@assets/images/signout.svg";
 import user from "@assets/images/userr.svg";
 import { FaBarsStaggered } from "react-icons/fa6";

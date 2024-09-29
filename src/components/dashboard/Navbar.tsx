@@ -33,17 +33,18 @@ const Navbar: React.FC<{ activeTab: string; collapsed: boolean }> = ({
           </h1> */}
 
           <Input
-            icon={<IoSearch color="#005B96" size={25} />}
-            placeholder="Search users by email..."
+            icon={<IoSearch color="#9B9B9B" size={25} />}
+            placeholder="Search here."
             iconPosition="left"
+            className="rounded-[3rem] bg-BrandLightGray "
           />
         </div>
 
         <div className="flex items-center gap-[2.4rem] cursor-pointer ">
-          <div className=" bg-BrandLightPink p-4 rounded-[0.8rem]">
+          <div className=" bg-BrandGray p-4 rounded-full">
             <div className="relative">
-              <IoMdNotificationsOutline size={25} color="#FFA412" />
-              <span className="absolute -top-1 right-0 bg-BrandRed rounded-full w-6 h-6 text-sm flex items-center justify-center text-[#fff] font-bold">
+              <IoMdNotificationsOutline size={25} color="#9B9B9B" />
+              <span className="absolute -top-1 right-0 bg-BrandBlack rounded-full w-6 h-6 text-sm flex items-center justify-center text-[#fff] font-bold">
                 5
               </span>
             </div>
@@ -51,7 +52,7 @@ const Navbar: React.FC<{ activeTab: string; collapsed: boolean }> = ({
           <div className="flex items-center gap-2">
             <IoIosContact size={50} color="#6e6f70" />
             <div className="hidden md:flex flex-col">
-              <H5Heading title="Dara A." />
+              <H5Heading title="Anita Odom" />
               <PText text="Admin" />
             </div>
           </div>

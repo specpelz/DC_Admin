@@ -1,6 +1,6 @@
 // import { logout } from "@api/data/authSlice";
 // import { useAppDispatch } from "@api/data/store";
-import Logo from "@assets/images/logo.svg";
+import Logo from "@assets/images/datacablogo.svg";
 import CloseLogo from "@assets/images/salama.png";
 import React, { Dispatch, SetStateAction } from "react";
 import { BiEditAlt, BiLogOut } from "react-icons/bi";
@@ -39,7 +39,11 @@ const SideBar: React.FC<SideBarProps> = ({
     >
       <div>
         <Link to="/">
-          <div className={`my-[2rem] px-10 cursor-pointer`}>
+          <div
+            className={`${
+              collapsed ? "mt-[2rem]" : "mb-[2rem]"
+            } px-10 cursor-pointer`}
+          >
             <img src={collapsed ? CloseLogo : Logo} alt="Logo" />
           </div>
         </Link>
@@ -51,7 +55,9 @@ const SideBar: React.FC<SideBarProps> = ({
         >
           <div
             onClick={handleCollapseToggle}
-            className="flex justify-end cursor-pointer mt-5"
+            className={`flex justify-end cursor-pointer ${
+              collapsed ? "mt-5" : "mt-0"
+            } `}
           >
             <div className="border p-[0.8rem] rounded-l-xl">
               {collapsed ? (
@@ -66,31 +72,33 @@ const SideBar: React.FC<SideBarProps> = ({
           <Link
             to="/admin"
             className={`flex gap-2 items-center cursor-pointer pl-[3.2rem] pr-[2rem]  py-[1rem] ${
-              activeTab === "/admin" && "bg-BrandPrimary  rounded-r-[2rem]"
+              activeTab === "/admin" && "bg-BrandLightPrimary  rounded-r-[2rem]"
             }`}
           >
             {collapsed ? (
               <div className=" pr-[2rem] ">
                 <MdDashboard
                   size={18}
-                  color={`${activeTab === "/admin" ? "#fff" : "#000"} `}
+                  color={`${activeTab === "/admin" ? "#4165EB" : "#757575"} `}
                 />
               </div>
             ) : (
               <div
-                className={`flex gap-2 items-center cursor-pointer  ${
-                  activeTab === "/admin" && "bg-BrandPrimary  rounded-r-[2rem]"
+                className={`flex gap-[1rem] items-center cursor-pointer  ${
+                  activeTab === "/admin" && " rounded-r-[2rem]"
                 }`}
               >
                 {" "}
                 <MdDashboard
                   size={18}
-                  color={`${activeTab === "/admin" ? "#fff" : "#000"} `}
+                  color={`${activeTab === "/admin" ? "#4165EB" : "#757575"} `}
                 />
                 <h2
                   className={`${
-                    activeTab === "/admin" ? "text-[#fff]" : "text-[#000]"
-                  } text-[1.6rem] font-[600] `}
+                    activeTab === "/admin"
+                      ? "text-BrandPrimary"
+                      : "text-BrandTextColor"
+                  } text-[1.6rem] font-[500] `}
                 >
                   Air Monitoring
                 </h2>
@@ -103,7 +111,7 @@ const SideBar: React.FC<SideBarProps> = ({
             to="/admin/multimedia"
             className={`flex gap-2 items-center cursor-pointer pl-[3.2rem] pr-[2rem]  ${
               activeTab === "/admin/multimedia" &&
-              "bg-BrandPrimary  rounded-r-[2rem]"
+              "bg-BrandLightPrimary  rounded-r-[2rem]"
             }`}
           >
             {collapsed ? (
@@ -111,30 +119,29 @@ const SideBar: React.FC<SideBarProps> = ({
                 <IoMdInformationCircleOutline
                   size={18}
                   color={`${
-                    activeTab === "/admin/multimedia" ? "#fff" : "#000"
+                    activeTab === "/admin/multimedia" ? "#4165EB" : "#757575"
                   } `}
                 />
               </div>
             ) : (
               <div
-                className={`flex gap-2 items-center cursor-pointer  py-[1rem] ${
-                  activeTab === "/admin/multimedia" &&
-                  "bg-BrandPrimary  rounded-r-[2rem]"
+                className={`flex gap-[1rem] items-center cursor-pointer  py-[1rem] ${
+                  activeTab === "/admin/multimedia" && "  rounded-r-[2rem]"
                 }`}
               >
                 {" "}
                 <IoMdInformationCircleOutline
                   size={18}
                   color={`${
-                    activeTab === "/admin/multimedia" ? "#fff" : "#000"
+                    activeTab === "/admin/multimedia" ? "#4165EB" : "#757575"
                   } `}
                 />
                 <h2
                   className={`${
                     activeTab === "/admin/multimedia"
-                      ? "text-[#fff]"
-                      : "text-[#000]"
-                  } text-[1.6rem] font-[600] `}
+                      ? "text-BrandPrimary"
+                      : "text-BrandTextColor"
+                  } text-[1.6rem] font-[500] `}
                 >
                   Multimedia
                 </h2>
@@ -146,32 +153,38 @@ const SideBar: React.FC<SideBarProps> = ({
           <Link
             to="/admin/blog"
             className={`flex gap-2 items-center cursor-pointer pl-[3.2rem] pr-[2rem]  ${
-              activeTab === "/admin/blog" && "bg-BrandPrimary  rounded-r-[2rem]"
+              activeTab === "/admin/blog" &&
+              "bg-BrandLightPrimary  rounded-r-[2rem]"
             }`}
           >
             {collapsed ? (
               <div className=" pr-[2rem] py-[1rem]">
                 <BiEditAlt
                   size={18}
-                  color={`${activeTab === "/admin/blog" ? "#fff" : "#000"} `}
+                  color={`${
+                    activeTab === "/admin/blog" ? "#4165EB" : "#757575"
+                  } `}
                 />
               </div>
             ) : (
               <div
-                className={`flex gap-2 items-center cursor-pointer  py-[1rem] ${
-                  activeTab === "/admin/blog" &&
-                  "bg-BrandPrimary  rounded-r-[2rem]"
+                className={`flex gap-[1rem] items-center cursor-pointer  py-[1rem] ${
+                  activeTab === "/admin/blog" && " rounded-r-[2rem]"
                 }`}
               >
                 {" "}
                 <BiEditAlt
                   size={18}
-                  color={`${activeTab === "/admin/blog" ? "#fff" : "#000"} `}
+                  color={`${
+                    activeTab === "/admin/blog" ? "#4165EB" : "#757575"
+                  } `}
                 />
                 <h2
                   className={`${
-                    activeTab === "/admin/blog" ? "text-[#fff]" : "text-[#000]"
-                  } text-[1.6rem] font-[600] `}
+                    activeTab === "/admin/blog"
+                      ? "text-BrandPrimary"
+                      : "text-BrandTextColor"
+                  } text-[1.6rem] font-[500] `}
                 >
                   Blog
                 </h2>
@@ -184,34 +197,37 @@ const SideBar: React.FC<SideBarProps> = ({
             to="/admin/content"
             className={`flex gap-2 items-center cursor-pointer pl-[3.2rem] pr-[2rem]  ${
               activeTab === "/admin/content" &&
-              "bg-BrandPrimary  rounded-r-[2rem]"
+              "bg-BrandLightPrimary  rounded-r-[2rem]"
             }`}
           >
             {collapsed ? (
               <div className=" pr-[2rem] py-[1rem]">
                 <SlShield
                   size={18}
-                  color={`${activeTab === "/admin/content" ? "#fff" : "#000"} `}
+                  color={`${
+                    activeTab === "/admin/content" ? "#4165EB" : "#757575"
+                  } `}
                 />
               </div>
             ) : (
               <div
-                className={`flex gap-2 items-center cursor-pointer  py-[1rem] ${
-                  activeTab === "/admin/content" &&
-                  "bg-BrandPrimary  rounded-r-[2rem]"
+                className={`flex gap-[1rem] items-center cursor-pointer  py-[1rem] ${
+                  activeTab === "/admin/content" && "  rounded-r-[2rem]"
                 }`}
               >
                 {" "}
                 <SlShield
                   size={18}
-                  color={`${activeTab === "/admin/content" ? "#fff" : "#000"} `}
+                  color={`${
+                    activeTab === "/admin/content" ? "#4165EB" : "#757575"
+                  } `}
                 />
                 <h2
                   className={`${
                     activeTab === "/admin/content"
-                      ? "text-[#fff]"
-                      : "text-[#000]"
-                  } text-[1.6rem] font-[600] `}
+                      ? "text-BrandPrimary"
+                      : "text-BrandTextColor"
+                  } text-[1.6rem] font-[500] `}
                 >
                   Website Content
                 </h2>
@@ -229,12 +245,10 @@ const SideBar: React.FC<SideBarProps> = ({
         {collapsed ? (
           <BiLogOut size={18} color="#000" />
         ) : (
-          <div className={`cursor-pointer flex gap-2 items-center  py-[1rem]`}>
+          <div className={`cursor-pointer flex gap-[1rem] items-center  py-[1rem]`}>
             {" "}
-            <BiLogOut size={18} color="#000" />
-            <h2 className="text-[1.6rem]  font-semibold text-[#000]">
-              Sign Out
-            </h2>
+            <BiLogOut size={18} color="#F33B3B" />
+            <h2 className="text-[1.6rem]  font-[500] text-BrandRed">Logout</h2>
           </div>
         )}
       </div>
