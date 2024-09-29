@@ -16,7 +16,7 @@ const AppRoutes = () => {
       <Routes>
         {/* Authentication */}
         <Route
-          path="/login"
+          path="/"
           element={
             <React.Suspense>
               <Login />

@@ -26,7 +26,7 @@ const SideBar: React.FC<SideBarProps> = ({
 
   const logOutHandler = () => {
     // dispatch(logout);
-    navigate("/login", { replace: true });
+    navigate("/", { replace: true });
   };
 
   const handleCollapseToggle = () => {
