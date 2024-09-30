@@ -1,6 +1,7 @@
-import { useState } from "react";
-import NoData from "./NoData";
-import AirMonitoringForm from "../AirMonitoringForm";
+import { useEffect, useState } from "react";
+import NoData from "../NoData";
+import AirMonitoringForm from "../../AirMonitoringForm";
+import AirMonitoringTableTop from "./AirMonitoringTableTop";
 
 const AirMonitoring = () => {
   const handleUploadClick = () => {
@@ -8,6 +9,13 @@ const AirMonitoring = () => {
   };
 // nodata,upload,data
   const [component,set_component]=useState<string>("nodata")
+  let data:string[]= []
+  useEffect(()=>{
+    data=["r"]
+    if(data.length > 0){
+      set_component("data")
+    }
+  },[data])
   return (
     <div>
       <div className="text-[20px] font-[600] text-BrandBlack1">
@@ -20,7 +28,7 @@ const AirMonitoring = () => {
         buttonText="Upload Data"
       />): component == "upload" ? 
       (<AirMonitoringForm/>):
-      (<div>data availalble</div>)}
+      (<AirMonitoringTableTop/>)}
 
     </div>
   );

@@ -20,18 +20,19 @@ const NoData: React.FC<NoDataProps> = ({
       <div className="text-[16px] font-[400] text-BrandBlack1">{message}</div>
 
       <Button
+      icon={          <img
+        src="/cross.svg"
+        alt="Upload Icon"
+        className="w-[14px] h-[14px]"
+      />}
         type="primary"
         onClick={buttonFunction}
         className="w-[234px] h-[48px] text-[16px] font-[400] mt-[16px] bg-BrandPrimary"
       >
-        <div className="flex gap-x-[16px] items-center">
-          <img
-            src="/cross.svg"
-            alt="Upload Icon"
-            className="w-[14px] h-[14px]"
-          />
+      
+
           <div className="text-[16px] font-[400]">{buttonText}</div>
-        </div>
+    
       </Button>
     </div>
   );
