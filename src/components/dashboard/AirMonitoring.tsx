@@ -1,6 +1,6 @@
 import { useState } from "react";
 import NoData from "./NoData";
-import AirMonitoringForm from "./AirMonitoringForm";
+import AirMonitoringForm from "../AirMonitoringForm";
 
 const AirMonitoring = () => {
   const handleUploadClick = () => {
