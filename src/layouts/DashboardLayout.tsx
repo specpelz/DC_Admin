@@ -14,12 +14,14 @@ const DashboardLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <div className="bg-[#f9f7f7] min-h-screen">
       <div className="sticky top-0 z-[908]">
-        <div className="max-w-[144rem] w-full mx-auto px-[2rem] md:px-0 shadow-sm">
+        {/* max-w-[144rem] */}
+        <div className=" w-full mx-auto px-[2rem] md:px-0 shadow-sm">
           <Navbar activeTab={activeTab} collapsed={collapsed} />
         </div>
       </div>
 
-      <div className="flex max-w-[144rem] w-full mx-auto px-[2rem] md:px-0">
+      {/* max-w-[144rem] */}
+      <div className="flex  w-full mx-auto px-[2rem] md:px-0">
         <div
           className={`fixed top-0 z-[999] ${
             collapsed ? "w-[10rem]" : "w-[23rem]"
@@ -32,12 +34,12 @@ const DashboardLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
           />
         </div>
         <div
-          className={`w-full  bg-[#f9f7f7] ${
+          className={`w-full  bg-[#f9f7f7] h-full ${
             collapsed ? "ml-[10rem]" : "ml-[23rem]"
           }`}
         >
           <div
-            className="p-[1.6rem]"
+            className="p-[1.6rem] bg-BrandLightPrimary h-[100vh]"
             style={{
               overflowY: "scroll",
               overflowX: "scroll",
