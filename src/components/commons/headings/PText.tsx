@@ -9,7 +9,7 @@ interface TextProps {
 
 const PText: React.FC<TextProps> = ({
   text,
-  className = `text-[1.2rem] md:text-[1.4rem] text-BrandTextColor`,
+  className = `text-Twelve md:text-Fourteen text-BrandTextColor`,
 }) => {
   return <p className={className}>{text}</p>;
 };
