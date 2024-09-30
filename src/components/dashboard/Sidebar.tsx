@@ -4,8 +4,8 @@ import Logo from "@assets/images/datacablogo.svg";
 import CloseLogo from "@assets/images/salama.png";
 import React, { Dispatch, SetStateAction } from "react";
 import { BiEditAlt, BiLogOut } from "react-icons/bi";
+import { FaRegImages } from "react-icons/fa";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
-import { IoMdInformationCircleOutline } from "react-icons/io";
 import { MdDashboard } from "react-icons/md";
 import { SlShield } from "react-icons/sl";
 import { Link, useNavigate } from "react-router-dom";
@@ -116,7 +116,7 @@ const SideBar: React.FC<SideBarProps> = ({
           >
             {collapsed ? (
               <div className=" pr-[2rem] py-[1rem]">
-                <IoMdInformationCircleOutline
+                <FaRegImages
                   size={18}
                   color={`${
                     activeTab === "/admin/multimedia" ? "#4165EB" : "#757575"
@@ -130,7 +130,7 @@ const SideBar: React.FC<SideBarProps> = ({
                 }`}
               >
                 {" "}
-                <IoMdInformationCircleOutline
+                <FaRegImages
                   size={18}
                   color={`${
                     activeTab === "/admin/multimedia" ? "#4165EB" : "#757575"
@@ -245,7 +245,9 @@ const SideBar: React.FC<SideBarProps> = ({
         {collapsed ? (
           <BiLogOut size={18} color="#000" />
         ) : (
-          <div className={`cursor-pointer flex gap-[1rem] items-center  py-[1rem]`}>
+          <div
+            className={`cursor-pointer flex gap-[1rem] items-center  py-[1rem]`}
+          >
             {" "}
             <BiLogOut size={18} color="#F33B3B" />
             <h2 className="text-[1.6rem]  font-[500] text-BrandRed">Logout</h2>
