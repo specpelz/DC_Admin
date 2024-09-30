@@ -12,6 +12,7 @@ export default {
         BrandBlack: "#9B9B9B",
         BrandBlack1: "#2C2C2C",
         BrandLightGray: "#FAFAFA",
+        BrandLighterGray: "#C2C2C2",
       },
       fontSize: {
         TwentyTwo: ["22px", { lineHeight: "1.5" }], // 22px for h1
