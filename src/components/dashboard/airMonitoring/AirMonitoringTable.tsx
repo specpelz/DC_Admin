@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Flex, Table } from 'antd';
+import { Button, Dropdown, Flex, Menu, Table, Tooltip } from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
@@ -15,6 +15,27 @@ interface DataType {
   deviceURL: string;
 }
 
+
+
+// Handler functions for each dropdown action
+const handleView = (url: string) => {
+    console.log('View clicked for:', url);
+  };
+  
+  const handleEdit = (url: string) => {
+    console.log('Edit clicked for:', url);
+  };
+  
+  const handleDelete = (url: string) => {
+    console.log('Delete clicked for:', url);
+  };
+
+
+
+
+
+
+
 const columns: TableColumnsType<DataType> = [
   { title: 'Date', dataIndex: 'date' },
   { title: 'Country', dataIndex: 'country' },
@@ -22,7 +43,61 @@ const columns: TableColumnsType<DataType> = [
   { title: 'L.G.A', dataIndex: 'lga' },
   { title: 'Longitude', dataIndex: 'longitude' },
   { title: 'Latitude', dataIndex: 'latitude' },
-  { title: 'Device URL', dataIndex: 'deviceURL' },
+  { 
+    title: 'Device URL', 
+    dataIndex: 'deviceURL', 
+    render: (text: string) => {
+        
+        const menu = (
+            <Menu>
+              <Menu.Item key="view" icon={<img
+                src="/view.svg"
+                alt="Upload Icon"
+                className="w-[14px] h-[14px]"
+              />} onClick={() => handleView(text)}>
+                View
+              </Menu.Item>
+              <Menu.Item key="edit" icon={<img
+                src="/edit.svg"
+                alt="Upload Icon"
+                className="w-[14px] h-[14px]"
+              />} onClick={() => handleEdit(text)}>
+                Edit
+              </Menu.Item>
+              <Menu.Item key="delete" icon={<img
+                src="/delete.svg"
+                alt="Upload Icon"
+                className="w-[14px] h-[14px]"
+              />} onClick={() => handleDelete(text)}>
+                Delete
+              </Menu.Item>
+            </Menu>
+          );
+        
+        return(
+      <Flex align="center" justify="space-between" gap="small">
+        <span>{text}</span>
+        <Tooltip title="Copy URL">
+          <Button 
+            icon={<img
+                src="/copy.svg"
+                alt="Upload Icon"
+                className="w-[14px] h-[14px]"
+              />} 
+            onClick={() => navigator.clipboard.writeText(text)} 
+            type="link" 
+          />
+        </Tooltip>
+        <Dropdown overlay={menu} trigger={['click']}>
+            <Button icon={<img
+                src="/more.svg"
+                alt="Upload Icon"
+                className="w-[14px] h-[14px]"
+              />} type="link" />
+          </Dropdown>
+      </Flex>
+    )},
+  },
 ];
 
 const dataSource = Array.from<DataType>({ length: 46 }).map<DataType>((_, i) => ({
