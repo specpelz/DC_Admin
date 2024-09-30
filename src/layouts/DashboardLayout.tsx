@@ -15,13 +15,13 @@ const DashboardLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
     <div className="bg-[#f9f7f7] min-h-screen">
       <div className="sticky top-0 z-[908]">
         {/* max-w-[144rem] */}
-        <div className=" w-full mx-auto px-[2rem] md:px-0 shadow-sm">
+        <div className=" w-full mx-auto px-0 shadow-sm">
           <Navbar activeTab={activeTab} collapsed={collapsed} />
         </div>
       </div>
 
       {/* max-w-[144rem] */}
-      <div className="flex  w-full mx-auto px-[2rem] md:px-0">
+      <div className="flex  w-full mx-auto px-0">
         <div
           className={`fixed top-0 z-[999] ${
             collapsed ? "w-[10rem]" : "w-[23rem]"
