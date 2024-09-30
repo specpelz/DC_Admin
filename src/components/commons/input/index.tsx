@@ -18,7 +18,7 @@ const Input: React.FC<InputWithIconProps> = ({
       {iconPosition === "left" && <div className="">{icon}</div>}
       <input
         type="text"
-        className="text-[#000] bg-BrandLightGray text-[1.6rem] outline-none w-[100%]"
+        className="text-[#000] bg-BrandLightGray text-Sixteen outline-none w-[100%]"
         placeholder={placeholder}
       />
       {iconPosition === "right" && <div className="">{icon}</div>}

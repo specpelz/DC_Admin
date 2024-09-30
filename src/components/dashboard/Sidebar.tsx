@@ -98,7 +98,7 @@ const SideBar: React.FC<SideBarProps> = ({
                     activeTab === "/admin"
                       ? "text-BrandPrimary"
                       : "text-BrandTextColor"
-                  } text-[1.6rem] font-[500] `}
+                  } text-Sixteen font-[500] `}
                 >
                   Air Monitoring
                 </h2>
@@ -141,7 +141,7 @@ const SideBar: React.FC<SideBarProps> = ({
                     activeTab === "/admin/multimedia"
                       ? "text-BrandPrimary"
                       : "text-BrandTextColor"
-                  } text-[1.6rem] font-[500] `}
+                  } text-Sixteen font-[500] `}
                 >
                   Multimedia
                 </h2>
@@ -184,7 +184,7 @@ const SideBar: React.FC<SideBarProps> = ({
                     activeTab === "/admin/blog"
                       ? "text-BrandPrimary"
                       : "text-BrandTextColor"
-                  } text-[1.6rem] font-[500] `}
+                  } text-Sixteen font-[500] `}
                 >
                   Blog
                 </h2>
@@ -227,7 +227,7 @@ const SideBar: React.FC<SideBarProps> = ({
                     activeTab === "/admin/content"
                       ? "text-BrandPrimary"
                       : "text-BrandTextColor"
-                  } text-[1.6rem] font-[500] `}
+                  } text-Sixteen font-[500] `}
                 >
                   Website Content
                 </h2>
@@ -250,7 +250,7 @@ const SideBar: React.FC<SideBarProps> = ({
           >
             {" "}
             <BiLogOut size={18} color="#F33B3B" />
-            <h2 className="text-[1.6rem]  font-[500] text-BrandRed">Logout</h2>
+            <h2 className="text-Sixteen  font-[500] text-BrandRed">Logout</h2>
           </div>
         )}
       </div>
