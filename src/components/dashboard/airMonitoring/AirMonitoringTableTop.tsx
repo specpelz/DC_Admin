@@ -1,7 +1,13 @@
 import { Button, Input } from "antd";
 import AirMonitoringTable from "./AirMonitoringTable";
 
-const AirMonitoringTableTop = () => {
+interface clickFunction_type {
+  clickFunction:()=>void;
+}
+
+
+
+const AirMonitoringTableTop = ({clickFunction}:clickFunction_type) => {
   return (
     <div className="h-screen">
       {/* SEARCH. FILTER, SHARE,DOWNLOAD COMPONENTS------------------------------------------------- */}
@@ -74,7 +80,7 @@ const AirMonitoringTableTop = () => {
           </div>
           <Button
             type="primary"
-            htmlType="submit"
+          onClick={clickFunction}
             icon={
               <img
                 src="/cross.svg"

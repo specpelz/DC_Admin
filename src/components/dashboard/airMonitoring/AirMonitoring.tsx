@@ -12,7 +12,7 @@ const AirMonitoring = () => {
   let data:string[]= []
   useEffect(()=>{
     data=["r"]
-    if(data.length > 0){
+    if(data.length > 0 && component !== "upload"){
       set_component("data")
     }
   },[data])
@@ -28,7 +28,7 @@ const AirMonitoring = () => {
         buttonText="Upload Data"
       />): component == "upload" ? 
       (<AirMonitoringForm/>):
-      (<AirMonitoringTableTop/>)}
+      (<AirMonitoringTableTop clickFunction ={handleUploadClick}/>)}
 
     </div>
   );
