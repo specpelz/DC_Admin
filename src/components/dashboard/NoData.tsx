@@ -1,12 +1,5 @@
+import { NoDataProps } from "../../types/NoData";
 import { Button } from "antd";
-
-interface NoDataProps {
-  buttonFunction: () => void; // Function to be called when the button is clicked
-  title?: string; // Title text, defaults to "No Data Uploaded"
-  message?: string; // Message text, defaults to "Start Uploading Data"
-  buttonText?: string; // Text for the button, defaults to "Upload Data"
-  imageSrc?: string; // Image source, defaults to "/nodata.svg"
-}
 
 const NoData: React.FC<NoDataProps> = ({
   buttonFunction,
