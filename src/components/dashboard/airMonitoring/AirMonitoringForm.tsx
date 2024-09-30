@@ -1,12 +1,12 @@
 import FormItem from "antd/es/form/FormItem";
-import Select from "./dashboard/select/Select";
+import Select from "../select/Select";
 import { Button, Form, Input } from "antd";
 
 
 const AirMonitoringForm = () => {
   return (
     <Form >
-    <div className="w-full bg-white rounded-[4px] p-[20px] lg:h-[492px]">
+    <div className="w-full bg-white rounded-[4px] p-[20px] lg:h-[492px] mt-[16px]">
       <div className="lg:flex lg:gap-x-[27px]">
       <div className="lg:w-[50%] h-[100px]">
         <Select 
