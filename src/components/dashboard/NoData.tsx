@@ -14,7 +14,7 @@ const NoData = ({buttonFunction}:noData_type) => {
 <img src="/nodata.svg" alt="image" className="w-full h-[auto]"  />
 </div>
 
-<div className="text-[18px] font-[600] text-BrandBlack1 mb-[10px]">No Data Uploaded</div>
+<div className="text-[18px] font-[600] text-BrandBlack1 mb-[4px]">No Data Uploaded</div>
 <div className="text-[16px] font-[400] text-BrandBlack1">Start Uploading Data </div>
 
 
