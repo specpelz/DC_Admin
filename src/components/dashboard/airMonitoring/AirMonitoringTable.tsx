@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Button, Dropdown, Flex, Menu, Table, Tooltip } from 'antd';
+import { Button, Dropdown, Flex, Menu, Table} from 'antd';
 import type { TableColumnsType, TableProps } from 'antd';
-
+import './customDropdown.css'; 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
 
 interface DataType {
@@ -49,27 +49,27 @@ const columns: TableColumnsType<DataType> = [
     render: (text: string) => {
         
         const menu = (
-            <Menu>
+            <Menu >
               <Menu.Item key="view" icon={<img
                 src="/view.svg"
                 alt="Upload Icon"
                 className="w-[14px] h-[14px]"
               />} onClick={() => handleView(text)}>
-                View
+                View More Data
               </Menu.Item>
               <Menu.Item key="edit" icon={<img
                 src="/edit.svg"
                 alt="Upload Icon"
                 className="w-[14px] h-[14px]"
               />} onClick={() => handleEdit(text)}>
-                Edit
+                Edit Data
               </Menu.Item>
               <Menu.Item key="delete" icon={<img
                 src="/delete.svg"
                 alt="Upload Icon"
                 className="w-[14px] h-[14px]"
               />} onClick={() => handleDelete(text)}>
-                Delete
+                Delete Data
               </Menu.Item>
             </Menu>
           );
@@ -77,7 +77,7 @@ const columns: TableColumnsType<DataType> = [
         return(
       <Flex align="center" justify="space-between" gap="small">
         <span>{text}</span>
-        <Tooltip title="Copy URL">
+        {/* <Tooltip title="Copy URL"> */}
           <Button 
             icon={<img
                 src="/copy.svg"
@@ -87,8 +87,8 @@ const columns: TableColumnsType<DataType> = [
             onClick={() => navigator.clipboard.writeText(text)} 
             type="link" 
           />
-        </Tooltip>
-        <Dropdown overlay={menu} trigger={['click']}>
+        {/* </Tooltip> */}
+        <Dropdown overlay={menu} trigger={['click']} overlayClassName="custom-dropdown">
             <Button icon={<img
                 src="/more.svg"
                 alt="Upload Icon"
@@ -149,7 +149,7 @@ const AirMonitoringTable = () => {
 
       {hasSelected ? `Selected ${selectedRowKeys.length} items` : null}
     </Flex>
-    <Table<DataType> rowSelection={rowSelection} columns={columns} dataSource={dataSource} />
+    <Table<DataType> rowSelection={rowSelection} columns={columns} dataSource={dataSource} className="custom-table"/>
   </Flex>
   )
 }

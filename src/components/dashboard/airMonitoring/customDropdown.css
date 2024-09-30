@@ -1,0 +1,24 @@
+/* Custom Dropdown Box */
+.ant-dropdown-menu{
+    border-radius: 4px !important;
+
+
+  }
+  
+  /* Custom Text Color for Menu Items */
+  .custom-dropdown .ant-dropdown-menu-item {
+    color: #757575 !important;
+
+  }
+
+
+  .custom-table .ant-table-tbody > tr > td {
+ color: #757575 !important;
+
+  }
+  
+  /* Table header - Set background color to white */
+  .custom-table .ant-table-thead > tr > th {
+    background-color: white !important;
+    color: #2C2C2C !important; /* Optional: Set text color to black */
+  }
