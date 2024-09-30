@@ -16,7 +16,7 @@ const Login = () => {
         ></div>
 
         <div className="flex flex-col items-center w-full px-[16px] mt-[91px] md:px-[85px] lg:w-[50vw]  lg:mt-[unset]">
-          <div className="text-[20px] font-[600] text-[#2C2C2C] text-center mb-[39px] lg:text-[32px] lg:font-[700]">
+          <div className="text-[20px] font-[600] text-BrandBlack1 text-center mb-[39px] lg:text-[32px] lg:font-[700]">
             Log into your account
           </div>
 
@@ -29,7 +29,7 @@ const Login = () => {
             <FormItem
               name="email"
               label={
-                <span className="text-[16px] font-[400] text-[#2C2C2C] ">
+                <span className="text-[16px] font-[400] text-BrandBlack1 ">
                   Email Address
                 </span>
               }
@@ -42,13 +42,13 @@ const Login = () => {
             >
               <Input 
               placeholder="Enter your email"
-              className="px-[8px] py-[10px] rounded-[8px] h-[48px] text-[#2C2C2C]" />
+              className="px-[8px] py-[10px] rounded-[8px] h-[48px] text-BrandBlack1" />
             </FormItem>
 
             <FormItem
               className="mt-[20px]"
               label={
-                <span className="text-[16px] font-[400] text-[#2C2C2C]">
+                <span className="text-[16px] font-[400] text-BrandBlack1">
                   Password
                 </span>
               }
@@ -59,7 +59,7 @@ const Login = () => {
             >
               <Input.Password 
               placeholder="Enter your password"
-              className="px-[8px] py-[10px] rounded-[8px]  h-[48px] text-[#2C2C2C]" />
+              className="px-[8px] py-[10px] rounded-[8px]  h-[48px] text-BrandBlack1" />
             </FormItem>
 
             <FormItem>
