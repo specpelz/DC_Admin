@@ -4,7 +4,7 @@ import FormItem from "antd/es/form/FormItem";
 const Login = () => {
   return (
     <div className="h-screen">
-      <div className="lg:flex">
+      <div className="lg:flex lg:items-center">
         <div className="hidden lg:block"
         style={{
           width:"50vw",
@@ -15,8 +15,8 @@ const Login = () => {
         }}
         ></div>
 
-        <div className="flex flex-col items-center w-full px-[16px] mt-[91px] md:px-[40px] lg:w-[50vw] lg:px-[20px]">
-          <div className="text-[20px] font-[600] text-[#2C2C2C] text-center mb-[39px]">
+        <div className="flex flex-col items-center w-full px-[16px] mt-[91px] md:px-[85px] lg:w-[50vw]  lg:mt-[unset]">
+          <div className="text-[20px] font-[600] text-[#2C2C2C] text-center mb-[39px] lg:text-[32px] lg:font-[700]">
             Log into your account
           </div>
 
