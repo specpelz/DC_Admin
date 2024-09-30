@@ -3,7 +3,7 @@ import signout from "@assets/images/signout.svg";
 import { Link } from "react-router-dom";
 import logo from "@assets/images/logo.svg";
 import SecondaryBtn from "@components/commons/buttons/SecondaryBtn";
-import MobileNav from "./MobileNav";
+// import MobileNav from "./MobileNav";
 import SectionLayout from "@layouts/SectionLayout";
 
 const Nav = () => {
@@ -19,12 +19,9 @@ const Nav = () => {
   return (
     <nav className=" sticky top-0 z-[999]">
       <SectionLayout>
-        
-
         <div className="h-[5.6rem] hidden w-full md:flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
             <img src={logo} alt="Logo" className="h-10" />
-            
           </Link>
 
           <ul className="flex space-x-8 items-center">
@@ -58,11 +55,10 @@ const Nav = () => {
                 </SecondaryBtn>
               </Link>
             </li>
-{/* Register button , should write SIGNIN button to change id user is signed in */}
-            {/*  */}
+       
           </ul>
         </div>
-        <MobileNav />
+        {/* <MobileNav /> */}
       </SectionLayout>
     </nav>
   );

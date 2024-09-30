@@ -35,7 +35,7 @@ const SideBar: React.FC<SideBarProps> = ({
 
   return (
     <div
-      className={`h-screen bg-[#fff] py-2 px-1 lg:px-[1rem] flex flex-col justify-between `}
+      className={`h-screen bg-[#fff] py-2 px-1 lg:px-[1Btnrem] flex flex-col justify-between `}
     >
       <div>
         <Link to="/">
