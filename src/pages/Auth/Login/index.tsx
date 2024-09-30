@@ -16,7 +16,7 @@ const Login = () => {
         ></div>
 
         <div className="flex flex-col items-center w-full px-[16px] mt-[91px] md:px-[85px] lg:w-[50vw]  lg:mt-[unset]">
-          <div className="text-[20px] font-[600] text-BrandBlack1 text-center mb-[39px] lg:text-[32px] lg:font-[700]">
+          <div className="w-full text-[20px] font-[600] text-BrandBlack1 text-center mb-[39px] lg:text-[32px] lg:font-[700] lg:text-left">
             Log into your account
           </div>
 
@@ -42,7 +42,7 @@ const Login = () => {
             >
               <Input 
               placeholder="Enter your email"
-              className="px-[8px] py-[10px] rounded-[8px] h-[48px] text-BrandBlack1" />
+              className="text-[14px] px-[8px] py-[10px] rounded-[8px] text-BrandBlack1" />
             </FormItem>
 
             <FormItem
@@ -59,7 +59,7 @@ const Login = () => {
             >
               <Input.Password 
               placeholder="Enter your password"
-              className="px-[8px] py-[10px] rounded-[8px]  h-[48px] text-BrandBlack1" />
+              className="text-[14px] px-[8px] py-[10px] rounded-[8px]  h-[48px] text-BrandBlack1" />
             </FormItem>
 
             <FormItem>

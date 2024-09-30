@@ -4,6 +4,7 @@ import { Outlet, useLocation } from "react-router-dom";
 
 const AdminDashboard = () => {
   const { pathname } = useLocation();
+  
   return (
     <DashboardLayout>
       {pathname === "/admin" && <AirMonitoring />}
