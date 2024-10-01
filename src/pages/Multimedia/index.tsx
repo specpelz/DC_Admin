@@ -6,7 +6,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineCloudUpload } from "react-icons/md";
 import UploadedImages from "./UploadedImages";
-import { imageData } from "@utils/ImageData";
+import { imageData } from "@utils/Data";
 
 const Multimedia = () => {
   const [imageDetails, setImageDetails] = useState<{
@@ -51,6 +51,8 @@ const Multimedia = () => {
   const HandleRemoveUploadMessage = () => {
     setUploadSuccess(false);
   };
+
+  
 
   return (
     <div>

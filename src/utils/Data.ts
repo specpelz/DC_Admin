@@ -40,3 +40,46 @@ export const imageData = [
     description: "Woman standing outside of a building",
   },
 ];
+
+export const contentData = [
+  {
+    description:
+      "The DATACAB Environmental data analytic portal enables users to simplify environmental incident data and contents, presenting them in simplified infographic charts that can be easily used by strategic...",
+    title: "Hero Section",
+  },
+  {
+    description:
+      "The DATACAB Environmental data analytic portal enables users to simplify environmental incident data and contents, presenting them in simplified infographic charts that can be easily used by strategic...",
+    title: "Hero Section",
+  },
+  {
+    description:
+      "The DATACAB Environmental data analytic portal enables users to simplify environmental incident data and contents, presenting them in simplified infographic charts that can be easily used by strategic...",
+    title: "Hero Section",
+  },
+  {
+    description:
+      "The DATACAB Environmental data analytic portal enables users to simplify environmental incident data and contents, presenting them in simplified infographic charts that can be easily used by strategic...",
+    title: "Hero Section",
+  },
+  {
+    description:
+      "The DATACAB Environmental data analytic portal enables users to simplify environmental incident data and contents, presenting them in simplified infographic charts that can be easily used by strategic...",
+    title: "Hero Section",
+  },
+  {
+    description:
+      "The DATACAB Environmental data analytic portal enables users to simplify environmental incident data and contents, presenting them in simplified infographic charts that can be easily used by strategic...",
+    title: "Hero Section",
+  },
+  {
+    description:
+      "The DATACAB Environmental data analytic portal enables users to simplify environmental incident data and contents, presenting them in simplified infographic charts that can be easily used by strategic...",
+    title: "Hero Section",
+  },
+  {
+    description:
+      "The DATACAB Environmental data analytic portal enables users to simplify environmental incident data and contents, presenting them in simplified infographic charts that can be easily used by strategic...",
+    title: "Hero Section",
+  },
+];

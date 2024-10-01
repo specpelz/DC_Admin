@@ -1,19 +1,19 @@
-import { imageData } from "@utils/Data";
+import { contentData, imageData } from "@utils/Data";
+import { Button, Modal, Pagination } from "antd";
 import React, { useState } from "react";
-import { UploadedImagesProps } from "../../../types/UploadedImages";
-import { Button, Pagination, Modal } from "antd";
 import { IoSearch } from "react-icons/io5";
-import { MdOutlineDeleteOutline } from "react-icons/md";
+import { MdOutlineDeleteOutline, MdOutlineEdit } from "react-icons/md";
+import { UploadedContentProps } from "../../../types/UploadedImages";
 
-const UploadedImages: React.FC<UploadedImagesProps> = ({
-  // isUploading,
+const UploadedContent: React.FC<UploadedContentProps> = ({
   setIsUploading,
   setUploadedData,
+  setIsEditing
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<{
-    description: string;
+  const [selectedContent, setSelectedContent] = useState<{
+    title: string;
   } | null>(null);
 
   const imagesPerPage = 5;
@@ -23,26 +23,32 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
     setIsUploading(true);
   };
 
-  const showDeleteModal = (image: { description: string }) => {
-    setSelectedImage(image);
+  const showDeleteModal = (title: { title: string }) => {
+    setSelectedContent(title);
     setIsModalVisible(true);
+  };
+
+  const showEditForm = () => {
+    setUploadedData(false);
+    setIsUploading(true);
+    setIsEditing(true);
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
-    setSelectedImage(null);
+    setSelectedContent(null);
   };
 
   const handleDelete = () => {
     // Add delete logic here
-    console.log("Deleted:", selectedImage?.description);
+    console.log("Deleted:", selectedContent?.title);
     setIsModalVisible(false);
-    setSelectedImage(null);
+    setSelectedContent(null);
   };
 
   const indexOfLastImage = currentPage * imagesPerPage;
   const indexOfFirstImage = indexOfLastImage - imagesPerPage;
-  const currentImages = imageData.slice(indexOfFirstImage, indexOfLastImage);
+  const webContent = contentData.slice(indexOfFirstImage, indexOfLastImage);
 
   const onPageChange = (page: number) => {
     setCurrentPage(page);
@@ -50,7 +56,6 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
 
   return (
     <>
-      {/* {isUploading && ( */}
       <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-0 justify-between lg:items-center">
         <div
           className={`flex space-x-3 items-center px-[1.9rem] py-[1.3rem] w-full border border-BrandTextColor rounded-[8px] lg:w-[30%]`}
@@ -74,27 +79,37 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
               alt="Upload Icon"
               className="w-[14px] h-[14px]"
             />
-            <div className="text-[16px] font-[400]">Upload Image</div>
+            <div className="text-[16px] font-[400]">Upload Content</div>
           </div>
         </Button>
       </div>
-      {/* // )} */}
 
       <div className="bg-[#fff] my-[16px] py-[30px] px-[20px] rounded-[4px]">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 justify-center">
-          {currentImages.map((item, index) => (
+          {webContent.map((item, index) => (
             <div
               key={index}
-              className="w-[248px] h-[180px] flex flex-col gap-2 relative"
+              className="w-[248px]  flex flex-col gap-2  bg-BrandGray p-[16px]"
             >
-              <div
-                className="absolute top-4 right-4 bg-[#fff] w-[26px] h-[26px] rounded-full flex justify-center items-center cursor-pointer"
-                onClick={() => showDeleteModal(item)}
-              >
-                <MdOutlineDeleteOutline size={16} color="#9B9B9B" />
+              <div className="flex items-center justify-between w-full">
+                <h2 className="text-[16px] font-[600]">{item.title}</h2>
+                <div className=" flex gap-2 ">
+                  <div
+                    className=" bg-[#fff] w-[26px] h-[26px] rounded-full flex justify-center items-center cursor-pointer"
+                    onClick={() => showDeleteModal(item)}
+                  >
+                    <MdOutlineDeleteOutline size={16} color="#9B9B9B" />
+                  </div>
+                  <div
+                    className=" bg-[#fff] w-[26px] h-[26px] rounded-full flex justify-center items-center cursor-pointer"
+                    onClick={showEditForm}
+                  >
+                    <MdOutlineEdit size={16} color="#9B9B9B" />
+                  </div>
+                </div>
               </div>
-              <img src={item.src} alt={item.alt} className="rounded-[14px]" />
-              <p className="text-[14px] font-[500]">{item.description}</p>
+
+              <p className="text-[14px] font-[500] mt-4">{item.description}</p>
             </div>
           ))}
         </div>
@@ -112,7 +127,7 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
       <Modal
         title={
           <h2 className="text-Twenty font-[500]">
-            Delete "{selectedImage?.description}"?
+            Delete "{selectedContent?.title}"?
           </h2>
         }
         open={isModalVisible}
@@ -136,7 +151,7 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
         <p className="text-Sixteen font-[400]">
           Are you sure you want to delete the{" "}
           <span className="font-Sixteen font-[600]">
-            "{selectedImage?.description}"
+            "{selectedContent?.title}"
           </span>
           ?
           <br />
@@ -148,4 +163,4 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
   );
 };
 
-export default UploadedImages;
+export default UploadedContent;
