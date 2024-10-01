@@ -39,21 +39,21 @@ const AirMonitoringForm = () => {
           <div className="lg:w-[50%] h-[100px]">
             <FormItem
               layout="vertical"
-              name="lga"
+              name="city"
               label={
                 <span className="text-[16px] font-[400] text-BrandBlack1 ">
-                  Community
+                  City
                 </span>
               }
               rules={[
                 {
                   required: true,
-                  message: "Please enter the community",
+                  message: "Please enter the city",
                 },
               ]}
             >
               <Input
-                placeholder="Enter the community"
+                placeholder="Enter the city"
                 className="text-[14px] px-[8px] py-[10px] rounded-[8px] text-BrandBlack1 h-[48px]"
               />
             </FormItem>

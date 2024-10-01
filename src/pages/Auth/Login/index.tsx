@@ -1,7 +1,17 @@
 import { Button, Form, Input } from "antd";
 import FormItem from "antd/es/form/FormItem";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+
+  const navigation = useNavigate()
+
+const handleFinish = ()=>{
+  navigation("/admin")
+}
+
+
+
   return (
     <div className="h-screen">
       <div className="lg:flex lg:items-center">
@@ -23,7 +33,7 @@ const Login = () => {
           <Form
             // form={form}
             layout="vertical"
-            // onFinish={handleFinish}
+            onFinish={handleFinish}
             className="w-full "
           >
             <FormItem
