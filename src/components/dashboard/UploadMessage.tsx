@@ -2,7 +2,7 @@ import React from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
 
 interface UploadMessageProps {
-  imageName: React.ReactNode;
+  imageName?: React.ReactNode;
   onClose: () => void; 
 }
 
@@ -11,7 +11,7 @@ const UploadMessage: React.FC<UploadMessageProps> = ({ imageName, onClose }) => 
     <div className="flex items-center gap-[16px] pr-[20px] bg-[#fff] rounded-l-[10px]">
       <div className="w-[24px] bg-green-500 h-full py-[20px] rounded-l-[10px]"></div>
       <p className="text-[14px] font-[500] pl-[5px] text-BrandBlack1">
-        You have successfully uploaded {imageName}
+        You have successfully uploaded {imageName}.
       </p>
       <button onClick={onClose} className="focus:outline-none">
         <IoCloseOutline size={24} />

@@ -17,7 +17,7 @@ const NoData: React.FC<NoDataProps> = ({
       <div className="text-[18px] font-[600] text-BrandBlack1 mb-[10px]">
         {title}
       </div>
-      <div className="text-[16px] font-[400] text-BrandBlack1">{message}</div>
+      <div className="text-[16px] font-[400] text-BrandBlack1 lg:w-[300px] text-center">{message}</div>
 
       <Button
       icon={          <img
