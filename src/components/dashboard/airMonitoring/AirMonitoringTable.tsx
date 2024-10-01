@@ -288,6 +288,7 @@ const AirMonitoringTable = () => {
         cancelButtonProps={{ style: { display: "none" } }}
         okButtonProps={{ style: { display: "none" } }}
         centered
+        width={1000}
       >
     <Form
     form={form}
