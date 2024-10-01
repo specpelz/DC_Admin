@@ -6,6 +6,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineCloudUpload } from "react-icons/md";
 import UploadedImages from "./UploadedImages";
+import { imageData } from "@utils/ImageData";
 
 const Multimedia = () => {
   const [imageDetails, setImageDetails] = useState<{
@@ -40,13 +41,12 @@ const Multimedia = () => {
   const UploadedImage = () => {
     // Set the upload success message to true
     setUploadSuccess(true);
-  
+
     setTimeout(() => {
       setUploadSuccess(false);
       setUploadedData(true);
     }, 2000);
   };
-  
 
   const HandleRemoveUploadMessage = () => {
     setUploadSuccess(false);
@@ -70,10 +70,10 @@ const Multimedia = () => {
         ) : (
           <h2 className="text-[20px] font-[600] text-BrandBlack1">
             Multimedia
-            
           </h2>
         )}
       </div>
+
       {isUploading && !uploadedData ? (
         <div>
           <div className="bg-[#fff] py-[40px] px-[20px] h-[435px] rounded-[4px]">
@@ -139,8 +139,12 @@ const Multimedia = () => {
         </div>
       ) : (
         <>
-          {uploadedData ? (
-            <UploadedImages setUploadedData={setUploadedData} isUploading={isUploading} setIsUploading={setIsUploading} />
+          {imageData && imageData.length > 0 ? (
+            <UploadedImages
+              setUploadedData={setUploadedData}
+              isUploading={isUploading}
+              setIsUploading={setIsUploading}
+            />
           ) : (
             <NoData
               buttonFunction={handleUploadClick}

@@ -1,4 +1,4 @@
-export  const imageData = [
+export const imageData = [
   {
     src: "https://images.pexels.com/photos/27680935/pexels-photo-27680935/free-photo-of-a-woman-standing-outside-of-a-building-with-a-yellow-door.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     alt: "woman-standing-outside-of-a-building",
@@ -39,5 +39,4 @@ export  const imageData = [
     alt: "woman-standing-outside-of-a-building",
     description: "Woman standing outside of a building",
   },
-  // Add more items as necessary
 ];

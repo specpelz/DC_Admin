@@ -6,7 +6,7 @@ import { IoSearch } from "react-icons/io5";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 
 const UploadedImages: React.FC<UploadedImagesProps> = ({
-  isUploading,
+  // isUploading,
   setIsUploading,
   setUploadedData,
 }) => {
@@ -50,35 +50,35 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
 
   return (
     <>
-      {isUploading && (
-        <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-0 justify-between lg:items-center">
-          <div
-            className={`flex space-x-3 items-center px-[1.9rem] py-[1.3rem] w-full border border-BrandTextColor rounded-[8px] lg:w-[30%]`}
-          >
-            <IoSearch size={24} />
-            <input
-              type="text"
-              className="text-[#000] bg-BrandLightPrimary border-BrandTextColor text-Sixteen outline-none w-[100%]"
-              placeholder={"Search..."}
-            />
-          </div>
-
-          <Button
-            type="primary"
-            onClick={handleUploadClick}
-            className="lg:w-[234px] h-[48px] text-[16px] font-[400] bg-BrandPrimary"
-          >
-            <div className="flex gap-x-[16px] items-center">
-              <img
-                src="/cross.svg"
-                alt="Upload Icon"
-                className="w-[14px] h-[14px]"
-              />
-              <div className="text-[16px] font-[400]">Upload Image</div>
-            </div>
-          </Button>
+      {/* {isUploading && ( */}
+      <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-0 justify-between lg:items-center">
+        <div
+          className={`flex space-x-3 items-center px-[1.9rem] py-[1.3rem] w-full border border-BrandTextColor rounded-[8px] lg:w-[30%]`}
+        >
+          <IoSearch size={24} />
+          <input
+            type="text"
+            className="text-[#000] bg-BrandLightPrimary border-BrandTextColor text-Sixteen outline-none w-[100%]"
+            placeholder={"Search..."}
+          />
         </div>
-      )}
+
+        <Button
+          type="primary"
+          onClick={handleUploadClick}
+          className="lg:w-[234px] h-[48px] text-[16px] font-[400] bg-BrandPrimary"
+        >
+          <div className="flex gap-x-[16px] items-center">
+            <img
+              src="/cross.svg"
+              alt="Upload Icon"
+              className="w-[14px] h-[14px]"
+            />
+            <div className="text-[16px] font-[400]">Upload Image</div>
+          </div>
+        </Button>
+      </div>
+      {/* // )} */}
 
       <div className="bg-[#fff] my-[16px] py-[30px] px-[20px] rounded-[4px]">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 justify-center">
