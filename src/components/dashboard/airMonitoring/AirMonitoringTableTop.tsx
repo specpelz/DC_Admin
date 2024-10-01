@@ -1,15 +1,38 @@
-import { Button, Input } from "antd";
+import { Button, DatePicker, Divider, Input, Modal, Space } from "antd";
 import AirMonitoringTable from "./AirMonitoringTable";
+import { useState } from "react";
+import Select from "../select/Select";
 
 interface clickFunction_type {
-  clickFunction:()=>void;
+  clickFunction: () => void;
 }
 
+const AirMonitoringTableTop = ({ clickFunction }: clickFunction_type) => {
+  const [showFilter, setShowFilter] = useState<boolean>(false);
+
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
 
-const AirMonitoringTableTop = ({clickFunction}:clickFunction_type) => {
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+
+  const handleOk = () => {
+    setIsModalVisible(false); 
+    console.log('Winnings confirmed');
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    console.log('Modal closed without confirmation');
+  };
+
+
+
+
   return (
-    <div className="h-screen">
+    <div className="h-screen ">
       {/* SEARCH. FILTER, SHARE,DOWNLOAD COMPONENTS------------------------------------------------- */}
       <div className="w-full flex items-center gap-x-[30px] mt-[32px]">
         <div className="w-[30%]">
@@ -30,6 +53,9 @@ const AirMonitoringTableTop = ({clickFunction}:clickFunction_type) => {
             <div className="flex items-center w-[100%] gap-x-[10px] border-r-[0.5px] pr-[10px] border-gray-300">
               <Button
                 className="h-[46px] w-[18% bg-transparent"
+                onClick={() => {
+                  setShowFilter(!showFilter);
+                }}
                 icon={
                   <img
                     src="/funel.svg"
@@ -54,6 +80,7 @@ const AirMonitoringTableTop = ({clickFunction}:clickFunction_type) => {
               </Button>
               <Button
                 className="h-[46px] flex-grow bg-transparent"
+                onClick={showModal}
                 icon={
                   <img
                     src="/download.svg"
@@ -80,7 +107,7 @@ const AirMonitoringTableTop = ({clickFunction}:clickFunction_type) => {
           </div>
           <Button
             type="primary"
-          onClick={clickFunction}
+            onClick={clickFunction}
             icon={
               <img
                 src="/cross.svg"
@@ -95,8 +122,95 @@ const AirMonitoringTableTop = ({clickFunction}:clickFunction_type) => {
         </div>
       </div>
       {/* SEARCH. FILTER, SHARE,DOWNLOAD COMPONENTS ENDS HERE------------------------------------------------- */}
-      <div className="mt-[16px]"><AirMonitoringTable /></div>
+
+      <div className="mt-[16px] relative">
+        {showFilter === true ? (
+          <div className="absolute  w-full h-[209px] z-[999] px-[25px] bg-white">
+            <div className="flex gap-x-[20px]  mt-[20px]">
+              <div className="lg:w-[20%] ">
+              <Space direction="vertical"
+              className=" w-full"
+              >
+      <label htmlFor="date-picker" className="text-[16px] font-[400] text-BrandBlack1 ">Date</label>
+      <DatePicker  
+                className="h-[48px] w-full"
+                placeholder="Select date"
+                
+                />
+    </Space>
+           
+              </div>
+              <div className="lg:w-[20%] ">
+                <Select
+                  name="state"
+                  label="State"
+                  placeholder="Select state"
+                  required={false}
+                />
+              </div>
+              <div className="lg:w-[20%] ">
+                <Select
+                  name="lga"
+                  label="L.G.A"
+                  placeholder="Select L.G.A"
+                  required={false}
+                />
+              </div>
+              <div className="lg:w-[20%] ">
+                <Select
+                  name="community"
+                  label="Commuinity"
+                  placeholder="Select commuinity"
+                  required={false}
+                />
+              </div>
+              <div className="lg:w-[20%] ">
+                <Select
+                  name="date"
+                  label="Date"
+                  placeholder="Select date"
+                  required={false}
+                />
+              </div>
+            </div>
+
+            <Divider className="mt-[15px] mb-[10px]"/>
+            <div className="flex justify-end gap-x-[16px]">
+            <Button
+                className="w-[234px] h-[48px] text-[16px] font-[400] bg-transparent text-[#9B9B9B]"
+ 
+              >
+                Cancel
+              </Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="w-[234px] h-[48px] text-[16px] font-[400]  bg-BrandPrimary"
+            >
+              <div className="text-[16px] font-[400]">Apply Filter</div>
+            </Button>
       
+        </div>
+          </div>
+        ) : (
+          ""
+        )}
+        <AirMonitoringTable />
+      </div>
+
+
+      <Modal
+        title="Your Winnings"         
+        open={isModalVisible}      
+        onOk={handleOk}                
+        onCancel={handleCancel}    
+        cancelButtonProps={{ style: { display: 'none' } }} 
+        centered    
+      >
+        <div>
+          You have won $5000!
+        </div>
+      </Modal>
     </div>
   );
 };
