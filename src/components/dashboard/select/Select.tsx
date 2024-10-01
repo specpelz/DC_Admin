@@ -17,7 +17,7 @@ interface SelectProps {
   name: string; 
   label?: string; 
   required?: boolean;
-  requiredMessage: string;
+  requiredMessage?: string;
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -29,7 +29,7 @@ const Select: React.FC<SelectProps> = ({
   name,
   label="",
   required = true,
-  requiredMessage = "required",
+  requiredMessage = "",
 
 }) => {
   return (
