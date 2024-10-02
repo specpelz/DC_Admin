@@ -1,3 +1,4 @@
+import useBlogStore from "@store/blog";
 import { Button } from "antd";
 import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
@@ -8,7 +9,9 @@ import { MdOutlineCloudUpload } from "react-icons/md";
 const UploadBlog = () => {
 
 
-
+    const set_component = useBlogStore(
+        (state) => state.set_component
+      );
 
     const [imageDetails, setImageDetails] = useState<{
         name: string;
@@ -34,6 +37,10 @@ const UploadBlog = () => {
       const handleRemoveImage = () => {
         setImageDetails(null);
         // setIsUploading(false);
+      };
+      const handleUpload = () => {
+        setImageDetails(null);
+        set_component({value:"data"})
       };
     
     //   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
@@ -117,7 +124,7 @@ const UploadBlog = () => {
 
           <div className="w-full flex justify-end items-end ">
         <Button
-        //   onClick={UploadedImage}
+          onClick={handleUpload}
           type="primary"
           className="w-[234px] h-[48px] text-[16px] font-[400] mt-[16px] bg-BrandPrimary"
           disabled={!imageDetails}

@@ -1,34 +1,46 @@
 import UploadBlog from "@components/dashboard/blog/UploadBlog";
+import UploadedBlog from "@components/dashboard/blog/UploadedBlog";
 import NoData from "@components/dashboard/NoData";
-import { useEffect, useState } from "react";
+import useBlogStore from "@store/blog";
+import { useEffect} from "react";
 
 
 const Blog = () => {
+
+  const set_component = useBlogStore(
+    (state) => state.set_component
+  );
+  const component = useBlogStore(
+    (state) => state.component
+  );
+
+
+
   const handleUploadClick = () => {
-    set_component("upload")
+    set_component({value:"upload"})
   };
 // nodata,upload,data
-  const [component,set_component]=useState<string>("nodata")
+
   let data:string[]= []
   useEffect(()=>{
     data=[]
-    if(data.length > 0 && component !== "upload"){
-      set_component("data")
+    if(data.length > 0 && component.value !== "upload"){
+      set_component({value:"data"})
     }
   },[data])
   return (
     <div>
       <div className="text-[20px] font-[600] text-BrandBlack1">
-        { component === "nodata" || component === "data"? "Blog": "Upload Blog"}
+        { component.value === "nodata" || component.value === "data"? "Blog": "Upload Blog"}
       </div>
-      { component == "nodata"? (      <NoData
+      { component.value == "nodata"? (      <NoData
         buttonFunction={handleUploadClick}
         title="No Blog Uploaded"
         message="Start Uploading Blog"
         buttonText="Upload Data"
-      />): component == "upload" ? 
+      />): component.value == "upload" ? 
       (<UploadBlog/>):
-      (<div className="text-[16px]">b</div>)}
+      (<UploadedBlog/>)}
 
     </div>
   );
