@@ -3,26 +3,24 @@ import FormItem from "antd/es/form/FormItem";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigation = useNavigate();
 
-  const navigation = useNavigate()
-
-const handleFinish = ()=>{
-  navigation("/admin")
-}
-
-
+  const handleFinish = () => {
+    navigation("/admin");
+  };
 
   return (
     <div className="h-screen">
       <div className="lg:flex lg:items-center">
-        <div className="hidden lg:block"
-        style={{
-          width:"50vw",
-          height:"100vh",
-          backgroundImage:"url(/loginImage.svg)",
-          backgroundSize:"cover",
-          backgroundPosition:"center"
-        }}
+        <div
+          className="hidden lg:block"
+          style={{
+            width: "50vw",
+            height: "100vh",
+            backgroundImage: "url(/loginImage.svg)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
         ></div>
 
         <div className="flex flex-col items-center w-full px-[16px] mt-[91px] md:px-[85px] lg:w-[50vw]  lg:mt-[unset]">
@@ -50,9 +48,10 @@ const handleFinish = ()=>{
                 },
               ]}
             >
-              <Input 
-              placeholder="Enter your email"
-              className="text-[14px] px-[8px] py-[10px] rounded-[8px] text-BrandBlack1" />
+              <Input
+                placeholder="Enter your email"
+                className="text-[14px] px-[8px] py-[10px] rounded-[8px] text-BrandBlack1"
+              />
             </FormItem>
 
             <FormItem
@@ -67,9 +66,10 @@ const handleFinish = ()=>{
                 { required: true, message: "Please input your password!" },
               ]}
             >
-              <Input.Password 
-              placeholder="Enter your password"
-              className="text-[14px] px-[8px] py-[10px] rounded-[8px]  h-[48px] text-BrandBlack1" />
+              <Input.Password
+                placeholder="Enter your password"
+                className="text-[14px] px-[8px] py-[10px] rounded-[8px]  h-[48px] text-BrandBlack1"
+              />
             </FormItem>
 
             <FormItem>

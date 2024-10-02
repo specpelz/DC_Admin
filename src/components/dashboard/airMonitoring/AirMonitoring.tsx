@@ -25,7 +25,7 @@ const component = useAirMonitoringStore(
     if(data.length > 0 && component.value !== "upload"){
       set_component({value:"data"})
     }
-  },[data])
+  }, [data]);
   return (
     <div>
       <div className="text-[20px] font-[600] text-BrandBlack1">
