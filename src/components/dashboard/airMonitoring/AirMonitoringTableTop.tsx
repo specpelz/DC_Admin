@@ -2,12 +2,21 @@ import { Button, DatePicker, Divider, Input, Modal, Space } from "antd";
 import AirMonitoringTable from "./AirMonitoringTable";
 import { useState } from "react";
 import Select from "../select/Select";
+import useAirMonitoringStore from "@store/airMonitoring";
 
-interface clickFunction_type {
-  clickFunction: () => void;
-}
 
-const AirMonitoringTableTop = ({ clickFunction }: clickFunction_type) => {
+
+const AirMonitoringTableTop = () => {
+
+
+  const set_component = useAirMonitoringStore(
+    (state) => state.set_component
+  );
+
+ const clickFunction =()=>{
+  set_component({value:"upload"})
+ }
+
   const [showFilter, setShowFilter] = useState<boolean>(false);
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);

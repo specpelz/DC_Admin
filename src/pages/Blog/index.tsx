@@ -1,3 +1,4 @@
+import UploadBlog from "@components/dashboard/blog/UploadBlog";
 import NoData from "@components/dashboard/NoData";
 import { useEffect, useState } from "react";
 
@@ -26,7 +27,7 @@ const Blog = () => {
         message="Start Uploading Blog"
         buttonText="Upload Data"
       />): component == "upload" ? 
-      (<div className="text-[16px]">a</div>):
+      (<UploadBlog/>):
       (<div className="text-[16px]">b</div>)}
 
     </div>
