@@ -121,7 +121,15 @@ const WebsiteContent = () => {
                     className="w-[234px] h-[48px] text-[16px] font-[400] mt-[16px] bg-BrandPrimary"
                     disabled={!isFormValid}
                   >
-                    <div className="text-[16px] font-[400]">Upload Content</div>
+              {isEditing ? (
+                      <div className="text-[16px] font-[400]">
+                        Update Content
+                      </div>
+                    ) : (
+                      <div className="text-[16px] font-[400]">
+                        Upload Content
+                      </div>
+                    )}
                   </Button>
                 </div>
               </div>
