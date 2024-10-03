@@ -1,7 +1,7 @@
 import FormItem from "antd/es/form/FormItem";
-import Select from "../select/Select";
+import Select from "../../components/dashboard/select/Select";
 import { Button, Form, Input } from "antd";
-import UploadMessage from "../UploadMessage";
+import UploadMessage from "../../components/dashboard/UploadMessage";
 import { useState } from "react";
 import useAirMonitoringStore from "@store/airMonitoring";
 

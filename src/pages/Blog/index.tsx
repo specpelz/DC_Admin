@@ -1,5 +1,5 @@
-import UploadBlog from "@components/dashboard/blog/UploadBlog";
-import UploadedBlog from "@components/dashboard/blog/UploadedBlog";
+import UploadBlog from "@pages/Blog/UploadBlog";
+import UploadedBlog from "@pages/Blog/UploadedBlog";
 import NoData from "@components/dashboard/NoData";
 import useBlogStore from "@store/blog";
 import { useEffect} from "react";
@@ -30,7 +30,7 @@ const Blog = () => {
   },[data])
   return (
     <div>
-      <div className="text-[20px] font-[600] text-BrandBlack1">
+      <div className="text-[20px] font-[600] text-BrandBlack1 mb-[16px]">
         { component.value === "nodata" || component.value === "data"? "Blog": "Upload Blog"}
       </div>
       { component.value == "nodata"? (      <NoData
