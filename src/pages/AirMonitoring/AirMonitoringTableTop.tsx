@@ -1,7 +1,7 @@
 import { Button, DatePicker, Divider, Input, Modal, Space } from "antd";
 import AirMonitoringTable from "./AirMonitoringTable";
 import { useState } from "react";
-import Select from "../select/Select";
+import Select from "../../components/dashboard/select/Select";
 import useAirMonitoringStore from "@store/airMonitoring";
 
 

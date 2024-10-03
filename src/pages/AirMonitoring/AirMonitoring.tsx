@@ -1,8 +1,9 @@
 import { useEffect} from "react";
-import NoData from "../NoData";
+import NoData from "../../components/dashboard/NoData";
+
+import useAirMonitoringStore from "@store/airMonitoring";
 import AirMonitoringForm from "./AirMonitoringForm";
 import AirMonitoringTableTop from "./AirMonitoringTableTop";
-import useAirMonitoringStore from "@store/airMonitoring";
 
 const AirMonitoring = () => {
 

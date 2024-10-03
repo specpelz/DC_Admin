@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button, Divider, Dropdown, Flex, Form, Input, Menu, Modal, Table } from "antd";
 import type { TableColumnsType, TableProps } from "antd";
 import "./customDropdown.css";
-import Select from "../select/Select";
+import Select from "../../components/dashboard/select/Select";
 import FormItem from "antd/es/form/FormItem";
 type TableRowSelection<T extends object = object> =
   TableProps<T>["rowSelection"];
