@@ -6,7 +6,9 @@ import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineCloudUpload } from "react-icons/md";
 import { createEditor } from 'slate'
 import { Slate, Editable, withReact } from 'slate-react'
-import { BaseEditor, Descendant } from 'slate'
+import { BaseEditor,
+  //  Descendant 
+  } from 'slate'
 import { ReactEditor } from 'slate-react'
 
 type CustomElement = { type: 'paragraph'; children: CustomText[] }
