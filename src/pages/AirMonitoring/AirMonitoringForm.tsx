@@ -1,10 +1,54 @@
 import FormItem from "antd/es/form/FormItem";
-import Select from "../select/Select";
+import Select from "../../components/dashboard/select/Select";
 import { Button, Form, Input } from "antd";
+import UploadMessage from "../../components/dashboard/UploadMessage";
+import { useState } from "react";
+import useAirMonitoringStore from "@store/airMonitoring";
 
 const AirMonitoringForm = () => {
+  const allCountries = [
+    { value: "Nigeria", label: "Nigeria" },
+    { value: "Ghana", label: "Ghana" },
+  ];
+  const allLga = [
+    { value: "Ifako", label: "Ifako" },
+    { value: "Ilogbo", label: "Ilogbo" },
+  ];
+  const allStates = [
+    { value: "Lagos", label: "Lagos" },
+    { value: "Delta", label: "Delta" },
+  ];
+
+  const [successMessage, setSuccessMessage] = useState<boolean>(false);
+
+  const set_component = useAirMonitoringStore(
+    (state) => state.set_component
+  );
+
+  const handleSubmit =()=>{
+    setSuccessMessage(true);
+      
+        setTimeout(() => {
+          setSuccessMessage(false);
+          set_component({value:"data"})
+        }, 2000);
+  }
+
   return (
-    <Form>
+    <Form
+    
+    
+    onFinish={handleSubmit}
+    >
+      {successMessage && (
+        <div className="fixed right-0 z-[999] top-[12.5%]">
+          <UploadMessage
+            imageName="Data for Eleme"
+            onClose={() => setSuccessMessage(false)}
+          />
+        </div>
+      )}
+
       <div className="w-full bg-white rounded-[4px] p-[20px] lg:h-[492px] mt-[16px]">
         <div className="lg:flex lg:gap-x-[27px]">
           <div className="lg:w-[50%] h-[100px]">
@@ -14,6 +58,7 @@ const AirMonitoringForm = () => {
               placeholder="Enter the country"
               required={true}
               requiredMessage="Please enter the country!"
+              options={allCountries}
             />
           </div>
           <div className="lg:w-[50%] h-[100px]">
@@ -23,6 +68,7 @@ const AirMonitoringForm = () => {
               placeholder="Enter the state"
               required={true}
               requiredMessage="Please enter the state!"
+              options={allStates}
             />
           </div>
         </div>
@@ -34,6 +80,7 @@ const AirMonitoringForm = () => {
               placeholder="Enter the Local Government"
               required={true}
               requiredMessage="Please enter the L.G.A!"
+              options={allLga}
             />
           </div>
           <div className="lg:w-[50%] h-[100px]">

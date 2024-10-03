@@ -1,4 +1,4 @@
-import AirMonitoring from "@components/dashboard/airMonitoring/AirMonitoring";
+import AirMonitoring from "@pages/AirMonitoring/AirMonitoring";
 import DashboardLayout from "@layouts/DashboardLayout";
 import { Outlet, useLocation } from "react-router-dom";
 

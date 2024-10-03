@@ -33,7 +33,12 @@ const AppRoutes = () => {
           }
         >
           <Route path="multimedia" element={<Multimedia />} />
-          <Route path="blog" element={<Blog />} />
+          <Route path="blog" element=
+          {
+            <React.Suspense>
+          <Blog />
+          </React.Suspense>
+          } />
           <Route path="content" element={<WebsiteContent />} />
         </Route>
       </Routes>
