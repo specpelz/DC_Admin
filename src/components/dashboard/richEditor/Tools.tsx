@@ -118,9 +118,10 @@ const Tools = ({ editor }: Props) => {
 
   return (
     <div className="border-t-[1px] border-t-[#9B9B9B] border-b-[1px] border-b-[#9B9B9B] py-[5px] flex justify-between ">
-      {tools.map(({ icon, task }) => {
+      {tools.map(({ icon, task },index) => {
         return (
           <ToolButton
+          key={index.toString()}
             onClick={() => handleOnClick(task)}
             active={
               editor?.isActive(task) || editor?.isActive({textAlign: task})
