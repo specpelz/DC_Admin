@@ -1,44 +1,71 @@
+import RichEditor from "@components/dashboard/richEditor/RichEditor";
 import useBlogStore from "@store/blog";
 import { Button } from "antd";
 import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineCloudUpload } from "react-icons/md";
-import { createEditor } from "slate";
-import { Slate, Editable, withReact } from "slate-react";
-import {
-  BaseEditor,
-  //  Descendant
-} from "slate";
-import { ReactEditor } from "slate-react";
 
-type CustomElement = { type: "paragraph"; children: CustomText[] };
-type CustomText = { text: string };
 
-declare module "slate" {
-  interface CustomTypes {
-    Editor: BaseEditor & ReactEditor;
-    Element: CustomElement;
-    Text: CustomText;
-  }
-}
-
-const initialValue: CustomElement[] = [
-  {
-    type: "paragraph",
-    children: [{ text: "A line of text in a paragraph." }],
-  },
-];
 
 const UploadBlog = () => {
-  const [editor] = useState(() => withReact(createEditor()));
 
-  const set_component = useBlogStore((state) => state.set_component);
 
-  const [imageDetails, setImageDetails] = useState<{
-    name: string;
-    size: string;
-  } | null>(null);
+
+
+    const set_component = useBlogStore(
+        (state) => state.set_component
+      );
+
+    const [imageDetails, setImageDetails] = useState<{
+        name: string;
+        size: string;
+      } | null>(null);
+    //   const [isUploading, setIsUploading] = useState(false);
+    
+    //   const handleUploadClick = () => {
+    //     setIsUploading(true);
+    //     setImageDetails(null);
+    //   };
+    
+      const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+          setImageDetails({
+            name: file.name,
+            size: `${(file.size / 1024).toFixed(2)} KB`,
+          });
+        }
+      };
+    
+      const handleRemoveImage = () => {
+        setImageDetails(null);
+        // setIsUploading(false);
+      };
+      const handleUpload = () => {
+        setImageDetails(null);
+        set_component({value:"data"})
+      };
+    
+    //   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
+    //   const [uploadedData, setUploadedData] = useState<boolean>(false);
+    
+    //   const UploadedImage = () => {
+    //     // Set the upload success message to true
+    //     setUploadSuccess(true);
+      
+    //     setTimeout(() => {
+    //       setUploadSuccess(false);
+    //       setUploadedData(true);
+    //     }, 2000);
+    //   };
+      
+    
+    //   const HandleRemoveUploadMessage = () => {
+    //     setUploadSuccess(false);
+    //   };
+
+
   //   const [isUploading, setIsUploading] = useState(false);
 
   //   const handleUploadClick = () => {
@@ -46,24 +73,9 @@ const UploadBlog = () => {
   //     setImageDetails(null);
   //   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setImageDetails({
-        name: file.name,
-        size: `${(file.size / 1024).toFixed(2)} KB`,
-      });
-    }
-  };
+;
 
-  const handleRemoveImage = () => {
-    setImageDetails(null);
-    // setIsUploading(false);
-  };
-  const handleUpload = () => {
-    setImageDetails(null);
-    set_component({ value: "data" });
-  };
+
 
   //   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
   //   const [uploadedData, setUploadedData] = useState<boolean>(false);
@@ -133,13 +145,21 @@ const UploadBlog = () => {
         </div>
       </div>
 
-      <div>
-        <Slate editor={editor} initialValue={initialValue}>
-          <Editable />
-        </Slate>
-      </div>
 
-      <div className="w-full flex justify-end items-end ">
+
+
+
+
+<div className="w-full mt-[30px]">
+{/* Rich text editor here */}
+<RichEditor/>
+</div>
+
+
+
+
+
+          <div className="w-full flex justify-end items-end ">
         <Button
           onClick={handleUpload}
           type="primary"
