@@ -8,6 +8,8 @@ import Tools from "./Tools";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Placeholder from "@tiptap/extension-placeholder";
+import ImageGallery from "./ImageGallery";
+import { useState } from "react";
 
 const extensions = [
   StarterKit,
@@ -21,6 +23,11 @@ const extensions = [
 ];
 
 const RichEditor = () => {
+
+const [showImageGallery, setShowImageGallery] = useState<boolean>(false)
+
+
+
   const editor = useEditor({
     extensions,
     editorProps: {
@@ -35,7 +42,8 @@ const RichEditor = () => {
   //  editor?.commands.setContent("")
 
   return (
-    <div className="flex flex-col space-y-6">
+    <>
+     <div className="flex flex-col space-y-6">
       <div className="flex flex-col w-full border-[1px] border-[#9B9B9B] rounded-[4px] h-[245px] overflow-auto">
         <EditorContent
           editor={editor}
@@ -45,9 +53,12 @@ const RichEditor = () => {
         />
       </div>
       <div>
-        <Tools editor={editor} />
+        <Tools editor={editor} onImageSelection={()=>setShowImageGallery(true) }/>
       </div>
-    </div>
+    </div> 
+    <ImageGallery visible={showImageGallery} onClose={setShowImageGallery}/>  
+    </>
+
   );
 };
 

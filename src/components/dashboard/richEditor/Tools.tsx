@@ -19,6 +19,7 @@ import { ChainedCommands, Editor } from "@tiptap/react";
 
 interface Props {
   editor: Editor | null;
+  onImageSelection?():void
 }
 
 const tools = [
@@ -86,7 +87,7 @@ const chainMethods = (
 
 type TaskType = (typeof tools)[number]["task"];
 
-const Tools = ({ editor }: Props) => {
+const Tools = ({ editor, onImageSelection }: Props) => {
   const handleOnClick = (task: TaskType) => {
     switch (task) {
       case "bold":
@@ -113,6 +114,8 @@ const Tools = ({ editor }: Props) => {
         return chainMethods(editor, (chain) => chain.setTextAlign("right"));
       case "justify":
         return chainMethods(editor, (chain) => chain.setTextAlign("justify"));
+      case "image":
+        return onImageSelection && onImageSelection()
     }
   };
 
