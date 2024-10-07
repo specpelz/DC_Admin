@@ -43,7 +43,7 @@ const AirMonitoringForm = () => {
       {successMessage && (
         <div className="fixed right-0 z-[999] top-[12.5%]">
           <UploadMessage
-            imageName="Data for Eleme"
+            imageName="You have successfully uploaded data for Eleme"
             onClose={() => setSuccessMessage(false)}
           />
         </div>
