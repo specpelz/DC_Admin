@@ -1,9 +1,21 @@
 import { useEffect, useState } from "react";
-import { Button, Divider, Dropdown, Flex, Form, Input, Menu, Modal, Table } from "antd";
+import {
+  Button,
+  Divider,
+  Dropdown,
+  Flex,
+  Form,
+  Input,
+  Menu,
+  Modal,
+  Table,
+} from "antd";
 import type { TableColumnsType, TableProps } from "antd";
 import "./customDropdown.css";
 import Select from "../../components/dashboard/select/Select";
 import FormItem from "antd/es/form/FormItem";
+import UploadMessage from "@components/dashboard/UploadMessage";
+
 type TableRowSelection<T extends object = object> =
   TableProps<T>["rowSelection"];
 
@@ -20,10 +32,7 @@ interface DataType {
 }
 
 const AirMonitoringTable = () => {
-
-
-  const [form] = Form.useForm()
-
+  const [form] = Form.useForm();
 
   const [isViewModalVisible, set_isViewModalVisible] = useState<boolean>(false);
   const [isEditModalVisible, set_isEditModalVisible] = useState<boolean>(false);
@@ -33,32 +42,31 @@ const AirMonitoringTable = () => {
   const [selectedRowData, setSelectedRowData] = useState<DataType | null>(null);
 
   const defaultValues = {
-    country:selectedRowData?.country,
-    state:selectedRowData?.state,
-    lga:selectedRowData?.lga,
-    city:selectedRowData?.city,
-    latitude:selectedRowData?.latitude,
-    longitude:selectedRowData?.longitude,
-    deviceurl:selectedRowData?.deviceURL,
-  }
-
-
+    country: selectedRowData?.country,
+    state: selectedRowData?.state,
+    lga: selectedRowData?.lga,
+    city: selectedRowData?.city,
+    latitude: selectedRowData?.latitude,
+    longitude: selectedRowData?.longitude,
+    deviceurl: selectedRowData?.deviceURL,
+  };
 
   useEffect(() => {
-    form.setFieldsValue(defaultValues)
-   }, [form, defaultValues])
-
+    form.setFieldsValue(defaultValues);
+  }, [form, defaultValues]);
 
   const handleView = (row: DataType) => {
     setSelectedRowData(row);
     set_isViewModalVisible(true);
   };
 
+  const [editSuccessMessage, setEditSuccessMessage] = useState<boolean>(false);
   const handleEdit = (row: DataType) => {
     setSelectedRowData(row);
     set_isEditModalVisible(true);
   };
-
+  const [deleteSuccessMessage, setdeleteSuccessMessage] =
+    useState<boolean>(false);
   const handleDelete = (row: DataType) => {
     setSelectedRowData(row);
     set_isDeleteModalVisible(true);
@@ -128,46 +136,39 @@ const AirMonitoringTable = () => {
 
         return (
           <>
-          
-          <Flex align="center" justify="space-between" gap="small">
-            <span>{text}</span>
-            {/* <Tooltip title="Copy URL"> */}
-            <Button
-              icon={
-                <img
-                  src="/copy.svg"
-                  alt="Upload Icon"
-                  className="w-[14px] h-[14px]"
-                />
-              }
-              onClick={() => navigator.clipboard.writeText(text)}
-              type="link"
-            />
-            {/* </Tooltip> */}
-            <Dropdown
-              overlay={menu}
-              trigger={["click"]}
-              overlayClassName="custom-dropdown"
-            >
+            <Flex align="center" justify="space-between" gap="small">
+              <span>{text}</span>
+              {/* <Tooltip title="Copy URL"> */}
               <Button
                 icon={
                   <img
-                    src="/more.svg"
-                    alt="icon"
+                    src="/copy.svg"
+                    alt="Upload Icon"
                     className="w-[14px] h-[14px]"
                   />
                 }
+                onClick={() => navigator.clipboard.writeText(text)}
                 type="link"
               />
-            </Dropdown>
-          </Flex>
-          
-
-
-
-
+              {/* </Tooltip> */}
+              <Dropdown
+                overlay={menu}
+                trigger={["click"]}
+                overlayClassName="custom-dropdown"
+              >
+                <Button
+                  icon={
+                    <img
+                      src="/more.svg"
+                      alt="icon"
+                      className="w-[14px] h-[14px]"
+                    />
+                  }
+                  type="link"
+                />
+              </Dropdown>
+            </Flex>
           </>
-
         );
       },
     },
@@ -203,6 +204,22 @@ const AirMonitoringTable = () => {
 
   return (
     <>
+      {editSuccessMessage && (
+        <div className="fixed right-0 z-[999] top-[12.5%]">
+          <UploadMessage
+            imageName="You have successfully uploaded data for Eleme"
+            onClose={() => setEditSuccessMessage(false)}
+          />
+        </div>
+      )}
+      {deleteSuccessMessage && (
+        <div className="fixed right-0 z-[999] top-[12.5%]">
+          <UploadMessage
+            imageName="You have successfully deleted data for Eleme"
+            onClose={() => setdeleteSuccessMessage(false)}
+          />
+        </div>
+      )}
       <Flex gap="middle" vertical>
         <Flex align="center" gap="middle">
           {hasSelected ? `Selected ${selectedRowKeys.length} items` : null}
@@ -226,7 +243,6 @@ const AirMonitoringTable = () => {
       >
         <Divider className="mt-0" />
 
- 
         <div className="flex w-full justify-between  mb-[20px] ">
           <div className="flex flex-col gap-y-[5px]">
             <div className="text-[#757575] text-[16px] font-[400]">Country</div>
@@ -257,13 +273,17 @@ const AirMonitoringTable = () => {
         </div>
         <div className="flex w-full justify-between  mb-[20px] ">
           <div className="flex flex-col gap-y-[5px]">
-            <div className="text-[#757575] text-[16px] font-[400]">Longitude</div>
+            <div className="text-[#757575] text-[16px] font-[400]">
+              Longitude
+            </div>
             <div className="text-[#2C2C2C] text-[16px] font-[400]">
               {selectedRowData?.longitude}
             </div>
           </div>
           <div className="flex flex-col gap-y-[5px]  w-[300px]">
-            <div className="text-[#757575] text-[16px] font-[400]">Latitude</div>
+            <div className="text-[#757575] text-[16px] font-[400]">
+              Latitude
+            </div>
             <div className="text-[#2C2C2C] text-[16px] font-[400]">
               {selectedRowData?.latitude}
             </div>
@@ -271,194 +291,209 @@ const AirMonitoringTable = () => {
         </div>
         <div className="w-full justify-between  mb-[20px] ">
           <div className="flex flex-col gap-y-[5px]">
-            <div className="text-[#757575] text-[16px] font-[400]">Device URL</div>
+            <div className="text-[#757575] text-[16px] font-[400]">
+              Device URL
+            </div>
             <div className="text-[#2C2C2C] text-[16px] font-[400]">
               {selectedRowData?.deviceURL}
             </div>
           </div>
-
         </div>
-     
       </Modal>
       <Modal
         title="Edit Data"
         open={isEditModalVisible}
-        onOk={() => set_isEditModalVisible(true)}
+        // onOk={() => {
+
+        // }}
         onCancel={handleCancel}
         cancelButtonProps={{ style: { display: "none" } }}
         okButtonProps={{ style: { display: "none" } }}
         centered
         width={1000}
       >
-    <Form
-    form={form}
-    initialValues={defaultValues}
-    >
-      <div className="w-full bg-white rounded-[4px]  lg:h-[492px] mt-[16px]">
-        <div className="lg:flex lg:gap-x-[27px]">
-          <div className="lg:w-[50%] h-[100px]">
-            <Select
-              name="country"
-              label="Country"
-              placeholder="Enter the country"
-              required={true}
-              requiredMessage="Please enter the country!"
-            />
-          </div>
-          <div className="lg:w-[50%] h-[100px]">
-            <Select
-              name="state"
-              label="State"
-              placeholder="Enter the state"
-              required={true}
-              requiredMessage="Please enter the state!"
-            />
-          </div>
-        </div>
-        <div className="lg:flex lg:gap-x-[27px]">
-          <div className="lg:w-[50%] h-[100px]">
-            <Select
-              name="lga"
-              label="L.G.A"
-              placeholder="Enter the Local Government"
-              required={true}
-              requiredMessage="Please enter the L.G.A!"
-            />
-          </div>
-          <div className="lg:w-[50%] h-[100px]">
-            <FormItem
-              layout="vertical"
-              name="city"
-              label={
-                <span className="text-[16px] font-[400] text-BrandBlack1 ">
-                  city
-                </span>
-              }
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter the city",
-                },
-              ]}
-            >
-              <Input
-              type="text"
-                placeholder="Enter the city"
-                className="text-[14px] px-[8px] py-[10px] rounded-[8px] text-BrandBlack1 h-[48px]"
-              />
-            </FormItem>
-          </div>
-        </div>
-        <div className="lg:flex lg:gap-x-[27px]">
-          <div className="lg:w-[50%] h-[100px]">
-            <FormItem
-              layout="vertical"
-              name="latitude"
-              label={
-                <span className="text-[16px] font-[400] text-BrandBlack1 ">
-                  Latitude
-                </span>
-              }
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter the latitude",
-                },
-              ]}
-            >
-              <Input
-              type="text"
-                placeholder="Enter the latitude"
-                className="text-[14px] px-[8px] py-[10px] rounded-[8px] text-BrandBlack1 h-[48px]"
-              />
-            </FormItem>
-          </div>
-          <div className="lg:w-[50%] h-[100px]">
-            <FormItem
-              layout="vertical"
-              name="longitude"
-              // className="bg-red-700 h-fit"
-              label={
-                <span className="text-[16px] font-[400] text-BrandBlack1 ">
-                  Longitude
-                </span>
-              }
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter the longitude",
-                },
-              ]}
-            >
-              <Input
-              type="text"
-                placeholder="Enter the longitude"
-                className="text-[14px] px-[8px] py-[10px] rounded-[8px] text-BrandBlack1 h-[48px]"
-              />
-            </FormItem>
-          </div>
-        </div>
-        <div className="lg:flex lg:gap-x-[27px]">
-          <div className="lg:w-[49%] h-[100px]">
-            <FormItem
-              layout="vertical"
-              name="deviceurl"
-              label={
-                <span className="text-[16px] font-[400] text-BrandBlack1 ">
-                  Device URL
-                </span>
-              }
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter the latitude",
-                },
-              ]}
-            >
-              <Input
-              type="text"
-                placeholder="Enter the device URL"
-                className="text-[14px] px-[8px] py-[10px] rounded-[8px] text-BrandBlack1 h-[48px]"
-              />
-            </FormItem>
-          </div>
-        </div>
+        <Form
+          form={form}
+          initialValues={defaultValues}
+          onFinish={() => {
+            set_isEditModalVisible(false);
+            setEditSuccessMessage(true);
 
-        <div className="flex justify-end mt-[50px]">
-          <FormItem>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="w-[234px] h-[48px] text-[16px] font-[400]  bg-BrandPrimary"
-            >
-              <div className="text-[16px] font-[400]">Upload Data</div>
-            </Button>
-          </FormItem>
-        </div>
-      </div>
-    </Form>
+            setTimeout(() => {
+              setEditSuccessMessage(false);
+            }, 2000);
+          }}
+        >
+          <div className="w-full bg-white rounded-[4px]  lg:h-[492px] mt-[16px]">
+            <div className="lg:flex lg:gap-x-[27px]">
+              <div className="lg:w-[50%] h-[100px]">
+                <Select
+                  name="country"
+                  label="Country"
+                  placeholder="Enter the country"
+                  required={true}
+                  requiredMessage="Please enter the country!"
+                />
+              </div>
+              <div className="lg:w-[50%] h-[100px]">
+                <Select
+                  name="state"
+                  label="State"
+                  placeholder="Enter the state"
+                  required={true}
+                  requiredMessage="Please enter the state!"
+                />
+              </div>
+            </div>
+            <div className="lg:flex lg:gap-x-[27px]">
+              <div className="lg:w-[50%] h-[100px]">
+                <Select
+                  name="lga"
+                  label="L.G.A"
+                  placeholder="Enter the Local Government"
+                  required={true}
+                  requiredMessage="Please enter the L.G.A!"
+                />
+              </div>
+              <div className="lg:w-[50%] h-[100px]">
+                <FormItem
+                  layout="vertical"
+                  name="city"
+                  label={
+                    <span className="text-[16px] font-[400] text-BrandBlack1 ">
+                      city
+                    </span>
+                  }
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter the city",
+                    },
+                  ]}
+                >
+                  <Input
+                    type="text"
+                    placeholder="Enter the city"
+                    className="text-[14px] px-[8px] py-[10px] rounded-[8px] text-BrandBlack1 h-[48px]"
+                  />
+                </FormItem>
+              </div>
+            </div>
+            <div className="lg:flex lg:gap-x-[27px]">
+              <div className="lg:w-[50%] h-[100px]">
+                <FormItem
+                  layout="vertical"
+                  name="latitude"
+                  label={
+                    <span className="text-[16px] font-[400] text-BrandBlack1 ">
+                      Latitude
+                    </span>
+                  }
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter the latitude",
+                    },
+                  ]}
+                >
+                  <Input
+                    type="text"
+                    placeholder="Enter the latitude"
+                    className="text-[14px] px-[8px] py-[10px] rounded-[8px] text-BrandBlack1 h-[48px]"
+                  />
+                </FormItem>
+              </div>
+              <div className="lg:w-[50%] h-[100px]">
+                <FormItem
+                  layout="vertical"
+                  name="longitude"
+                  // className="bg-red-700 h-fit"
+                  label={
+                    <span className="text-[16px] font-[400] text-BrandBlack1 ">
+                      Longitude
+                    </span>
+                  }
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter the longitude",
+                    },
+                  ]}
+                >
+                  <Input
+                    type="text"
+                    placeholder="Enter the longitude"
+                    className="text-[14px] px-[8px] py-[10px] rounded-[8px] text-BrandBlack1 h-[48px]"
+                  />
+                </FormItem>
+              </div>
+            </div>
+            <div className="lg:flex lg:gap-x-[27px]">
+              <div className="lg:w-[49%] h-[100px]">
+                <FormItem
+                  layout="vertical"
+                  name="deviceurl"
+                  label={
+                    <span className="text-[16px] font-[400] text-BrandBlack1 ">
+                      Device URL
+                    </span>
+                  }
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter the latitude",
+                    },
+                  ]}
+                >
+                  <Input
+                    type="text"
+                    placeholder="Enter the device URL"
+                    className="text-[14px] px-[8px] py-[10px] rounded-[8px] text-BrandBlack1 h-[48px]"
+                  />
+                </FormItem>
+              </div>
+            </div>
+
+            <div className="flex justify-end mt-[50px]">
+              <FormItem>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="w-[234px] h-[48px] text-[16px] font-[400]  bg-BrandPrimary"
+                >
+                  <div className="text-[16px] font-[400]">Upload Data</div>
+                </Button>
+              </FormItem>
+            </div>
+          </div>
+        </Form>
       </Modal>
       <Modal
-         title={`Delete ${selectedRowData?.state}-${selectedRowData?.lga}`}
+        title={`Delete ${selectedRowData?.state}-${selectedRowData?.lga}`}
         open={isDeleteModalVisible}
-        onOk={() => set_isDeleteModalVisible(true)}
+        onOk={() => {
+          set_isDeleteModalVisible(false);
+          setdeleteSuccessMessage(true);
+          setTimeout(() => {
+            setdeleteSuccessMessage(false);
+          }, 2000);
+        }}
         onCancel={handleCancel}
-        okButtonProps={{ style: { width:"150px", height:"40px", backgroundColor:"#F33B3B"} }}
-        cancelButtonProps={{ style:  { width:"150px",  height:"40px", }  }}
+        okButtonProps={{
+          style: { width: "150px", height: "40px", backgroundColor: "#F33B3B" },
+        }}
+        cancelButtonProps={{ style: { width: "150px", height: "40px" } }}
         centered
-
-      
-
       >
-           <Divider className="mt-0" />
-  <p className="text-[#2C2C2C]">
-  Are you sure you want to delete the {selectedRowData?.state} - {selectedRowData?.lga} on air monitoring?
- 
-  </p>
-  <p className="mt-[20px] text-[#2C2C2C]">
-  This action is irreversible, and all associated records will be permanently removed from the system. Please confirm your choice.
-  </p>
-    
+        <Divider className="mt-0" />
+        <p className="text-[#2C2C2C]">
+          Are you sure you want to delete the {selectedRowData?.state} -{" "}
+          {selectedRowData?.lga} on air monitoring?
+        </p>
+        <p className="mt-[20px] text-[#2C2C2C]">
+          This action is irreversible, and all associated records will be
+          permanently removed from the system. Please confirm your choice.
+        </p>
       </Modal>
     </>
   );

@@ -1,4 +1,5 @@
 import RichEditor from "@components/dashboard/richEditor/RichEditor";
+import UploadMessage from "@components/dashboard/UploadMessage";
 import useBlogStore from "@store/blog";
 import { Button, Input } from "antd";
 import FormItem from "antd/es/form/FormItem";
@@ -77,9 +78,17 @@ const UploadBlog = () => {
     setImageDetails(null);
     // setIsUploading(false);
   };
+  const [uploadSuccessMessage, setUploadSuccessMessage] = useState<boolean>(false);
   const handleUpload = () => {
     setImageDetails(null);
-    set_component({ value: "data" });
+
+    setUploadSuccessMessage(true);
+
+    setTimeout(() => {
+      setUploadSuccessMessage(false);
+      set_component({ value: "data" });
+    }, 2000);
+   
   };
 
   //   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
@@ -125,6 +134,16 @@ const UploadBlog = () => {
 
   return (
     <div className="bg-[#FFF] py-[40px] px-[20px] h-fit rounded-[4px] mt-[20px]">
+
+{uploadSuccessMessage && (
+        <div className="fixed right-0 z-[999] top-[12.5%]">
+          <UploadMessage
+            imageName="You have successfully uploaded blog post"
+            onClose={() => setUploadSuccessMessage(false)}
+          />
+        </div>
+      )}
+
       <div className="flex flex-col justify-center items-center  h-[435px] bg-[#E6E6E6] rounded-[4px] border-[3px] border-[#C2C2C2] border-dashed">
         <div
           onChange={handleFileChange}

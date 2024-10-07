@@ -12,6 +12,7 @@ import useBlogStore from "@store/blog";
 import FormItem from "antd/es/form/FormItem";
 import RichEditor from "@components/dashboard/richEditor/RichEditor";
 import { AiOutlineClose } from "react-icons/ai";
+import UploadMessage from "@components/dashboard/UploadMessage";
 
 interface imageData_type {
   src: string;
@@ -69,9 +70,12 @@ const UploadedBlog = (
     setSelectedImage(image);
     setIsModalVisible(true);
   };
+  const [editSuccessMessage, setEditSuccessMessage] = useState<boolean>(false);
   const showEditModal = (detail: { title: string; content: string }) => {
     setSelectedPost(detail);
     setIsModalVisible2(true);
+
+
   };
 
   const handleCancel = () => {
@@ -81,12 +85,21 @@ const UploadedBlog = (
   const handleCancel2 = () => {
     setIsModalVisible2(false);
   };
-
+  const [deleteSuccessMessage, setdeleteSuccessMessage] =
+    useState<boolean>(false);
   const handleDelete = () => {
     // Add delete logic here
     console.log("Deleted:", selectedImage?.title);
+    
+    setdeleteSuccessMessage(true);
     setIsModalVisible(false);
-    setSelectedImage(null);
+    setTimeout(() => {
+      setdeleteSuccessMessage(false);
+      
+    }, 2000);
+
+
+
   };
 
   const indexOfLastImage = currentPage * imagesPerPage;
@@ -117,8 +130,18 @@ const UploadedBlog = (
     // setIsUploading(false);
   };
   const handleUpload = () => {
-    setImageDetails(null);
-    set_component({ value: "data" });
+    
+    
+
+        
+    setEditSuccessMessage(true);
+    setIsModalVisible2(false);
+    setTimeout(() => {
+      setEditSuccessMessage(false);
+      
+      set_component({ value: "data" });
+
+    }, 2000);
   };
 
   const defaultValues = {
@@ -142,6 +165,22 @@ const UploadedBlog = (
 
   return (
     <>
+          {editSuccessMessage && (
+        <div className="fixed right-0 z-[999] top-[12.5%]">
+          <UploadMessage
+            imageName="You have successfully edited data for Eleme"
+            onClose={() => setEditSuccessMessage(false)}
+          />
+        </div>
+      )}
+      {deleteSuccessMessage && (
+        <div className="fixed right-0 z-[999] top-[12.5%]">
+          <UploadMessage
+            imageName="You have successfully deleted data for Eleme"
+            onClose={() => setdeleteSuccessMessage(false)}
+          />
+        </div>
+      )}
       {/* {isUploading && ( */}
       <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-0 justify-between lg:items-center">
         <div
@@ -173,7 +212,7 @@ const UploadedBlog = (
       {/* // )} */}
 
       <div className="bg-[#fff] my-[16px] py-[30px] px-[20px] rounded-[4px]">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 justify-center">
           {currentImages.map((item, index) => (
             <div
               key={index}

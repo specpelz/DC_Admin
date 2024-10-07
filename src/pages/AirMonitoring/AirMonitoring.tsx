@@ -22,11 +22,11 @@ const component = useAirMonitoringStore(
   let data:string[]= []
   useEffect(()=>{
     console.log(component)
-    data=[]
+    data=["r"]
     if(data.length > 0 && component.value !== "upload"){
       set_component({value:"data"})
     }
-  }, [data]);
+  }, []);
   return (
     <div>
       <div className="text-[20px] font-[600] text-BrandBlack1">
