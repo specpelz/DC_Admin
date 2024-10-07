@@ -1,7 +1,7 @@
 import React from "react";
-import { Select as AntSelect} from "antd";
+import { Select as AntSelect } from "antd";
 import FormItem from "antd/es/form/FormItem";
-import "./select.css"
+import "./select.css";
 
 interface SelectOption {
   value: string | number;
@@ -14,53 +14,58 @@ interface SelectProps {
   onChange?: (value: string | number) => void;
   placeholder?: string;
   styleClass?: string;
-  name: string; 
-  label?: string; 
+  name: string;
+  label?: string;
   required?: boolean;
+  disabled?: boolean;
   requiredMessage?: string;
+  showSearch?: boolean;
 }
 
 const Select: React.FC<SelectProps> = ({
   options = [{ value: "", label: "" }],
   value = "",
-  onChange = (value) => console.log("win", value),
+  onChange = (value) => console.log("value", value),
   placeholder = "Select an option",
   styleClass = "",
   name,
-  label="",
+  label = "",
   required = true,
   requiredMessage = "",
-
+  disabled,
+  showSearch = false,
 }) => {
+  console.log("Select options:", options); // Debugging line
+
   return (
     <FormItem
-    layout="vertical"
-    label={
-      <span className="text-[16px] font-[400] text-BrandBlack1 ">
-        {label}
-      </span>
-    }
-      name={name}
-      rules={
-        [
-          {
-            required,
-            message: requiredMessage,
-          },
-        ]
+      layout="vertical"
+      label={
+        <span className="text-[16px] font-[400] text-BrandBlack1 ">
+          {label}
+        </span>
       }
+      name={name}
+      rules={[{ required, message: requiredMessage }]}
     >
       <AntSelect
         value={value}
         onChange={onChange}
         placeholder={placeholder}
         className={`custom-select w-full h-[48px] ${styleClass}`}
-      
+        disabled={disabled}
+        showSearch={showSearch}
+        filterOption={(input, option) => {
+          console.log(`option`, option);
+          const label = String(option?.value).toLowerCase();
+          const inputLower = input.toLowerCase();
+          console.log(`Comparing "${inputLower}" with "${label}"`);
+          return label.includes(inputLower);
+        }}
+        optionFilterProp="children" 
       >
-        {options?.map((option) => (
-          <AntSelect.Option key={option.value} value={option.value}
-         
-          >
+        {options.map((option) => (
+          <AntSelect.Option key={option.value} value={option.value}>
             {option.label}
           </AntSelect.Option>
         ))}

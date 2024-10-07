@@ -1,45 +1,49 @@
-import FormItem from "antd/es/form/FormItem";
-import Select from "../../components/dashboard/select/Select";
-import { Button, Form, Input } from "antd";
-import UploadMessage from "../../components/dashboard/UploadMessage";
-import { useState } from "react";
+import useCountries from "@hooks/useCountries";
+import useLGAs from "@hooks/useLGAs";
+import useStates from "@hooks/useStates";
 import useAirMonitoringStore from "@store/airMonitoring";
+import { Button, Form, Input } from "antd";
+import FormItem from "antd/es/form/FormItem";
+import { useState } from "react";
+import Select from "../../components/dashboard/select/Select";
+import UploadMessage from "../../components/dashboard/UploadMessage";
 
-const AirMonitoringForm = () => {
-  const allCountries = [
-    { value: "Nigeria", label: "Nigeria" },
-    { value: "Ghana", label: "Ghana" },
-  ];
-  const allLga = [
-    { value: "Ifako", label: "Ifako" },
-    { value: "Ilogbo", label: "Ilogbo" },
-  ];
-  const allStates = [
-    { value: "Lagos", label: "Lagos" },
-    { value: "Delta", label: "Delta" },
-  ];
-
+const AirMonitoringForm: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<boolean>(false);
+  const set_component = useAirMonitoringStore((state) => state.set_component);
 
-  const set_component = useAirMonitoringStore(
-    (state) => state.set_component
-  );
+  const countries = useCountries(); // Fetch countries
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const states = useStates(selectedCountry); // Fetch states based on selected country
+  const [selectedState, setSelectedState] = useState<string | null>(null);
+  const lgas = useLGAs(selectedState); // Fetch LGAs based on selected state
 
-  const handleSubmit =()=>{
+  const handleCountryChange = (value: string | number) => {
+    setSelectedCountry(value as string);
+    setSelectedState(null); // Reset selected state when country changes
+    console.log("Selected Country:", value);
+  };
+
+  const handleStateChange = (value: string | number) => {
+    setSelectedState(value.toString());
+    console.log("Selected State:", value);
+  };
+
+  // Log countries, states, and lgas to debug
+  console.log("Countries:", countries);
+  console.log("States:", states);
+  console.log("LGAs:", lgas);
+
+  const handleSubmit = () => {
     setSuccessMessage(true);
-      
-        setTimeout(() => {
-          setSuccessMessage(false);
-          set_component({value:"data"})
-        }, 2000);
-  }
+    setTimeout(() => {
+      setSuccessMessage(false);
+      set_component({ value: "data" });
+    }, 2000);
+  };
 
   return (
-    <Form
-    
-    
-    onFinish={handleSubmit}
-    >
+    <Form onFinish={handleSubmit}>
       {successMessage && (
         <div className="fixed right-0 z-[999] top-[12.5%]">
           <UploadMessage
@@ -55,10 +59,12 @@ const AirMonitoringForm = () => {
             <Select
               name="country"
               label="Country"
-              placeholder="Enter the country"
+              placeholder="Select the country"
               required={true}
-              requiredMessage="Please enter the country!"
-              options={allCountries}
+              requiredMessage="Please select the country!"
+              options={countries} // Ensure countries is an array of { value, label }
+              onChange={handleCountryChange}
+              showSearch={true}
             />
           </div>
           <div className="lg:w-[50%] h-[100px]">
@@ -68,7 +74,13 @@ const AirMonitoringForm = () => {
               placeholder="Enter the state"
               required={true}
               requiredMessage="Please enter the state!"
-              options={allStates}
+              options={states.map((state) => ({
+                value: state.value, // Use 'state.value' here
+                label: state.label, // Use 'state.label' here
+              }))}
+              onChange={handleStateChange} // This should now work
+              disabled={!selectedCountry || states.length === 0}
+              showSearch={true}
             />
           </div>
         </div>
@@ -80,7 +92,9 @@ const AirMonitoringForm = () => {
               placeholder="Enter the Local Government"
               required={true}
               requiredMessage="Please enter the L.G.A!"
-              options={allLga}
+              options={lgas} // Use the mapped LGAs
+              disabled={!selectedState} // Disable until a state is selected
+              showSearch={true}
             />
           </div>
           <div className="lg:w-[50%] h-[100px]">
