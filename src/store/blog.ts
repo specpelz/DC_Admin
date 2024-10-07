@@ -1,25 +1,29 @@
 import { create } from "zustand"
 
-// interface useAirMonitoringStore_type{
-//     value:boolean
-// }
-interface value_type{
-    value:string
-}
-interface success_type{
-    component:value_type
-    set_component:(state:value_type)=>void
+interface value_type {
+    value: string
 }
 
 
-const useBlogStore = create<success_type>((set) => ({
+
+interface blog_type {
+    component: value_type;
+    set_component: (state: value_type) => void;
+    images: string[];
+    updateImages: (images: string[]) => void;
+
+
+}
+
+const useBlogStore = create<blog_type>((set) => ({
     component: {
-     value:"nodata"
-      },
-      set_component: (state:value_type) => set({ component: state}),
+        value: "nodata"
+    },
+    set_component: (state) => set({ component: state }),
+    images: [],
+    updateImages: (newImages) => set({ images: newImages }),
+ 
 
-    
-    
 }))
 
 export default useBlogStore

@@ -2,47 +2,103 @@ import { IoMdClose } from "react-icons/io";
 import { FileUploader } from "react-drag-drop-files";
 import { MdOutlineCloudUpload } from "react-icons/md";
 // import GalleryImage from "./GalleryImage";
-import { uploadFile } from "../../../actions/file";
-import { useState } from "react";
+import {
+  uploadFile,
+  // fetchImagesFromFolder,
+  deleteImage,
+  fetchImagesFromFolder,
+  // readAllImages,
+} from "../../../actions/file";
+import { useEffect, useState } from "react";
+import GalleryImage from "./GalleryImage";
 
 interface Props {
   visible: boolean;
   onClose(state: boolean): void;
 }
 
-
 // const fileTypes = ["JPG", "PNG", "GIF"];
 
-
 const ImageGallery = ({ visible, onClose }: Props) => {
-
-  const [
-    file, 
-    setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
-console.log(file,"works like magic")
+  // @ts-ignore
+  const [images, setImages] = useState<any[]>([]);
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
-  const handleChange = async (file: File) => {
-    setIsUploading(true)
-    setFile(file);
-    if(file instanceof File && file.type.startsWith("image")){
-      try {
-        const result = await uploadFile(file);
-        console.log('Upload successful:', result);
+  const FOLDER_NAME = 'dcadmin-rich-editor-images'; 
 
-      } catch (error) {
-        console.error('Upload failed:', error);
-        setIsUploading(false)
 
-      }
-      finally{
-        setIsUploading(false)
-      }
+  console.log(file, "works like magic");
+
+
+  useEffect(() => {
+    if (visible) {
+      fetchImages();
     }
-    console.log("===>>>>>>>>>>>>>>>>>")
+  }, [visible]);
 
+
+  // const fetchImages = async () => {
+  //   try {
+  //     const fetchedImages = await fetchImagesFromFolder(FOLDER_NAME);
+  //     setImages(fetchedImages);
+  //     console.log(fetchedImages)
+  //   } catch (error) {
+  //     console.error('Failed to fetch images:', error);
+  //   }
+  // };
+  const fetchImages = async () => {
+    try {
+      const fetchedImages = await fetchImagesFromFolder(FOLDER_NAME);
+      setImages(fetchedImages);
+      console.log("Be like say e dey work")
+      console.log(fetchedImages)
+    } catch (error) {
+      console.error('Failed to fetch images:', error);
+    }
   };
 
+
+// @ts-ignore
+  const handleImageSelect = (publicId: string) => {
+    setSelectedImages(prev => 
+      prev.includes(publicId) 
+        ? prev.filter(id => id !== publicId) 
+        : [...prev, publicId]
+    );
+  };
+// @ts-ignore
+  const handleDeleteSelected = async () => {
+    for (const publicId of selectedImages) {
+      try {
+        await deleteImage(publicId);
+      } catch (error) {
+        console.error(`Failed to delete image ${publicId}:`, error);
+      }
+    }
+    fetchImages(); // Refresh the image list
+    setSelectedImages([]); // Clear selection
+  };
+
+
+  const handleChange = async (file: File) => {
+    setIsUploading(true);
+    setFile(file);
+    if (file instanceof File && file.type.startsWith("image")) {
+      try {
+        const result = await uploadFile(file,FOLDER_NAME);
+        console.log("Upload successful:", result);
+        fetchImages();
+      } catch (error) {
+        console.error("Upload failed:", error);
+       
+      } finally {
+        setIsUploading(false);
+      }
+    }
+    console.log("===>>>>>>>>>>>>>>>>>");
+  };
 
   const handleClose = () => {
     onClose(!visible);
@@ -89,16 +145,16 @@ console.log(file,"works like magic")
           No images to show...
         </p>
         <div className="gap-4 grid md:grid-cols-4 grid-cols-2 mt-4">
-      {/* <GalleryImage
+          <GalleryImage
       src="https://images.unsplash.com/photo-1719937206590-6cb10b099e0f?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     
       />
-     */}
+    
 
-{isUploading && <div className="w-full aspect-square rounded animate-pulse bg-gray-200">
-
-     </div>}
-      </div>
+          {isUploading && (
+            <div className="w-full aspect-square rounded animate-pulse bg-gray-200"></div>
+          )}
+        </div>
       </div>
     </div>
   );
