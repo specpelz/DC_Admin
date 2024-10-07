@@ -8,10 +8,22 @@ import Tools from "./Tools";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Placeholder from "@tiptap/extension-placeholder";
+import ImageGallery from "./ImageGallery";
+import { useState } from "react";
+import Link from "@tiptap/extension-link"
+
 
 const extensions = [
   StarterKit,
   Underline,
+  Link.configure({
+    openOnClick: false,
+    autolink: false,
+    linkOnPaste:true,
+    HTMLAttributes:{
+      target: "",
+    }
+  }),
   TextAlign.configure({
     types: ["heading", "paragraph"], // Ensure it's applied to headings and paragraphs
   }),
@@ -20,7 +32,16 @@ const extensions = [
   }),
 ];
 
-const RichEditor = () => {
+interface Props {
+  editorDefault?:string
+}
+
+const RichEditor = ({editorDefault=""}:Props) => {
+
+const [showImageGallery, setShowImageGallery] = useState<boolean>(false)
+
+
+
   const editor = useEditor({
     extensions,
     editorProps: {
@@ -29,14 +50,18 @@ const RichEditor = () => {
           "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl  outline-none p-8 w-full",
       },
     },
-    // content:"<H1>Hello world <strong>how are you?</strong></H1>"
+    content:editorDefault
   });
 
   //  editor?.commands.setContent("")
-
+const [editorColor,setEditorColor] = useState<boolean>(false)
   return (
-    <div className="flex flex-col space-y-6">
-      <div className="flex flex-col w-full border-[1px] border-[#9B9B9B] rounded-[4px] h-[245px] overflow-auto">
+    <>
+     <div className="flex flex-col space-y-6">
+      <div
+       onBlur={()=>setEditorColor(false)}
+       onFocus={()=>setEditorColor(true)}
+      className={`flex flex-col w-full border-[1px] rounded-[4px] h-[245px] overflow-auto ${editorColor === true ? "bg-white border-blue-500 shadow-sm shadow-blue-300":"bg-[#E6E6E6] border-[#9B9B9B] "} `}>
         <EditorContent
           editor={editor}
           className="h-full w-full"
@@ -45,9 +70,12 @@ const RichEditor = () => {
         />
       </div>
       <div>
-        <Tools editor={editor} />
+        <Tools editor={editor} onImageSelection={()=>setShowImageGallery(true) }/>
       </div>
-    </div>
+    </div> 
+    <ImageGallery visible={showImageGallery} onClose={setShowImageGallery}/>  
+    </>
+
   );
 };
 

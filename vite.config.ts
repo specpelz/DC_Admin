@@ -5,6 +5,10 @@ import { resolve } from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  define: {
+    'process.env': {},
+
+  },
   resolve: {
     alias: {
       "@api": resolve(__dirname, "src/api"),
@@ -16,6 +20,7 @@ export default defineConfig({
       "@utils": resolve(__dirname, "src/utils"),
       "@types": resolve(__dirname, "src/types"),
       "@store": resolve(__dirname, "src/store"),
+
     },
   },
 });

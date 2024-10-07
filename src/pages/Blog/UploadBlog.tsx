@@ -1,18 +1,61 @@
 import RichEditor from "@components/dashboard/richEditor/RichEditor";
 import useBlogStore from "@store/blog";
-import { Button } from "antd";
+import { Button, Input } from "antd";
+import FormItem from "antd/es/form/FormItem";
 import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineCloudUpload } from "react-icons/md";
 
+
+
+// interface Props {
+//   editorDefault?:string
+// }
+
+
 const UploadBlog = () => {
+
+
+
   const set_component = useBlogStore((state) => state.set_component);
 
-  const [imageDetails, setImageDetails] = useState<{
-    name: string;
-    size: string;
-  } | null>(null);
+
+
+
+    const [imageDetails, setImageDetails] = useState<{
+        name: string;
+        size: string;
+      } | null>(null);
+    //   const [isUploading, setIsUploading] = useState(false);
+    
+    //   const handleUploadClick = () => {
+    //     setIsUploading(true);
+    //     setImageDetails(null);
+    //   };
+    
+
+    
+
+    //   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
+    //   const [uploadedData, setUploadedData] = useState<boolean>(false);
+    
+    //   const UploadedImage = () => {
+    //     // Set the upload success message to true
+    //     setUploadSuccess(true);
+      
+    //     setTimeout(() => {
+    //       setUploadSuccess(false);
+    //       setUploadedData(true);
+    //     }, 2000);
+    //   };
+      
+    
+    //   const HandleRemoveUploadMessage = () => {
+    //     setUploadSuccess(false);
+    //   };
+
+ 
   //   const [isUploading, setIsUploading] = useState(false);
 
   //   const handleUploadClick = () => {
@@ -133,6 +176,32 @@ const UploadBlog = () => {
 
       <div className="w-full mt-[30px]">
         {/* Rich text editor here */}
+
+        <div className="w-full h-[100px]">
+        <div className="text-[16px] font-[400] text-[#2C2C2C] my-[10px]">Blog Title</div>
+            <FormItem
+              layout="vertical"
+              name="blogtitle"
+         
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter the blog title",
+                },
+              ]}
+            >
+              <Input
+                placeholder="Blog title"
+                className="text-[14px] px-[8px] py-[10px] rounded-[8px] text-BrandBlack1 h-[48px] bg-[#E6E6E6]"
+              />
+            </FormItem>
+          </div>
+
+
+
+
+
+        <div className="text-[16px] font-[400] text-[#2C2C2C] my-[10px]">Blog Detail</div>
         <RichEditor />
       </div>
 
@@ -141,7 +210,7 @@ const UploadBlog = () => {
           onClick={handleUpload}
           type="primary"
           className="w-[234px] h-[48px] text-[16px] font-[400] mt-[16px] bg-BrandPrimary"
-          disabled={!imageDetails}
+          // disabled={!imageDetails}
         >
           <div className="text-[16px] font-[400]">Upload Image</div>
         </Button>
