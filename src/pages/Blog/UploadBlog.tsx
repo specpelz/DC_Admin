@@ -138,7 +138,7 @@ const UploadBlog = () => {
 {uploadSuccessMessage && (
         <div className="fixed right-0 z-[999] top-[12.5%]">
           <UploadMessage
-            imageName="You have successfully uploaded blog post"
+            imageName="You have successfully uploaded a blog post"
             onClose={() => setUploadSuccessMessage(false)}
           />
         </div>
