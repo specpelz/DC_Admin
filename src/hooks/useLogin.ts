@@ -23,7 +23,7 @@ const useLogin = () => {
         const { token, user } = response.data.data;
         toast.success("Login successful!");
         localStorage.setItem("DC_User", JSON.stringify(user));
-        localStorage.setItem("DC_Token", JSON.stringify(token));
+        localStorage.setItem("DC_Token", token);
         navigate("/admin");
         return {
           status: response.data.status,

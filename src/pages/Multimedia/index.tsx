@@ -1,19 +1,29 @@
+import { BASE_URL } from "@api/index";
 import NoData from "@components/dashboard/NoData";
 import UploadMessage from "@components/dashboard/UploadMessage";
 import { Button } from "antd";
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { AiOutlineClose } from "react-icons/ai";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineCloudUpload } from "react-icons/md";
 import UploadedImages from "./UploadedImages";
-import { imageData } from "@utils/Data";
+import { ImageType } from "../../types/ImageType";
 
 const Multimedia = () => {
+  const token = localStorage.getItem("DC_Token") || "";
   const [imageDetails, setImageDetails] = useState<{
     name: string;
     size: string;
+    file: File;
   } | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [uploadedData, setUploadedData] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [loadingImages, setLoadingImages] = useState(true);
+  const [images, setImages] = useState<ImageType[]>([]);
 
   const handleUploadClick = () => {
     setIsUploading(true);
@@ -26,6 +36,7 @@ const Multimedia = () => {
       setImageDetails({
         name: file.name,
         size: `${(file.size / 1024).toFixed(2)} KB`,
+        file, // Add the file object here
       });
     }
   };
@@ -35,24 +46,73 @@ const Multimedia = () => {
     setIsUploading(false);
   };
 
-  const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [uploadedData, setUploadedData] = useState(false);
-
-  const UploadedImage = () => {
-    // Set the upload success message to true
-    setUploadSuccess(true);
-
-    setTimeout(() => {
-      setUploadSuccess(false);
-      setUploadedData(true);
-    }, 2000);
-  };
-
   const HandleRemoveUploadMessage = () => {
     setUploadSuccess(false);
   };
 
-  
+  const handleUploadImage = async () => {
+    if (!imageDetails?.file) return;
+
+    // Create a new FormData object
+    const formData = new FormData();
+    // Append the image file to the form data
+    formData.append("file", imageDetails.file);
+
+    setLoading(true);
+
+    try {
+      const response = await axios.post(`${BASE_URL}/multimedia`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      // Handle successful upload
+      console.log("Image uploaded successfully", response);
+      if (response.data.status === "success") {
+        setUploadSuccess(true);
+        setTimeout(() => {
+          setUploadSuccess(false);
+          setUploadedData(true);
+          setImageDetails(null);
+        }, 2000);
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(error?.response?.data.message || "Error uploading image");
+      setUploadSuccess(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      setLoadingImages(true);
+      try {
+        const response = await axios.get(`${BASE_URL}/multimedia`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log("fetchImages", response);
+
+        if (response.data.status === "success") {
+          setImages(response.data.data);
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        toast.error(error?.response?.data.message || "Error fetching image");
+      } finally {
+        setLoadingImages(false);
+      }
+    };
+
+    fetchImages();
+  }, [token, uploadedData]);
 
   return (
     <div>
@@ -128,10 +188,11 @@ const Multimedia = () => {
               </div>
               <div className="w-full flex justify-end items-end mt-[32px]">
                 <Button
-                  onClick={UploadedImage}
+                  onClick={handleUploadImage}
                   type="primary"
                   className="w-[234px] h-[48px] text-[16px] font-[400]  bg-BrandPrimary"
                   disabled={!imageDetails}
+                  loading={loading}
                 >
                   <div className="text-[16px] font-[400]">Upload Image</div>
                 </Button>
@@ -141,19 +202,27 @@ const Multimedia = () => {
         </div>
       ) : (
         <>
-          {imageData && imageData.length > 0 ? (
+          {images && images.length > 0 ? (
             <UploadedImages
               setUploadedData={setUploadedData}
               isUploading={isUploading}
               setIsUploading={setIsUploading}
+              images={images}
+              loadingImages={loadingImages}
+              setImages={setImages}
             />
-          ) : (
+          ) : images && images.length === 0 ? (
             <NoData
               buttonFunction={handleUploadClick}
               title="No Image Uploaded"
               message="Start Uploading Images"
-              buttonText="Upload Image"
+              buttonText={`${
+                loadingImages ? "Uploading Images..." : "Upload Image"
+              }`}
+              loading={loadingImages}
             />
+          ) : (
+            ""
           )}
         </>
       )}

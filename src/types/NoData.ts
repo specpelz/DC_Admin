@@ -4,4 +4,5 @@ export interface NoDataProps {
   message?: string;
   buttonText?: string;
   imageSrc?: string;
+  loading?: boolean;
 }

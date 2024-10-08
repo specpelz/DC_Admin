@@ -1,29 +1,41 @@
-import { imageData } from "@utils/Data";
+import { Button, Modal, Pagination, message } from "antd";
 import React, { useState } from "react";
-import { UploadedImagesProps } from "../../../types/UploadedImages";
-import { Button, Pagination, Modal } from "antd";
+import toast from "react-hot-toast";
 import { IoSearch } from "react-icons/io5";
 import { MdOutlineDeleteOutline } from "react-icons/md";
+import { ImageType, UploadedImagesProps } from "../../../types/ImageType";
+import { CustomError } from "../../../types/Error";
+import { BASE_URL } from "@api/index";
 
 const UploadedImages: React.FC<UploadedImagesProps> = ({
-  // isUploading,
+  images,
   setIsUploading,
   setUploadedData,
+  loadingImages,
+  setImages,
 }) => {
+  const token = localStorage.getItem("DC_Token") || "";
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState<{
-    description: string;
+    media: string;
+    id: string;
   } | null>(null);
 
-  const imagesPerPage = 5;
+  const [isDeleting, setIsDeleting] = useState(false);
+  const imagesPerPage = 8;
+  const indexOfLastImage = currentPage * imagesPerPage;
+  const indexOfFirstImage = indexOfLastImage - imagesPerPage;
+  const currentImages = images.slice(indexOfFirstImage, indexOfLastImage);
 
   const handleUploadClick = () => {
     setUploadedData(false);
     setIsUploading(true);
   };
 
-  const showDeleteModal = (image: { description: string }) => {
+  const showDeleteModal = (
+    image: React.SetStateAction<{ media: string; id: string } | null>
+  ) => {
     setSelectedImage(image);
     setIsModalVisible(true);
   };
@@ -33,33 +45,66 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
     setSelectedImage(null);
   };
 
-  const handleDelete = () => {
-    // Add delete logic here
-    console.log("Deleted:", selectedImage?.description);
-    setIsModalVisible(false);
-    setSelectedImage(null);
-  };
-
-  const indexOfLastImage = currentPage * imagesPerPage;
-  const indexOfFirstImage = indexOfLastImage - imagesPerPage;
-  const currentImages = imageData.slice(indexOfFirstImage, indexOfLastImage);
-
   const onPageChange = (page: number) => {
     setCurrentPage(page);
   };
 
+  const handleDelete = async () => {
+    if (!selectedImage) return;
+    setIsDeleting(true);
+
+    try {
+      const response = await fetch(
+        `${BASE_URL}/multimedia/${selectedImage.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        message.success(`Image ${selectedImage.id} deleted successfully.`);
+        setIsModalVisible(false);
+        setSelectedImage(null);
+
+        // Update the images array (remove the deleted image)
+        setImages((prevImages: ImageType[]) => {
+          const newImages = prevImages.filter(
+            (image) => image.id !== selectedImage.id
+          );
+
+          // If deleting the last image on the current page, adjust currentPage
+          if (newImages.length < indexOfLastImage && currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+          }
+
+          return newImages;
+        });
+      } else {
+        message.error("Failed to delete the image. Please try again.");
+      }
+    } catch (error) {
+      const customError = error as CustomError;
+      message.error("Error deleting image.");
+      toast.error(
+        customError?.response?.data.message || "Error deleting image"
+      );
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <>
-      {/* {isUploading && ( */}
       <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-0 justify-between lg:items-center">
-        <div
-          className={`flex space-x-3 items-center px-[1.9rem] py-[1.3rem] w-full border border-BrandTextColor rounded-[8px] lg:w-[30%]`}
-        >
+        <div className="flex space-x-3 items-center px-[1.9rem] py-[1.3rem] w-full border border-BrandTextColor rounded-[8px] lg:w-[30%]">
           <IoSearch size={24} />
           <input
             type="text"
             className="text-[#000] bg-BrandLightPrimary border-BrandTextColor text-Sixteen outline-none w-[100%]"
-            placeholder={"Search..."}
+            placeholder="Search..."
           />
         </div>
 
@@ -78,25 +123,34 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
           </div>
         </Button>
       </div>
-      {/* // )} */}
 
       <div className="bg-[#fff] my-[16px] py-[30px] px-[20px] rounded-[4px]">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 justify-center">
-          {currentImages.map((item, index) => (
-            <div
-              key={index}
-              className="w-[248px] h-[180px] flex flex-col gap-2 relative"
-            >
-              <div
-                className="absolute top-4 right-4 bg-[#fff] w-[26px] h-[26px] rounded-full flex justify-center items-center cursor-pointer"
-                onClick={() => showDeleteModal(item)}
-              >
-                <MdOutlineDeleteOutline size={16} color="#9B9B9B" />
-              </div>
-              <img src={item.src} alt={item.alt} className="rounded-[14px]" />
-              <p className="text-[14px] font-[500]">{item.description}</p>
-            </div>
-          ))}
+          {loadingImages
+            ? Array.from({ length: imagesPerPage }).map((_, index) => (
+                <div
+                  key={index}
+                  className="w-[248px] h-[180px] bg-gray-200 animate-pulse rounded-[14px]"
+                ></div>
+              ))
+            : currentImages.map((item, index) => (
+                <div
+                  key={index}
+                  className="w-[248px] h-[180px] flex flex-col gap-2 relative"
+                >
+                  <div
+                    className="absolute top-4 right-4 bg-[#fff] shadow-lg w-[26px] h-[26px] rounded-full flex justify-center items-center cursor-pointer"
+                    onClick={() => showDeleteModal(item)}
+                  >
+                    <MdOutlineDeleteOutline size={16} color="#9B9B9B" />
+                  </div>
+                  <img
+                    src={item.media}
+                    alt="uploaded image"
+                    className="w-[248px] h-[180px] rounded-[14px] object-cover"
+                  />
+                </div>
+              ))}
         </div>
       </div>
 
@@ -104,7 +158,7 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
         <Pagination
           current={currentPage}
           pageSize={imagesPerPage}
-          total={imageData.length}
+          total={images.length}
           onChange={onPageChange}
         />
       </div>
@@ -112,7 +166,7 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
       <Modal
         title={
           <h2 className="text-Twenty font-[500]">
-            Delete "{selectedImage?.description}"?
+            Delete "{selectedImage?.id}"?
           </h2>
         }
         open={isModalVisible}
@@ -128,6 +182,7 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
             danger
             onClick={handleDelete}
             className="w-[30%]"
+            loading={isDeleting}
           >
             Delete
           </Button>,
@@ -135,9 +190,7 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
       >
         <p className="text-Sixteen font-[400]">
           Are you sure you want to delete the{" "}
-          <span className="font-Sixteen font-[600]">
-            "{selectedImage?.description}"
-          </span>
+          <span className="font-Sixteen font-[600]">"{selectedImage?.id}"</span>
           ?
           <br />
           This action is irreversible, and all associated records will be
