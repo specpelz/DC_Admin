@@ -5,9 +5,12 @@ import { IoIosContact, IoMdNotificationsOutline } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
 
 const Navbar: React.FC<{ activeTab: string; collapsed: boolean }> = ({
-  // activeTab,
   collapsed,
 }) => {
+  const storedUser = localStorage.getItem("DC_User");
+  const user = storedUser ? JSON.parse(storedUser) : null;
+
+  console.log(user);
   return (
     <div
       className={`${
@@ -16,22 +19,6 @@ const Navbar: React.FC<{ activeTab: string; collapsed: boolean }> = ({
     >
       <div className="flex justify-end md:justify-between w-full items-center">
         <div className="hidden md:flex  w-[60%]">
-          {/* <h1 className="text-[20px] font-bold w-[45rem]">
-            {activeTab === "/admin" ? (
-              ""
-            ) : activeTab === "/admin/users" ? (
-              <H5Heading title="Manage Users" />
-            ) : activeTab === "/admin/opportunities" ? (
-              <H5Heading title="Manage Opportunities" />
-            ) : activeTab === "/admin/complaints" ? (
-              <H5Heading title="Manage Complaints" />
-            ) : activeTab === "/admin/broadcast" ? (
-              <H5Heading title="Send Broadcast" />
-            ) : (
-              ""
-            )}
-          </h1> */}
-
           <Input
             icon={<IoSearch color="#9B9B9B" size={25} />}
             placeholder="Search here."
@@ -52,8 +39,8 @@ const Navbar: React.FC<{ activeTab: string; collapsed: boolean }> = ({
           <div className="flex items-center gap-2">
             <IoIosContact size={50} color="#6e6f70" />
             <div className="hidden md:flex flex-col">
-              <H5Heading title="Anita Odom" />
-              <PText text="Admin" />
+              <H5Heading title={user && user.name} />
+              <PText text={user && user.role} />
             </div>
           </div>
         </div>
