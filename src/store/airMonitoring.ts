@@ -1,25 +1,21 @@
-import { create } from "zustand"
+import { create } from "zustand";
 
 // interface useAirMonitoringStore_type{
 //     value:boolean
 // }
-interface value_type{
-    value:string
+interface value_type {
+  value: string;
 }
-interface success_type{
-    component:value_type
-    set_component:(state:value_type)=>void
+interface success_type {
+  component: value_type;
+  set_component: (state: value_type) => void;
 }
-
 
 const useAirMonitoringStore = create<success_type>((set) => ({
-    component: {
-     value:"nodata"
-      },
-      set_component: (state:value_type) => set({ component: state}),
+  component: {
+    value: "nodata",
+  },
+  set_component: (state: value_type) => set({ component: state }),
+}));
 
-    
-    
-}))
-
-export default useAirMonitoringStore
+export default useAirMonitoringStore;
