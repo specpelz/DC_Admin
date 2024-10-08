@@ -1,12 +1,13 @@
+import useLogin from "@hooks/useLogin";
 import { Button, Form, Input } from "antd";
 import FormItem from "antd/es/form/FormItem";
-import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const navigation = useNavigate();
+  const { login, isLoading } = useLogin();
 
-  const handleFinish = () => {
-    navigation("/admin");
+  const handleFinish = async (values: { email: string; password: string }) => {
+    const { email, password } = values;
+    await login({ email, pass: password });
   };
 
   return (
@@ -23,21 +24,16 @@ const Login = () => {
           }}
         ></div>
 
-        <div className="flex flex-col items-center w-full px-[16px] mt-[91px] md:px-[85px] lg:w-[50vw]  lg:mt-[unset]">
+        <div className="flex flex-col items-center w-full px-[16px] mt-[91px] md:px-[85px] lg:w-[50vw] lg:mt-[unset]">
           <div className="w-full text-[20px] font-[600] text-BrandBlack1 text-center mb-[39px] lg:text-[32px] lg:font-[700] lg:text-left">
             Log into your account
           </div>
 
-          <Form
-            // form={form}
-            layout="vertical"
-            onFinish={handleFinish}
-            className="w-full "
-          >
+          <Form layout="vertical" onFinish={handleFinish} className="w-full">
             <FormItem
               name="email"
               label={
-                <span className="text-[16px] font-[400] text-BrandBlack1 ">
+                <span className="text-[16px] font-[400] text-BrandBlack1">
                   Email Address
                 </span>
               }
@@ -68,16 +64,17 @@ const Login = () => {
             >
               <Input.Password
                 placeholder="Enter your password"
-                className="text-[14px] px-[8px] py-[10px] rounded-[8px]  h-[48px] text-BrandBlack1"
+                className="text-[14px] px-[8px] py-[10px] rounded-[8px] h-[48px] text-BrandBlack1"
               />
             </FormItem>
-
+            {/* Show error message if there is an error
+            {error && <p className="text-red-500">{error}</p>} */}
             <FormItem>
               <Button
                 type="primary"
                 htmlType="submit"
                 className="w-full h-[56px] text-[16px] font-[400] mt-[72px]"
-                // loading={isPending}
+                loading={isLoading} // Add loading state
               >
                 Login
               </Button>
