@@ -2,6 +2,7 @@
 // import { useAppDispatch } from "@api/data/store";
 import Logo from "@assets/images/datacablogo.svg";
 import CloseLogo from "@assets/images/salama.png";
+import useLogout from "@hooks/useLogOut";
 import React, { Dispatch, SetStateAction } from "react";
 import { BiEditAlt, BiLogOut } from "react-icons/bi";
 import { FaRegImages } from "react-icons/fa";
@@ -23,9 +24,10 @@ const SideBar: React.FC<SideBarProps> = ({
 }) => {
   // const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { logout } = useLogout();
 
-  const logOutHandler = () => {
-    // dispatch(logout);
+  const logOutHandler = async () => {
+    await logout();
     navigate("/", { replace: true });
   };
 
