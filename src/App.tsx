@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
 import { Toaster } from "react-hot-toast";
 import { toastConf } from "./toastConfig";
+import ScrollToTop from "@components/scrolltotop";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           position="top-center"
           reverseOrder={false}
         />
+        <ScrollToTop />
         <AppRoutes />
       </BrowserRouter>
     </ConfigProvider>
