@@ -44,42 +44,42 @@ export const imageData = [
 export const contentData = [
   {
     description:
-      "The DATACAB Environmental data analytic portal enables users to simplify environmental incident data and contents, presenting them in simplified infographic charts that can be easily used by strategic...",
-    title: "Hero Section",
+      "The DATACAB platform provides real-time monitoring of environmental data, enabling users to track incidents and trends with ease.",
+    title: "Real-time Monitoring",
   },
   {
     description:
-      "The DATACAB Environmental data analytic portal enables users to simplify environmental incident data and contents, presenting them in simplified infographic charts that can be easily used by strategic...",
-    title: "Hero Section",
+      "Get insights into environmental impacts with customizable infographic charts, perfect for strategic decision-making.",
+    title: "Data Insights",
   },
   {
     description:
-      "The DATACAB Environmental data analytic portal enables users to simplify environmental incident data and contents, presenting them in simplified infographic charts that can be easily used by strategic...",
-    title: "Hero Section",
+      "Explore past environmental incidents with detailed historical data and analysis, helping users predict and prevent future occurrences.",
+    title: "Historical Data",
   },
   {
     description:
-      "The DATACAB Environmental data analytic portal enables users to simplify environmental incident data and contents, presenting them in simplified infographic charts that can be easily used by strategic...",
-    title: "Hero Section",
+      "Visualize your environmental data in a clean and user-friendly dashboard designed for efficiency and clarity.",
+    title: "User Dashboard",
   },
   {
     description:
-      "The DATACAB Environmental data analytic portal enables users to simplify environmental incident data and contents, presenting them in simplified infographic charts that can be easily used by strategic...",
-    title: "Hero Section",
+      "Access live data from various sources, all integrated seamlessly into the DATACAB system for comprehensive analysis.",
+    title: "Live Data Integration",
   },
   {
     description:
-      "The DATACAB Environmental data analytic portal enables users to simplify environmental incident data and contents, presenting them in simplified infographic charts that can be easily used by strategic...",
-    title: "Hero Section",
+      "Easily customize your reports with tailored data filters, providing specific insights that match your business needs.",
+    title: "Custom Reports",
   },
   {
     description:
-      "The DATACAB Environmental data analytic portal enables users to simplify environmental incident data and contents, presenting them in simplified infographic charts that can be easily used by strategic...",
-    title: "Hero Section",
+      "Collaborate with team members by sharing interactive reports and charts directly from the platform.",
+    title: "Team Collaboration",
   },
   {
     description:
-      "The DATACAB Environmental data analytic portal enables users to simplify environmental incident data and contents, presenting them in simplified infographic charts that can be easily used by strategic...",
-    title: "Hero Section",
+      "Stay informed with notifications and alerts about critical environmental incidents as they happen.",
+    title: "Alerts and Notifications",
   },
 ];

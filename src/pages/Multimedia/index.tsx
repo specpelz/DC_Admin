@@ -72,10 +72,10 @@ const Multimedia = () => {
       console.log("Image uploaded successfully", response);
       if (response.data.status === "success") {
         setUploadSuccess(true);
+        setImageDetails(null);
         setTimeout(() => {
           setUploadSuccess(false);
           setUploadedData(true);
-          setImageDetails(null);
         }, 2000);
       }
 
@@ -124,7 +124,7 @@ const Multimedia = () => {
             </h2>
             {uploadSuccess && (
               <UploadMessage
-                imageName={imageDetails && imageDetails.name}
+                imageName={"uploaded image"}
                 onClose={HandleRemoveUploadMessage}
               />
             )}
