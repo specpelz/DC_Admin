@@ -149,6 +149,10 @@ const ImageGallery = ({ visible, onClose }: Props) => {
       src="https://images.unsplash.com/photo-1719937206590-6cb10b099e0f?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     
       />
+          <GalleryImage
+      src="https://images.unsplash.com/photo-1719937051230-8798ae2ebe86?q=80&w=1772&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    
+      />
     
 
           {isUploading && (

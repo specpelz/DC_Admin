@@ -56,7 +56,8 @@ const AirMonitoringTableTop = () => {
           <div className="w-[70%]">
             <div className="flex items-center w-[100%] gap-x-[10px] border-r-[0.5px] pr-[10px] border-gray-300">
               <Button
-                className="h-[46px] w-[18% bg-transparent"
+                className={`h-[46px] w-[18%  ${showFilter == true ? "bg-[white]":"bg-transparent"}`}
+                
                 onClick={() => {
                   setShowFilter(!showFilter);
                 }}
@@ -147,6 +148,14 @@ const AirMonitoringTableTop = () => {
               </div>
               <div className="lg:w-[20%] ">
                 <Select
+                  name="country"
+                  label="Country"
+                  placeholder="Select country"
+                  required={false}
+                />
+              </div>
+              <div className="lg:w-[20%] ">
+                <Select
                   name="state"
                   label="State"
                   placeholder="Select state"
@@ -164,16 +173,8 @@ const AirMonitoringTableTop = () => {
               <div className="lg:w-[20%] ">
                 <Select
                   name="community"
-                  label="Commuinity"
-                  placeholder="Select commuinity"
-                  required={false}
-                />
-              </div>
-              <div className="lg:w-[20%] ">
-                <Select
-                  name="date"
-                  label="Date"
-                  placeholder="Select date"
+                  label="Community"
+                  placeholder="Select community"
                   required={false}
                 />
               </div>
@@ -181,7 +182,11 @@ const AirMonitoringTableTop = () => {
 
             <Divider className="mt-[15px] mb-[10px]" />
             <div className="flex justify-end gap-x-[16px]">
-              <Button className="w-[234px] h-[48px] text-[16px] font-[400] bg-transparent text-[#9B9B9B]">
+              <Button className="w-[234px] h-[48px] text-[16px] font-[400] bg-transparent text-[#9B9B9B]"
+                onClick={() => {
+                  setShowFilter(!showFilter);
+                }}
+              >
                 Cancel
               </Button>
               <Button
@@ -196,7 +201,14 @@ const AirMonitoringTableTop = () => {
         ) : (
           ""
         )}
+
+
+
         <AirMonitoringTable />
+       
+
+
+
       </div>
 
       <Modal

@@ -7,8 +7,7 @@ interface value_type {
 interface blog_type {
   component: value_type;
   set_component: (state: value_type) => void;
-  images: string[];
-  updateImages: (images: string[]) => void;
+
 }
 
 const useBlogStore = create<blog_type>((set) => ({
@@ -16,8 +15,9 @@ const useBlogStore = create<blog_type>((set) => ({
     value: "nodata",
   },
   set_component: (state) => set({ component: state }),
-  images: [],
-  updateImages: (newImages) => set({ images: newImages }),
+
+  // images: [],
+  // updateImages: (newImages) => set({ images: newImages }),
 }));
 
 export default useBlogStore;

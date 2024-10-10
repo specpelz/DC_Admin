@@ -1,16 +1,21 @@
 import useCountries from "@hooks/useCountries";
 import useLGAs from "@hooks/useLGAs";
 import useStates from "@hooks/useStates";
-import useAirMonitoringStore from "@store/airMonitoring";
+// import useAirMonitoringStore from "@store/airMonitoring";
 import { Button, Form, Input } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import { useState } from "react";
 import Select from "../../components/dashboard/select/Select";
 import UploadMessage from "../../components/dashboard/UploadMessage";
+import { AirMonitoring_data_type } from "../../types/airMonitoringDataType";
+import usePostAirMonitoring from "@hooks/usePostAirMonitoring";
+import useAirMonitoringStore from "@store/airMonitoring";
 
 const AirMonitoringForm: React.FC = () => {
-  const [successMessage, setSuccessMessage] = useState<boolean>(false);
-  const set_component = useAirMonitoringStore((state) => state.set_component);
+
+  const successMessage = useAirMonitoringStore((state) => state.upload_air_monitoring_success);
+  const set_success_message = useAirMonitoringStore((state) => state.set_upload_air_monitoring_success);
+  // const set_component = useAirMonitoringStore((state) => state.set_component);
 
   const countries = useCountries(); // Fetch countries
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
@@ -28,18 +33,30 @@ const AirMonitoringForm: React.FC = () => {
     setSelectedState(value.toString());
     console.log("Selected State:", value);
   };
-
   // Log countries, states, and lgas to debug
   console.log("Countries:", countries);
   console.log("States:", states);
   console.log("LGAs:", lgas);
 
-  const handleSubmit = () => {
-    setSuccessMessage(true);
-    setTimeout(() => {
-      setSuccessMessage(false);
-      set_component({ value: "data" });
-    }, 2000);
+  const { postData, isLoading } = usePostAirMonitoring();
+ const [city,set_city]=useState<string>("")
+  const handleSubmit = async (values: AirMonitoring_data_type) => {
+    const { country, state, lga, city, latitude, longitude, deviceUrl } =
+      values;
+      set_city(city)
+ console.log({ country, state, lga, city, latitude, longitude, deviceUrl })
+    await postData({
+      country,
+      state,
+      lga,
+      city,
+      latitude,
+      longitude,
+      deviceUrl,
+    });
+    // setSuccessMessage(true);
+    //   setSuccessMessage(false);
+    //   set_component({ value: "data" });
   };
 
   return (
@@ -47,8 +64,8 @@ const AirMonitoringForm: React.FC = () => {
       {successMessage && (
         <div className="fixed right-0 z-[999] top-[12.5%]">
           <UploadMessage
-            imageName="You have successfully uploaded data for Eleme"
-            onClose={() => setSuccessMessage(false)}
+            imageName={`You have successfully uploaded data for ${city}`}
+            onClose={() => set_success_message(false)}
           />
         </div>
       )}
@@ -171,7 +188,7 @@ const AirMonitoringForm: React.FC = () => {
           <div className="lg:w-[49%] h-[100px]">
             <FormItem
               layout="vertical"
-              name="deviceurl"
+              name="deviceUrl"
               label={
                 <span className="text-[16px] font-[400] text-BrandBlack1 ">
                   Device URL
@@ -180,7 +197,11 @@ const AirMonitoringForm: React.FC = () => {
               rules={[
                 {
                   required: true,
-                  message: "Please enter the latitude",
+                  message: "Please enter the device URL",
+                },
+                {
+                  pattern: /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/,
+                  message: "Please enter a valid device URL",
                 },
               ]}
             >
@@ -195,6 +216,7 @@ const AirMonitoringForm: React.FC = () => {
         <div className="flex justify-end">
           <FormItem>
             <Button
+            loading={isLoading}
               type="primary"
               htmlType="submit"
               className="w-[234px] h-[48px] text-[16px] font-[400]  bg-BrandPrimary"

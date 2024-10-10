@@ -6,7 +6,7 @@ import {
   BiBold,
   BiCodeAlt,
   BiCodeCurly,
-  BiImageAlt,
+  // BiImageAlt,
   BiItalic,
   BiListOl,
   BiListUl,
@@ -73,10 +73,10 @@ const tools = [
     task: "orderedList",
     icon: <BiListOl size={20} />,
   },
-  {
-    task: "image",
-    icon: <BiImageAlt size={20} />,
-  },
+  // {
+  //   task: "image",
+  //   icon: <BiImageAlt size={20} />,
+  // },
 ] as const;
 
 type HeadingType = (typeof headingOptions)[number]["task"];
@@ -99,7 +99,9 @@ const chainMethods = (
 type TaskType = (typeof tools)[number]["task"];
 
 
-const Tools = ({ editor, onImageSelection }: Props) => {
+const Tools = ({ editor, 
+  // onImageSelection 
+}: Props) => {
 
 
   const handleLinkSubmission = (link: string) => {
@@ -148,8 +150,8 @@ const Tools = ({ editor, onImageSelection }: Props) => {
         return chainMethods(editor, (chain) => chain.setTextAlign("right"));
       case "justify":
         return chainMethods(editor, (chain) => chain.setTextAlign("justify"));
-      case "image":
-        return onImageSelection && onImageSelection()
+      // case "image":
+      //   return onImageSelection && onImageSelection()
     }
   };
 const handleHeadingSelection:ChangeEventHandler<HTMLSelectElement>=({target})=>{
