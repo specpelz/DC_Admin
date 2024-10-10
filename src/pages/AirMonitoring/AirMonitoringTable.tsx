@@ -9,12 +9,14 @@ import {
   Menu,
   Modal,
   Table,
+  Tooltip,
 } from "antd";
 import type { TableColumnsType, TableProps } from "antd";
 import "./customDropdown.css";
 import Select from "../../components/dashboard/select/Select";
 import FormItem from "antd/es/form/FormItem";
 import UploadMessage from "@components/dashboard/UploadMessage";
+import useAirMonitoringStore from "@store/airMonitoring";
 
 type TableRowSelection<T extends object = object> =
   TableProps<T>["rowSelection"];
@@ -28,10 +30,14 @@ interface DataType {
   city: string;
   longitude: string;
   latitude: string;
-  deviceURL: string;
+  deviceUrl: string;
 }
 
 const AirMonitoringTable = () => {
+  const air_monitoring_data = useAirMonitoringStore(
+    (state) => state.air_monitoring_data
+  );
+
   const [form] = Form.useForm();
 
   const [isViewModalVisible, set_isViewModalVisible] = useState<boolean>(false);
@@ -48,7 +54,7 @@ const AirMonitoringTable = () => {
     city: selectedRowData?.city,
     latitude: selectedRowData?.latitude,
     longitude: selectedRowData?.longitude,
-    deviceurl: selectedRowData?.deviceURL,
+    deviceurl: selectedRowData?.deviceUrl,
   };
 
   useEffect(() => {
@@ -79,16 +85,18 @@ const AirMonitoringTable = () => {
   };
 
   const columns: TableColumnsType<DataType> = [
-    { title: "Date", dataIndex: "date" },
-    { title: "Country", dataIndex: "country" },
-    { title: "State", dataIndex: "state" },
-    { title: "L.G.A", dataIndex: "lga" },
-    { title: "City", dataIndex: "city" },
-    { title: "Longitude", dataIndex: "longitude" },
-    { title: "Latitude", dataIndex: "latitude" },
+    { title: "Date", dataIndex: "date",  ellipsis: true, },
+    { title: "Country", dataIndex: "country",  ellipsis: true, },
+    { title: "State", dataIndex: "state" ,  ellipsis: true,},
+    { title: "L.G.A", dataIndex: "lga",  ellipsis: true, },
+    { title: "City", dataIndex: "city",  ellipsis: true, },
+    { title: "Longitude", dataIndex: "longitude",  ellipsis: true, },
+    { title: "Latitude", dataIndex: "latitude",  ellipsis: true, },
     {
       title: "Device URL",
-      dataIndex: "deviceURL",
+      dataIndex: "deviceUrl",
+      ellipsis: true,
+     
       render: (text: string, record: DataType) => {
         const menu = (
           <Menu>
@@ -136,37 +144,56 @@ const AirMonitoringTable = () => {
 
         return (
           <>
-            <Flex align="center" justify="space-between" gap="small">
-              <span>{text}</span>
+            <Flex
+              align="center"
+              justify="space-between"
+              style={{ whiteSpace: "nowrap"}}
+            >
+              <Tooltip title={text}>
+                <span
+                  style={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "150px",
+                    display: "inline-block",
+                  }}
+                >
+                  {text}
+                </span>
+              </Tooltip>
               {/* <Tooltip title="Copy URL"> */}
-              <Button
-                icon={
-                  <img
-                    src="/copy.svg"
-                    alt="Upload Icon"
-                    className="w-[14px] h-[14px]"
+              <div className="flex justify-between items-center">
+                <div>
+                  <Button
+                    icon={
+                      <img
+                        src="/copy.svg"
+                        alt="Upload Icon"
+                        className="w-[14px] h-[14px]"
+                      />
+                    }
+                    onClick={() => navigator.clipboard.writeText(text)}
+                    type="link"
                   />
-                }
-                onClick={() => navigator.clipboard.writeText(text)}
-                type="link"
-              />
-              {/* </Tooltip> */}
-              <Dropdown
-                overlay={menu}
-                trigger={["click"]}
-                overlayClassName="custom-dropdown"
-              >
-                <Button
-                  icon={
-                    <img
-                      src="/more.svg"
-                      alt="icon"
-                      className="w-[14px] h-[14px]"
-                    />
-                  }
-                  type="link"
-                />
-              </Dropdown>
+                </div>
+                {/* </Tooltip> */}
+                <Dropdown
+                  overlay={menu}
+                  trigger={["click"]}
+                  overlayClassName="custom-dropdown"
+                >
+                  <Button
+                    icon={
+                      <img
+                        src="/more.svg"
+                        alt="icon"
+                        className="w-[14px] h-[14px]"
+                      />
+                    }
+                    type="link"
+                  />
+                </Dropdown>
+              </div>
             </Flex>
           </>
         );
@@ -174,19 +201,30 @@ const AirMonitoringTable = () => {
     },
   ];
 
-  const dataSource = Array.from<DataType>({ length: 46 }).map<DataType>(
-    (_, i) => ({
-      key: i,
-      date: `Oct - 10 -2023 ${i}`,
-      country: "Nigeria",
-      state: `Rivers ${i}`,
-      lga: `Eleme ${i}`,
-      city: `Eleme Agbon ${i}`,
-      longitude: `7.0498° E ${i}`,
-      latitude: `7.0498° E ${i}`,
-      deviceURL: `https://api.airqualitymonitor....${i}`,
-    })
-  );
+  const dataSource = air_monitoring_data?.map((data, i) => ({
+    key: i,
+    date: data.createdAt, // Accessing properties of each item in the array
+    country: data.country,
+    state: data.state,
+    lga: data.lga,
+    city: data.city,
+    longitude: data.longitude,
+    latitude: data.latitude,
+    deviceUrl: data.deviceUrl,
+  }));
+  // const dataSource = Array.from<DataType>({ length: 46 }).map<DataType>(
+  //   (_, i) => ({
+  //     key: i,
+  //     date: `Oct - 10 -2023 ${i}`,
+  //     country: "Nigeria",
+  //     state: `Rivers ${i}`,
+  //     lga: `Eleme ${i}`,
+  //     city: `Eleme Agbon ${i}`,
+  //     longitude: `7.0498° E ${i}`,
+  //     latitude: `7.0498° E ${i}`,
+  //     deviceURL: `https://api.airqualitymonitor....${i}`,
+  //   })
+  // );
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
@@ -224,12 +262,17 @@ const AirMonitoringTable = () => {
         <Flex align="center" gap="middle">
           {hasSelected ? `Selected ${selectedRowKeys.length} items` : null}
         </Flex>
+     
         <Table<DataType>
           rowSelection={rowSelection}
           columns={columns}
           dataSource={dataSource}
           className="custom-table"
+        
         />
+
+  
+
       </Flex>
 
       <Modal
@@ -289,16 +332,25 @@ const AirMonitoringTable = () => {
             </div>
           </div>
         </div>
-        <div className="w-full justify-between  mb-[20px] ">
+        <div className="flex w-full justify-between  mb-[20px] ">
           <div className="flex flex-col gap-y-[5px]">
             <div className="text-[#757575] text-[16px] font-[400]">
               Device URL
             </div>
             <div className="text-[#2C2C2C] text-[16px] font-[400]">
-              {selectedRowData?.deviceURL}
+              {selectedRowData?.deviceUrl}
+            </div>
+          </div>
+          <div className="flex flex-col gap-y-[5px]  w-[300px]">
+            <div className="text-[#757575] text-[16px] font-[400]">
+              Date
+            </div>
+            <div className="text-[#2C2C2C] text-[16px] font-[400]">
+              {selectedRowData?.date}
             </div>
           </div>
         </div>
+    
       </Modal>
       <Modal
         title="Edit Data"
@@ -441,7 +493,7 @@ const AirMonitoringTable = () => {
                   rules={[
                     {
                       required: true,
-                      message: "Please enter the latitude",
+                      message: "Please enter the device URL",
                     },
                   ]}
                 >
