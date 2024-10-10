@@ -1,7 +1,4 @@
-// import { logout } from "@api/data/authSlice";
-// import { useAppDispatch } from "@api/data/store";
 import Logo from "@assets/images/datacablogo.svg";
-import CloseLogo from "@assets/images/salama.png";
 import useLogout from "@hooks/useLogOut";
 import React, { Dispatch, SetStateAction } from "react";
 import { BiEditAlt, BiLogOut } from "react-icons/bi";
@@ -22,7 +19,6 @@ const SideBar: React.FC<SideBarProps> = ({
   collapsed,
   activeTab,
 }) => {
-  // const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { logout } = useLogout();
 
@@ -46,7 +42,7 @@ const SideBar: React.FC<SideBarProps> = ({
               collapsed ? "mt-[2rem]" : "mb-[2rem]"
             } px-10 cursor-pointer`}
           >
-            <img src={collapsed ? CloseLogo : Logo} alt="Logo" />
+            <img src={Logo} alt="Logo" />
           </div>
         </Link>
 
