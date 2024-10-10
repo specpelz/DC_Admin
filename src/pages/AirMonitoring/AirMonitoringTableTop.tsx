@@ -1,12 +1,141 @@
 import { Button, DatePicker, Divider, Input, Modal, Space } from "antd";
 import AirMonitoringTable from "./AirMonitoringTable";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select from "../../components/dashboard/select/Select";
 import useAirMonitoringStore from "@store/airMonitoring";
+import Select_v2 from "@components/dashboard/select/Select_v2";
+import type { Dayjs } from 'dayjs';
+
+
+
+
+interface FilterValues {
+  date: Dayjs | null;
+  country: string | null;
+  state: string | null;
+  lga: string | null;
+  city: string | null;
+}
+
+interface SelectOption {
+  value: string;
+  label: string;
+  key: string;
+}
+
+
 
 
 
 const AirMonitoringTableTop = () => {
+
+  const [isFilterActive, setIsFilterActive] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+
+
+
+  const [showFilter, setShowFilter] = useState<boolean>(false);
+  const [filterValues, setFilterValues] = useState<FilterValues>({
+    date: null,
+    country: null,
+    state: null,
+    lga: null,
+    city: null
+  });
+
+   const air_monitoring_data = useAirMonitoringStore((state) => state.air_monitoring_data);
+  const setFilteredData = useAirMonitoringStore((state) => state.setFilteredData);
+
+
+
+  const [countryOptions, setCountryOptions] = useState<SelectOption[]>([]);
+  const [stateOptions, setStateOptions] = useState<SelectOption[]>([]);
+  const [lgaOptions, setLgaOptions] = useState<SelectOption[]>([]);
+  const [cityOptions, setCityOptions] = useState<SelectOption[]>([]);
+
+
+
+
+
+  const generateFilterOptions = () => {
+    const uniqueOptions = (field: keyof typeof air_monitoring_data[0]) => {
+      return Array.from(new Set(air_monitoring_data.map(item => item[field])))
+        .map((value, key) => ({
+          value: value,
+          label: value,
+          key: key.toString(),
+        }));
+    };
+
+    setCountryOptions(uniqueOptions('country'));
+    setStateOptions(uniqueOptions('state'));
+    setLgaOptions(uniqueOptions('lga'));
+    setCityOptions(uniqueOptions('city'));
+  };
+
+
+
+  useEffect(() => {
+    if (showFilter) {
+      generateFilterOptions();
+    }
+  }, [showFilter, air_monitoring_data]);
+
+
+
+  const handleFilterChange = (value: any, field: keyof FilterValues) => {
+    setFilterValues(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+
+
+
+
+  const applyFilter = () => {
+    const filteredData = air_monitoring_data.filter(item => {
+      const dateMatch = !filterValues.date || 
+        new Date(item.createdAt).toDateString() === filterValues.date.toDate().toDateString();
+      const countryMatch = !filterValues.country || item.country === filterValues.country;
+      const stateMatch = !filterValues.state || item.state === filterValues.state;
+      const lgaMatch = !filterValues.lga || item.lga === filterValues.lga;
+      const cityMatch = !filterValues.city || item.city === filterValues.city;
+
+      return dateMatch && countryMatch && stateMatch && lgaMatch && cityMatch;
+    });
+
+    setFilteredData(filteredData);
+    setShowFilter(false);
+    setIsFilterActive(true); 
+  };
+
+
+
+  const clearFilter = () => {
+    setFilterValues({
+      date: null,
+      country: null,
+      state: null,
+      lga: null,
+      city: null
+    });
+    setFilteredData(air_monitoring_data);
+    setShowFilter(false);
+    setIsFilterActive(false); 
+  };
+
+
+
+
+
+
 
 
   const set_component = useAirMonitoringStore(
@@ -17,7 +146,15 @@ const AirMonitoringTableTop = () => {
   set_component({value:"upload"})
  }
 
-  const [showFilter, setShowFilter] = useState<boolean>(false);
+
+
+
+// { value: "pdf", label: "PDF" },
+
+
+
+
+
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
@@ -35,6 +172,26 @@ const AirMonitoringTableTop = () => {
     console.log("Modal closed without confirmation");
   };
 
+  // useEffect(() => {
+  //   if (filterValues.country) {
+  //     const filteredStates = air_monitoring_data
+  //       .filter(item => item.country === filterValues.country)
+  //       .map(item => item.state);
+      
+  //     const stateOptions = Array.from(new Set(filteredStates))
+  //       .map((value, key) => ({
+  //         value,
+  //         label: value,
+  //         key: key.toString(),
+  //       }));
+      
+  //     setStateOptions(stateOptions);
+  //   } else {
+  //     generateFilterOptions(); // Reset to all options
+  //   }
+  // }, [filterValues.country]);
+
+
   return (
     <div className="h-screen ">
       {/* SEARCH. FILTER, SHARE,DOWNLOAD COMPONENTS------------------------------------------------- */}
@@ -50,16 +207,18 @@ const AirMonitoringTableTop = () => {
               />
             }
             className="h-[46px] w-[100%] bg-transparent"
+            value={searchQuery}
+            onChange={handleSearchChange}
           />
         </div>
         <div className="flex w-[70%]">
           <div className="w-[70%]">
             <div className="flex items-center w-[100%] gap-x-[10px] border-r-[0.5px] pr-[10px] border-gray-300">
               <Button
-                className={`h-[46px] w-[18%  ${showFilter == true ? "bg-[white]":"bg-transparent"}`}
-                
+                className={`h-[46px] w-[18%  ${showFilter === true || isFilterActive === true ?"bg-[white] border-w-[05px] border-blue-500":"bg-transparent"}`}                
                 onClick={() => {
                   setShowFilter(!showFilter);
+                 
                 }}
                 icon={
                   <img
@@ -143,39 +302,54 @@ const AirMonitoringTableTop = () => {
                   <DatePicker
                     className="h-[48px] w-full"
                     placeholder="Select date"
+                    onChange={(date) => handleFilterChange(date, 'date')}
+                    value={filterValues.date}
                   />
                 </Space>
               </div>
               <div className="lg:w-[20%] ">
-                <Select
+                <Select_v2
                   name="country"
                   label="Country"
                   placeholder="Select country"
                   required={false}
+                  options={countryOptions}
+                  value={filterValues.country || undefined}
+                  onChange={(value) => handleFilterChange(value, 'country')}
+           
                 />
               </div>
               <div className="lg:w-[20%] ">
-                <Select
+                <Select_v2
                   name="state"
                   label="State"
                   placeholder="Select state"
                   required={false}
+                  options={stateOptions}
+                  value={filterValues.state || undefined}
+                  onChange={(value) => handleFilterChange(value, 'state')}
+
                 />
               </div>
               <div className="lg:w-[20%] ">
-                <Select
+                <Select_v2
                   name="lga"
                   label="L.G.A"
                   placeholder="Select L.G.A"
                   required={false}
+                  options={lgaOptions}
+                  value={filterValues.lga || undefined}
+                  onChange={(value) => handleFilterChange(value, 'lga')}
                 />
               </div>
               <div className="lg:w-[20%] ">
-                <Select
-                  name="community"
-                  label="Community"
-                  placeholder="Select community"
-                  required={false}
+                <Select_v2
+                  name="city"
+                  label="City"
+                  placeholder="Select city"
+                  options={cityOptions}
+                  value={filterValues.city || undefined}
+                  onChange={(value) => handleFilterChange(value, 'city')}
                 />
               </div>
             </div>
@@ -183,15 +357,14 @@ const AirMonitoringTableTop = () => {
             <Divider className="mt-[15px] mb-[10px]" />
             <div className="flex justify-end gap-x-[16px]">
               <Button className="w-[234px] h-[48px] text-[16px] font-[400] bg-transparent text-[#9B9B9B]"
-                onClick={() => {
-                  setShowFilter(!showFilter);
-                }}
+            onClick={clearFilter}
               >
-                Cancel
+                Clear Filter
               </Button>
               <Button
+              disabled={isFilterActive}
                 type="primary"
-                htmlType="submit"
+                onClick={applyFilter}
                 className="w-[234px] h-[48px] text-[16px] font-[400]  bg-BrandPrimary"
               >
                 <div className="text-[16px] font-[400]">Apply Filter</div>
@@ -204,7 +377,7 @@ const AirMonitoringTableTop = () => {
 
 
 
-        <AirMonitoringTable />
+<AirMonitoringTable searchQuery={searchQuery} />
        
 
 
@@ -230,6 +403,10 @@ const AirMonitoringTableTop = () => {
             label="File Type"
             placeholder="Select file type"
             required={false}
+            options = {[
+              { value: "pdf", label: "PDF" },
+              { value: "csv", label: "CSV" },
+            ]}
           />
         </div>
         <div className="flex w-full gap-x-[30px]  mb-[28px]">

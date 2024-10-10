@@ -6,7 +6,6 @@ import AirMonitoringTableTop from "./AirMonitoringTableTop";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import userToken from "@hooks/userToken";
 import { BASE_URL } from "@api/index";
-import { Spin } from "antd";
 
 const AirMonitoring = () => {
 
@@ -38,7 +37,7 @@ const set_air_monitoring_data = useAirMonitoringStore((state)=> state.set_air_mo
 
 const {token}=userToken()
 const { data, error, isLoading } = useQuery({
-  queryKey: ["fetchAllTerminals", userToken,component],
+  queryKey: ["get_all_air_monitoring_data", userToken,component],
   queryFn: () => fetch_air_monitoring_data(),
   enabled: !!userToken,
 });
@@ -52,14 +51,14 @@ const { data, error, isLoading } = useQuery({
       set_component({ value: "nodata" });
       
       // Optionally, also invalidate the query cache
-      queryClient.invalidateQueries(["fetchAllTerminals"]);
+      queryClient.invalidateQueries(["get_all_air_monitoring_data"]);
     };
   }, [set_component, queryClient]);
 
 
 useEffect(() => {
   if (data?.data) {
-    set_air_monitoring_data(data.data);
+    set_air_monitoring_data(data.data.reverse());
     
     if (data.data.length > 0 && component.value !== "upload") {
       set_component({ value: "data" });
@@ -126,13 +125,6 @@ if (error) {
   return <div>There was an error: {(error as Error).message}</div>;
 }
 
-if (isLoading)
-  return (
-    <div className="w-full flex justify-center mt-8">
-      <Spin />
-    </div>
-  );
-
 
 
 
@@ -164,6 +156,7 @@ if (isLoading)
         title="No Data Uploaded"
         message="Start Uploading Data"
         buttonText="Upload Data"
+        loading={isLoading}
       />): component?.value == "upload" ? 
       (<AirMonitoringForm/>):
       (<AirMonitoringTableTop />)}
