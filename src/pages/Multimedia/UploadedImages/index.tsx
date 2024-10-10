@@ -65,7 +65,7 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
       );
 
       if (response.ok) {
-        message.success(`Image ${selectedImage.id} deleted successfully.`);
+        message.success(`Image has been deleted successfully.`);
         setIsModalVisible(false);
         setSelectedImage(null);
 
@@ -104,7 +104,7 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
           <input
             type="text"
             className="text-[#000] bg-BrandLightPrimary border-BrandTextColor text-Sixteen outline-none w-[100%]"
-            placeholder="Search..."
+            placeholder="Nothing to Search..."
           />
         </div>
 
@@ -130,13 +130,19 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
             ? Array.from({ length: imagesPerPage }).map((_, index) => (
                 <div
                   key={index}
-                  className="w-[248px] h-[180px] bg-gray-200 animate-pulse rounded-[14px]"
-                ></div>
+                  className="relative w-full h-[180px] flex flex-col gap-2"
+                >
+                  {/* Delete icon skeleton */}
+                  <div className="absolute top-4 right-4 bg-gray-200 animate-pulse w-[26px] h-[26px] rounded-full"></div>
+
+                  {/* Image skeleton */}
+                  <div className="w-full h-[180px] bg-gray-200 animate-pulse rounded-[14px]"></div>
+                </div>
               ))
             : currentImages.map((item, index) => (
                 <div
                   key={index}
-                  className="w-[248px] h-[180px] flex flex-col gap-2 relative"
+                  className="w-full h-[180px] flex flex-col gap-2 relative"
                 >
                   <div
                     className="absolute top-4 right-4 bg-[#fff] shadow-lg w-[26px] h-[26px] rounded-full flex justify-center items-center cursor-pointer"
@@ -147,7 +153,7 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
                   <img
                     src={item.media}
                     alt="uploaded image"
-                    className="w-[248px] h-[180px] rounded-[14px] object-cover"
+                    className="w-full h-[180px] rounded-[14px] object-cover"
                   />
                 </div>
               ))}
@@ -164,11 +170,7 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
       </div>
 
       <Modal
-        title={
-          <h2 className="text-Twenty font-[500]">
-            Delete "{selectedImage?.id}"?
-          </h2>
-        }
+        title={<h2 className="text-Twenty font-[500]">Delete this Image?</h2>}
         open={isModalVisible}
         centered
         onCancel={handleCancel}
@@ -189,9 +191,8 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
         ]}
       >
         <p className="text-Sixteen font-[400]">
-          Are you sure you want to delete the{" "}
-          <span className="font-Sixteen font-[600]">"{selectedImage?.id}"</span>
-          ?
+          Are you sure you want to delete this{" "}
+          <span className="font-Sixteen font-[600]">Image</span> ?
           <br />
           This action is irreversible, and all associated records will be
           permanently removed from the system. Please confirm your choice.
