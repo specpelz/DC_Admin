@@ -110,6 +110,7 @@ const UploadedContent: React.FC<UploadedContentProps> = ({
           className={`flex space-x-3 items-center px-[1.9rem] py-[1.3rem] w-full border border-BrandTextColor rounded-[8px] lg:w-[30%]`}
         >
           <IoSearch size={24} />
+          
           <input
             type="text"
             className="text-[#000] bg-BrandLightPrimary border-BrandTextColor text-Sixteen outline-none w-[100%]"
