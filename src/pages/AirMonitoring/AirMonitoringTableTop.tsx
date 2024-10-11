@@ -1,20 +1,20 @@
-import React  from "react"
+import React from "react";
 import { Button, DatePicker, Divider, Input, Modal, Space } from "antd";
 import AirMonitoringTable from "./AirMonitoringTable";
 import { useEffect, useState } from "react";
 import Select from "../../components/dashboard/select/Select";
 import useAirMonitoringStore from "@store/airMonitoring";
 import Select_v2 from "@components/dashboard/select/Select_v2";
-import type { Dayjs } from 'dayjs';
-import { CSVLink} from "react-csv";
-import { usePDF } from 'react-to-pdf';
+import type { Dayjs } from "dayjs";
+import { CSVLink } from "react-csv";
+import { usePDF } from "react-to-pdf";
 import toast from "react-hot-toast";
-import moment, { Moment } from "moment";
-
-
+import moment from "moment";
+const { RangePicker } = DatePicker;
 
 interface FilterValues {
-  date: Dayjs | null;
+  dateRange: [Dayjs | null, Dayjs | null];
+  date:Dayjs | null;
   country: string | null;
   state: string | null;
   lga: string | null;
@@ -32,128 +32,12 @@ interface SelectOption {
 // }
 
 
-interface DateRange {
-  fromDate: Moment | null;
-  toDate: Moment | null;
-}
-
 const AirMonitoringTableTop = () => {
-
-
-
-  
-  // DATE RANGE FILTER FUNCTION FOR DOWNLOADING CSV FILE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  const [dateRange, setDateRange] = useState<DateRange>({
-    fromDate: null,
-    toDate: null
-  });
-
-
-  // const getFilteredDataByDateRange = () => {
-  //   if (!dateRange.fromDate || !dateRange.toDate) {
-  //     return air_monitoring_data;
-  //   }
-
-  //   const fromDate = moment(dateRange.fromDate).startOf('day');
-  //   const toDate = moment(dateRange.toDate).endOf('day');
-
-  //   return air_monitoring_data.filter(item => {
-  //     const itemDate = moment(item.createdAt);
-  //     return itemDate.isBetween(fromDate, toDate, 'day', '[]');
-  //   });
-  // };
-
-
-
-
-
-
-
-
-
-  const getFilteredDataByDateRange = () => {
-    // If no date range is selected, return the entire dataset
-    if (!dateRange.fromDate || !dateRange.toDate) {
-      return air_monitoring_data;
-    }
-  
-    // Ensure that the date comparison includes the whole day
-    const fromDate = moment(dateRange.fromDate).startOf('day');
-    const toDate = moment(dateRange.toDate).endOf('day');
-  
-    // Filter the data within the selected date range
-    return air_monitoring_data.filter(item => {
-      const itemDate = moment(item.createdAt);
-  
-      // Ensure itemDate is a valid moment object
-      if (!itemDate.isValid()) {
-        return false;
-      }
-  
-      // Check if the itemDate is within the date range (inclusive)
-      return itemDate.isBetween(fromDate, toDate, undefined, '[]');
-    });
-  };
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // const [isFromDateDisabled, setIsFromDateDisabled] = useState<boolean>(false);
-  // const [isToDateDisabled, setIsToDateDisabled] = useState<boolean>(false);
-
-
-    // Handle date range changes
-    const handleDateRangeChange = (date: Moment | null, type: 'fromDate' | 'toDate') => {
-      if (date) {
-        setDateRange(prev => ({
-          ...prev,
-          [type]: date
-        }));
-    
-      }
-    
-    };
-
-
-    const resetDatePickers = () => {
-      setDateRange({
-        fromDate: null,
-        toDate: null
-      });
-   
-    };
-    
-
-  // Validate date range
-  // const isDateRangeValid = () => {
-  //   if (!dateRange.fromDate || !dateRange.toDate) {
-  //     return false;
-  //   }
-  //   return moment(dateRange.fromDate).isSameOrBefore(dateRange.toDate);
-  // };
-
-
-
   // Handle download click
   const handleDownload = () => {
     if (fileType === "csv") {
       const message = "Downloading CSV";
       toast.success(message);
-
     } else if (fileType === "pdf") {
       const message = "Downloading PDF";
       toast.success(message);
@@ -162,16 +46,6 @@ const AirMonitoringTableTop = () => {
     setIsModalVisible(false);
   };
 
-
-
-
-
-  // DATE RANGE FILTER FUNCTION FOR DOWNLOADING CSV FILE >>>>>>>>>>>>>>ENDS HERE>>>>>>>>>>>>>>>>>>>>>
-
- 
-
-
-
   const [isFilterActive, setIsFilterActive] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -179,49 +53,47 @@ const AirMonitoringTableTop = () => {
     setSearchQuery(e.target.value);
   };
 
-
-
-
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [filterValues, setFilterValues] = useState<FilterValues>({
-    date: null,
+    dateRange: [null, null],
+    date:null,
     country: null,
     state: null,
     lga: null,
-    city: null
+    city: null,
   });
 
-   const air_monitoring_data = useAirMonitoringStore((state) => state.air_monitoring_data);
-  const setFilteredData = useAirMonitoringStore((state) => state.setFilteredData);
-
-
+  const air_monitoring_data = useAirMonitoringStore(
+    (state) => state.air_monitoring_data
+  );
+  const setFilteredData = useAirMonitoringStore(
+    (state) => state.setFilteredData
+  );
+  const the_FilteredData = useAirMonitoringStore(
+    (state) => state.filtered_data
+  );
 
   const [countryOptions, setCountryOptions] = useState<SelectOption[]>([]);
   const [stateOptions, setStateOptions] = useState<SelectOption[]>([]);
   const [lgaOptions, setLgaOptions] = useState<SelectOption[]>([]);
   const [cityOptions, setCityOptions] = useState<SelectOption[]>([]);
 
-
-
-
-
   const generateFilterOptions = () => {
-    const uniqueOptions = (field: keyof typeof air_monitoring_data[0]) => {
-      return Array.from(new Set(air_monitoring_data.map(item => item[field])))
-        .map((value, key) => ({
-          value: value,
-          label: value,
-          key: key.toString(),
-        }));
+    const uniqueOptions = (field: keyof (typeof air_monitoring_data)[0]) => {
+      return Array.from(
+        new Set(air_monitoring_data.map((item) => item[field]))
+      ).map((value, key) => ({
+        value: value,
+        label: value,
+        key: key.toString(),
+      }));
     };
 
-    setCountryOptions(uniqueOptions('country'));
-    setStateOptions(uniqueOptions('state'));
-    setLgaOptions(uniqueOptions('lga'));
-    setCityOptions(uniqueOptions('city'));
+    setCountryOptions(uniqueOptions("country"));
+    setStateOptions(uniqueOptions("state"));
+    setLgaOptions(uniqueOptions("lga"));
+    setCityOptions(uniqueOptions("city"));
   };
-
-
 
   useEffect(() => {
     if (showFilter) {
@@ -229,77 +101,65 @@ const AirMonitoringTableTop = () => {
     }
   }, [showFilter, air_monitoring_data]);
 
-
-
   const handleFilterChange = (value: any, field: keyof FilterValues) => {
-    setFilterValues(prev => ({
+    setFilterValues((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
-
-    
   };
-
-
-
-
 
   const applyFilter = () => {
     const filteredData = air_monitoring_data.filter(item => {
-      const dateMatch = !filterValues.date || 
-        new Date(item.createdAt).toDateString() === filterValues.date.toDate().toDateString();
+      const itemDate = moment(item.createdAt);
+      
+      // Handle single date filter
+      const singleDateMatch = !filterValues.date || 
+      new Date(item.createdAt).toDateString() === filterValues.date.toDate().toDateString();
+      
+      // Handle date range filter
+      const [startDate, endDate] = filterValues.dateRange;
+      const dateRangeMatch = !startDate || !endDate ||
+        (itemDate.isSameOrAfter(startDate.toDate()) &&
+         itemDate.isSameOrBefore(endDate.toDate()));
+      
+      // Other filters remain the same
       const countryMatch = !filterValues.country || item.country === filterValues.country;
       const stateMatch = !filterValues.state || item.state === filterValues.state;
       const lgaMatch = !filterValues.lga || item.lga === filterValues.lga;
       const cityMatch = !filterValues.city || item.city === filterValues.city;
-
-      return dateMatch && countryMatch && stateMatch && lgaMatch && cityMatch;
+  
+      // Combine all filters - note that we use AND (&&) between dateRangeMatch and singleDateMatch
+      // if you want either to match, change && to ||
+      return (dateRangeMatch && singleDateMatch) && countryMatch && stateMatch && lgaMatch && cityMatch;
     });
-
+  
+  
     setFilteredData(filteredData);
     setShowFilter(false);
-    setIsFilterActive(true); 
+    setIsFilterActive(true);
   };
-
-
 
   const clearFilter = () => {
     setFilterValues({
-      date: null,
+      dateRange: [null, null],
+      date:null,
       country: null,
       state: null,
       lga: null,
       city: null
     });
     setFilteredData(air_monitoring_data);
-    setShowFilter(false);
-    setIsFilterActive(false); 
+    // setShowFilter(false);
+    setIsFilterActive(false);
   };
 
+  const set_component = useAirMonitoringStore((state) => state.set_component);
 
+  const clickFunction = () => {
+    set_component({ value: "upload" });
+  };
 
-
-
-
-
-
-  const set_component = useAirMonitoringStore(
-    (state) => state.set_component
-  );
-
- const clickFunction =()=>{
-  set_component({value:"upload"})
- }
-
-
-
-
-// { value: "pdf", label: "PDF" },
-
-
-
-
-
+  // { value: "pdf", label: "PDF" },
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
@@ -308,7 +168,7 @@ const AirMonitoringTableTop = () => {
   };
 
   const handleOk = () => {
-    setIsModalVisible(false); 
+    setIsModalVisible(false);
   };
 
   const handleCancel = () => {
@@ -321,25 +181,23 @@ const AirMonitoringTableTop = () => {
   //     const filteredStates = air_monitoring_data
   //       .filter(item => item.country === filterValues.country)
   //       .map(item => item.state);
-      
+
   //     const stateOptions = Array.from(new Set(filteredStates))
   //       .map((value, key) => ({
   //         value,
   //         label: value,
   //         key: key.toString(),
   //       }));
-      
+
   //     setStateOptions(stateOptions);
   //   } else {
   //     generateFilterOptions(); // Reset to all options
   //   }
   // }, [filterValues.country]);
 
+  const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
 
-
-  const { toPDF, targetRef } = usePDF({filename: 'page.pdf'});
-  
-const [fileType,setFileType]=useState<string | number>("pdf")
+  const [fileType, setFileType] = useState<string | number>("pdf");
   return (
     <div className="h-screen ">
       {/* SEARCH. FILTER, SHARE,DOWNLOAD COMPONENTS------------------------------------------------- */}
@@ -363,10 +221,13 @@ const [fileType,setFileType]=useState<string | number>("pdf")
           <div className="w-[70%]">
             <div className="flex items-center w-[100%] gap-x-[10px] border-r-[0.5px] pr-[10px] border-gray-300">
               <Button
-                className={`h-[46px] w-[18%  ${showFilter === true || isFilterActive === true ?"bg-[white] border-w-[05px] border-blue-500":"bg-transparent"}`}                
+                className={`h-[46px] w-[18%  ${
+                  showFilter === true || isFilterActive === true
+                    ? "bg-[white] border-w-[05px] border-blue-500"
+                    : "bg-transparent"
+                }`}
                 onClick={() => {
                   setShowFilter(!showFilter);
-                 
                 }}
                 icon={
                   <img
@@ -379,11 +240,11 @@ const [fileType,setFileType]=useState<string | number>("pdf")
                 Filter
               </Button>
               <Button
-              onClick={()=>{
-                const message = "Preparing file for print";
-                toast.success(message);
-                toPDF()
-              }}
+                onClick={() => {
+                  const message = "Preparing file for print";
+                  toast.success(message);
+                  toPDF();
+                }}
                 className="h-[46px] w-[18% bg-transparent"
                 icon={
                   <img
@@ -408,7 +269,7 @@ const [fileType,setFileType]=useState<string | number>("pdf")
               >
                 Download
               </Button>
-              <Button
+              {/* <Button
                 className="h-[46px] w-[18%] bg-transparent"
                 icon={
                   <img
@@ -419,7 +280,7 @@ const [fileType,setFileType]=useState<string | number>("pdf")
                 }
               >
                 Share
-              </Button>
+              </Button> */}
             </div>
           </div>
           <Button
@@ -442,7 +303,7 @@ const [fileType,setFileType]=useState<string | number>("pdf")
 
       <div className="mt-[16px] relative">
         {showFilter === true ? (
-          <div className="absolute  w-full h-[209px] z-[999] px-[25px] bg-white">
+          <div className="absolute  w-full h-fit z-[999] px-[25px] bg-white">
             <div className="flex gap-x-[20px]  mt-[20px]">
               <div className="lg:w-[20%] ">
                 <Space direction="vertical" className=" w-full">
@@ -455,7 +316,7 @@ const [fileType,setFileType]=useState<string | number>("pdf")
                   <DatePicker
                     className="h-[48px] w-full"
                     placeholder="Select date"
-                    onChange={(date) => handleFilterChange(date, 'date')}
+                    onChange={(date) => handleFilterChange(date, "date")}
                     value={filterValues.date}
                   />
                 </Space>
@@ -468,8 +329,7 @@ const [fileType,setFileType]=useState<string | number>("pdf")
                   required={false}
                   options={countryOptions}
                   value={filterValues.country || undefined}
-                  onChange={(value) => handleFilterChange(value, 'country')}
-           
+                  onChange={(value) => handleFilterChange(value, "country")}
                 />
               </div>
               <div className="lg:w-[20%] ">
@@ -480,8 +340,7 @@ const [fileType,setFileType]=useState<string | number>("pdf")
                   required={false}
                   options={stateOptions}
                   value={filterValues.state || undefined}
-                  onChange={(value) => handleFilterChange(value, 'state')}
-
+                  onChange={(value) => handleFilterChange(value, "state")}
                 />
               </div>
               <div className="lg:w-[20%] ">
@@ -492,7 +351,7 @@ const [fileType,setFileType]=useState<string | number>("pdf")
                   required={false}
                   options={lgaOptions}
                   value={filterValues.lga || undefined}
-                  onChange={(value) => handleFilterChange(value, 'lga')}
+                  onChange={(value) => handleFilterChange(value, "lga")}
                 />
               </div>
               <div className="lg:w-[20%] ">
@@ -502,20 +361,35 @@ const [fileType,setFileType]=useState<string | number>("pdf")
                   placeholder="Select city"
                   options={cityOptions}
                   value={filterValues.city || undefined}
-                  onChange={(value) => handleFilterChange(value, 'city')}
+                  onChange={(value) => handleFilterChange(value, "city")}
                 />
               </div>
             </div>
-
+            <div className="lg:w-[40%]">
+              <Space direction="vertical" className="w-full">
+                <label
+                  htmlFor="date-range-picker"
+                  className="text-[16px] font-[400] text-BrandBlack1"
+                >
+                  Date Range
+                </label>
+                <RangePicker
+                  className="h-[48px] w-full"
+                  onChange={(dates) => handleFilterChange(dates, "dateRange")}
+                  value={filterValues.dateRange}
+                />
+              </Space>
+            </div>
             <Divider className="mt-[15px] mb-[10px]" />
-            <div className="flex justify-end gap-x-[16px]">
-              <Button className="w-[234px] h-[48px] text-[16px] font-[400] bg-transparent text-[#9B9B9B]"
-            onClick={clearFilter}
+            <div className="flex justify-end gap-x-[16px] mb-[20px]">
+              <Button
+                className="w-[234px] h-[48px] text-[16px] font-[400] bg-transparent text-[#9B9B9B]"
+                onClick={clearFilter}
               >
                 Clear Filter
               </Button>
               <Button
-              disabled={isFilterActive}
+                disabled={isFilterActive}
                 type="primary"
                 onClick={applyFilter}
                 className="w-[234px] h-[48px] text-[16px] font-[400]  bg-BrandPrimary"
@@ -528,15 +402,9 @@ const [fileType,setFileType]=useState<string | number>("pdf")
           ""
         )}
 
-
-<div ref={targetRef}>
-<AirMonitoringTable searchQuery={searchQuery} />
-</div>
-
-       
-
-
-
+        <div ref={targetRef}>
+          <AirMonitoringTable searchQuery={searchQuery} />
+        </div>
       </div>
 
       <Modal
@@ -546,7 +414,7 @@ const [fileType,setFileType]=useState<string | number>("pdf")
         onCancel={handleCancel}
         okText="Download"
         okButtonProps={{
-          style: { display:"none"}
+          style: { display: "none" },
           // style: { width: "150px" , height:"40px"}
         }}
         cancelButtonProps={{ style: { display: "none" } }}
@@ -560,99 +428,33 @@ const [fileType,setFileType]=useState<string | number>("pdf")
             placeholder="Select file type"
             required={false}
             defaultValue="pdf"
-            options = {[
+            options={[
               { value: "pdf", label: "PDF" },
               { value: "csv", label: "CSV" },
             ]}
-            onChange={(value)=>setFileType(value)}
+            onChange={(value) => setFileType(value)}
           />
         </div>
-        <div className="flex w-full gap-x-[30px]  mb-[28px]">
-          <div className="w-[50%]">
-            <Space direction="vertical" className=" w-full">
-              <label
-                htmlFor="date-picker"
-                className="text-[16px] font-[400] text-BrandBlack1 "
-              >
-                From
-              </label>
-              <DatePicker
-              onMouseEnter={()=>console.log("")}
-              onMouseLeave={()=>console.log("")}
-                className="h-[48px] w-full"
-                placeholder="Select date"
-              //   value={dateRange.fromDate ? moment(dateRange.fromDate) : null}
-              //   onChange={(date) => {
-              //     handleDateRangeChange(date ? moment(date) : null, 'fromDate')
-                  
-              //   }
-              // }
-              // disabled={isFromDateDisabled} // Disable after a date is selected
-              value={dateRange.fromDate}
-              onChange={(date) => handleDateRangeChange(date, 'fromDate')}
-              />
-            </Space>
-          </div>
-          <div className="w-[50%]">
-            <Space direction="vertical" className=" w-full">
-              <label
-                htmlFor="date-picker"
-                className="text-[16px] font-[400] text-BrandBlack1 "
-              >
-                To
-              </label>
-              <DatePicker
-                className={`h-[48px] w-full`}
-                placeholder="Select date"
-                // value={dateRange.toDate ? moment(dateRange.toDate) : null}
-                // onChange={(date) => {
-                //   handleDateRangeChange(date ? moment(date) : null, 'toDate')
-               
-                  
-                // }}
-                // disabled={isToDateDisabled} // Disable after a date is selected
-                value={dateRange.toDate}
-                onChange={(date) => handleDateRangeChange(date, 'toDate')}
-                
-              />
-            </Space>
-          </div>
-        </div>
-        <div className="flex gap-x-[16px] justify-end">
-        <Button
-              // disabled={isFilterActive}
-                type="default"
-                onClick={resetDatePickers}
-                className="w-[150px] h-[40px] text-[16px] font-[400]"
-              >
-           
-           Reset date
 
-              </Button>
-        <Button
-              // disabled={isFilterActive}
-                type="primary"
-                onClick={handleDownload}
-                className="w-[150px] h-[40px] text-[16px] font-[400]  bg-BrandPrimary"
+        <div className="flex justify-end">
+          <Button
+            // disabled={isFilterActive}
+            type="primary"
+            onClick={handleDownload}
+            className="w-[150px] h-[40px] text-[16px] font-[400]  bg-BrandPrimary"
+          >
+            {fileType === "csv" ? (
+              <CSVLink
+                filename={"Air_monitoring_data.csv"}
+                data={the_FilteredData}
+                className="btn btn-primary"
               >
-                {
-                  fileType === "csv" ? (    <CSVLink
-                    filename={"Air_monitoring_data.csv"}
-                   data={getFilteredDataByDateRange()}
-                    className="btn btn-primary"
-              
-                  >
-                   <div className="text-[16px] font-[400]">Download</div>
-                  </CSVLink>):  (<div className="text-[16px] font-[400]">Download</div>)
-                  
-                }
-
-                
-         
-        
-
-
-              </Button>
+                <div className="text-[16px] font-[400]">Download</div>
+              </CSVLink>
+            ) : (
+              <div className="text-[16px] font-[400]">Download</div>
+            )}
+          </Button>
         </div>
       </Modal>
     </div>
