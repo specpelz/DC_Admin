@@ -14,7 +14,7 @@ const { RangePicker } = DatePicker;
 
 interface FilterValues {
   dateRange: [Dayjs | null, Dayjs | null];
-  date:Dayjs | null;
+  date: Dayjs | null;
   country: string | null;
   state: string | null;
   lga: string | null;
@@ -30,7 +30,6 @@ interface SelectOption {
 // interface ref_type {
 //   ref?: React.ForwardedRef<HTMLDivElement>;
 // }
-
 
 const AirMonitoringTableTop = () => {
   // Handle download click
@@ -56,7 +55,7 @@ const AirMonitoringTableTop = () => {
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [filterValues, setFilterValues] = useState<FilterValues>({
     dateRange: [null, null],
-    date:null,
+    date: null,
     country: null,
     state: null,
     lga: null,
@@ -109,31 +108,48 @@ const AirMonitoringTableTop = () => {
   };
 
   const applyFilter = () => {
-    const filteredData = air_monitoring_data.filter(item => {
+    const filteredData = air_monitoring_data.filter((item) => {
       const itemDate = moment(item.createdAt);
-      
-      // Handle single date filter
-      const singleDateMatch = !filterValues.date || 
-      new Date(item.createdAt).toDateString() === filterValues.date.toDate().toDateString();
-      
-      // Handle date range filter
+
+      const singleDateMatch =
+        !filterValues.date ||
+        new Date(item.createdAt).toDateString() ===
+          filterValues.date.toDate().toDateString();
+
       const [startDate, endDate] = filterValues.dateRange;
-      const dateRangeMatch = !startDate || !endDate ||
+      const dateRangeMatch =
+        !startDate ||
+        !endDate ||
         (itemDate.isSameOrAfter(startDate.toDate()) &&
-         itemDate.isSameOrBefore(endDate.toDate()));
-      
-      // Other filters remain the same
-      const countryMatch = !filterValues.country || item.country === filterValues.country;
-      const stateMatch = !filterValues.state || item.state === filterValues.state;
+          itemDate.isSameOrBefore(endDate.toDate()));
+
+      const countryMatch =
+        !filterValues.country || item.country === filterValues.country;
+      const stateMatch =
+        !filterValues.state || item.state === filterValues.state;
       const lgaMatch = !filterValues.lga || item.lga === filterValues.lga;
       const cityMatch = !filterValues.city || item.city === filterValues.city;
-  
-      // Combine all filters - note that we use AND (&&) between dateRangeMatch and singleDateMatch
-      // if you want either to match, change && to ||
-      return (dateRangeMatch && singleDateMatch) && countryMatch && stateMatch && lgaMatch && cityMatch;
+
+      if (
+        !dateRangeMatch ||
+        !singleDateMatch ||
+        !countryMatch ||
+        !stateMatch ||
+        !lgaMatch ||
+        !cityMatch
+      ) {
+        return [];
+      }
+      return (
+        dateRangeMatch &&
+        singleDateMatch &&
+        countryMatch &&
+        stateMatch &&
+        lgaMatch &&
+        cityMatch
+      );
     });
-  
-  
+
     setFilteredData(filteredData);
     setShowFilter(false);
     setIsFilterActive(true);
@@ -142,11 +158,11 @@ const AirMonitoringTableTop = () => {
   const clearFilter = () => {
     setFilterValues({
       dateRange: [null, null],
-      date:null,
+      date: null,
       country: null,
       state: null,
       lga: null,
-      city: null
+      city: null,
     });
     setFilteredData(air_monitoring_data);
     // setShowFilter(false);
