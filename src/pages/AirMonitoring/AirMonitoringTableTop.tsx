@@ -53,6 +53,7 @@ const AirMonitoringTableTop = () => {
   };
 
   const [showFilter, setShowFilter] = useState<boolean>(false);
+  const [showFilter_v2, setShowFilter_v2] = useState<boolean>(true);
   const [filterValues, setFilterValues] = useState<FilterValues>({
     dateRange: [null, null],
     date: null,
@@ -155,7 +156,11 @@ const AirMonitoringTableTop = () => {
       city: null,
     });
     setFilteredData(air_monitoring_data);
-    // setShowFilter(false);
+    setShowFilter_v2(false);
+    setShowFilter(false);
+    // setTimeout(()=>{
+    //   setShowFilter_v2(true);
+    // }, 100)
     setIsFilterActive(false);
   };
 
@@ -234,6 +239,7 @@ const AirMonitoringTableTop = () => {
                 }`}
                 onClick={() => {
                   setShowFilter(!showFilter);
+                  setShowFilter_v2(true);
                 }}
                 icon={
                   <img
@@ -308,105 +314,103 @@ const AirMonitoringTableTop = () => {
       {/* SEARCH. FILTER, SHARE,DOWNLOAD COMPONENTS ENDS HERE------------------------------------------------- */}
 
       <div className="mt-[16px] relative">
-        {showFilter === true ? (
-          <div className="absolute  w-full h-fit z-[999] px-[25px] bg-white">
-            <div className="flex gap-x-[20px]  mt-[20px]">
-              <div className="lg:w-[20%] ">
-                <Space direction="vertical" className=" w-full">
-                  <label
-                    htmlFor="date-picker"
-                    className="text-[16px] font-[400] text-BrandBlack1 "
-                  >
-                    Date
-                  </label>
-                  <DatePicker
-                    className="h-[48px] w-full"
-                    placeholder="Select date"
-                    onChange={(date) => handleFilterChange(date, "date")}
-                    value={filterValues.date}
-                  />
-                </Space>
-              </div>
-              <div className="lg:w-[20%] ">
-                <Select_v2
-                  name="country"
-                  label="Country"
-                  placeholder="Select country"
-                  required={false}
-                  options={countryOptions}
-                  value={filterValues.country || undefined}
-                  onChange={(value) => handleFilterChange(value, "country")}
-                />
-              </div>
-              <div className="lg:w-[20%] ">
-                <Select_v2
-                  name="state"
-                  label="State"
-                  placeholder="Select state"
-                  required={false}
-                  options={stateOptions}
-                  value={filterValues.state || undefined}
-                  onChange={(value) => handleFilterChange(value, "state")}
-                />
-              </div>
-              <div className="lg:w-[20%] ">
-                <Select_v2
-                  name="lga"
-                  label="L.G.A"
-                  placeholder="Select L.G.A"
-                  required={false}
-                  options={lgaOptions}
-                  value={filterValues.lga || undefined}
-                  onChange={(value) => handleFilterChange(value, "lga")}
-                />
-              </div>
-              <div className="lg:w-[20%] ">
-                <Select_v2
-                  name="city"
-                  label="City"
-                  placeholder="Select city"
-                  options={cityOptions}
-                  value={filterValues.city || undefined}
-                  onChange={(value) => handleFilterChange(value, "city")}
-                />
-              </div>
-            </div>
-            <div className="lg:w-[40%]">
-              <Space direction="vertical" className="w-full">
-                <label
-                  htmlFor="date-range-picker"
-                  className="text-[16px] font-[400] text-BrandBlack1"
-                >
-                  Date Range
-                </label>
-                <RangePicker
-                  className="h-[48px] w-full"
-                  onChange={(dates) => handleFilterChange(dates, "dateRange")}
-                  value={filterValues.dateRange}
-                />
-              </Space>
-            </div>
-            <Divider className="mt-[15px] mb-[10px]" />
-            <div className="flex justify-end gap-x-[16px] mb-[20px]">
-              <Button
-                className="w-[234px] h-[48px] text-[16px] font-[400] bg-transparent text-[#9B9B9B]"
-                onClick={clearFilter}
-              >
-                Clear Filter
-              </Button>
-              <Button
-                disabled={isFilterActive}
-                type="primary"
-                onClick={applyFilter}
-                className="w-[234px] h-[48px] text-[16px] font-[400]  bg-BrandPrimary"
-              >
-                <div className="text-[16px] font-[400]">Apply Filter</div>
-              </Button>
-            </div>
-          </div>
-        ) : (
-          ""
-        )}
+      {showFilter_v2 &&
+         <div className={`absolute  w-full h-fit z-[999] px-[25px] bg-white ${showFilter === true ? "block":"hidden" }`}>
+         <div className="flex gap-x-[20px]  mt-[20px]">
+           <div className="lg:w-[20%] ">
+             <Space direction="vertical" className=" w-full">
+               <label
+                 htmlFor="date-picker"
+                 className="text-[16px] font-[400] text-BrandBlack1 "
+               >
+                 Date
+               </label>
+               <DatePicker
+                 className="h-[48px] w-full"
+                 placeholder="Select date"
+                 onChange={(date) => handleFilterChange(date, "date")}
+                 value={filterValues.date}
+               />
+             </Space>
+           </div>
+           <div className="lg:w-[20%] ">
+             <Select_v2
+               name="country"
+               label="Country"
+               placeholder="Select country"
+               required={false}
+               options={countryOptions}
+               value={filterValues.country || undefined}
+               onChange={(value) => handleFilterChange(value, "country")}
+             />
+           </div>
+           <div className="lg:w-[20%] ">
+             <Select_v2
+               name="state"
+               label="State"
+               placeholder="Select state"
+               required={false}
+               options={stateOptions}
+               value={filterValues.state || undefined}
+               onChange={(value) => handleFilterChange(value, "state")}
+             />
+           </div>
+           <div className="lg:w-[20%] ">
+             <Select_v2
+               name="lga"
+               label="L.G.A"
+               placeholder="Select L.G.A"
+               required={false}
+               options={lgaOptions}
+               value={filterValues.lga || undefined}
+               onChange={(value) => handleFilterChange(value, "lga")}
+             />
+           </div>
+           <div className="lg:w-[20%] ">
+             <Select_v2
+               name="city"
+               label="City"
+               placeholder="Select city"
+               options={cityOptions}
+               value={filterValues.city || undefined}
+               onChange={(value) => handleFilterChange(value, "city")}
+             />
+           </div>
+         </div>
+         <div className="lg:w-[40%]">
+           <Space direction="vertical" className="w-full">
+             <label
+               htmlFor="date-range-picker"
+               className="text-[16px] font-[400] text-BrandBlack1"
+             >
+               Date Range
+             </label>
+             <RangePicker
+               className="h-[48px] w-full"
+               onChange={(dates) => handleFilterChange(dates, "dateRange")}
+               value={filterValues.dateRange}
+             />
+           </Space>
+         </div>
+         <Divider className="mt-[15px] mb-[10px]" />
+         <div className="flex justify-end gap-x-[16px] mb-[20px]">
+           <Button
+             className="w-[234px] h-[48px] text-[16px] font-[400] bg-transparent text-[#9B9B9B]"
+             onClick={clearFilter}
+           >
+             Clear Filter
+           </Button>
+           <Button
+             disabled={isFilterActive}
+             type="primary"
+             onClick={applyFilter}
+             className="w-[234px] h-[48px] text-[16px] font-[400]  bg-BrandPrimary"
+           >
+             <div className="text-[16px] font-[400]">Apply Filter</div>
+           </Button>
+         </div>
+       </div>}
+     
 
         <div ref={targetRef}>
           <AirMonitoringTable searchQuery={searchQuery} />
