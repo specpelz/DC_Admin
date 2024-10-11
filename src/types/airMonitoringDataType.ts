@@ -7,6 +7,21 @@ export interface AirMonitoring_data_type {
     state: string;
     deviceUrl: string;
     }
+
+
+
+export interface DataType {
+    key: React.Key;
+    date: string;
+    country: string;
+    state: string;
+    lga: string;
+    city: string;
+    longitude: string;
+    latitude: string;
+    deviceUrl: string;
+  }
+  
 export interface AirMonitoring_data_type_form {
     city: string;
     country: string;

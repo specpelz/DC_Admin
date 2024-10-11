@@ -26,28 +26,21 @@ import toast from "react-hot-toast";
 import useCountries from "@hooks/useCountries";
 import useStates from "@hooks/useStates";
 import useLGAs from "@hooks/useLGAs";
+import { DataType } from "../../types/airMonitoringDataType";
 
 type TableRowSelection<T extends object = object> =
   TableProps<T>["rowSelection"];
 
-interface DataType {
-  key: React.Key;
-  date: string;
-  country: string;
-  state: string;
-  lga: string;
-  city: string;
-  longitude: string;
-  latitude: string;
-  deviceUrl: string;
-}
+
 
 interface AirMonitoringTableProps {
   searchQuery: string;
+ 
 }
 
 const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
   searchQuery,
+
 }) => {
   const queryClient = useQueryClient();
   const { token } = userToken();
@@ -453,7 +446,7 @@ const handleEditData = (values: any) => {
           />
         </div>
       )}
-      <Flex gap="middle" vertical>
+      <Flex gap="middle" vertical >
         <Flex align="center" gap="middle">
           {hasSelected ? `Selected ${selectedRowKeys.length} items` : null}
         </Flex>
@@ -463,6 +456,7 @@ const handleEditData = (values: any) => {
           columns={columns}
           dataSource={dataSource}
           className="custom-table"
+          
         />
       </Flex>
 
