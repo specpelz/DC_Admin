@@ -9,7 +9,7 @@ import type { Dayjs } from 'dayjs';
 import { CSVLink} from "react-csv";
 import { usePDF } from 'react-to-pdf';
 import toast from "react-hot-toast";
-// import moment, { Moment } from "moment";
+import moment, { Moment } from "moment";
 
 
 
@@ -32,10 +32,10 @@ interface SelectOption {
 // }
 
 
-// interface DateRange {
-//   fromDate: Moment | null;
-//   toDate: Moment | null;
-// }
+interface DateRange {
+  fromDate: Moment | null;
+  toDate: Moment | null;
+}
 
 const AirMonitoringTableTop = () => {
 
@@ -43,10 +43,10 @@ const AirMonitoringTableTop = () => {
 
   
   // DATE RANGE FILTER FUNCTION FOR DOWNLOADING CSV FILE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  // const [dateRange, setDateRange] = useState<DateRange>({
-  //   fromDate: null,
-  //   toDate: null
-  // });
+  const [dateRange, setDateRange] = useState<DateRange>({
+    fromDate: null,
+    toDate: null
+  });
 
 
   // const getFilteredDataByDateRange = () => {
@@ -67,16 +67,76 @@ const AirMonitoringTableTop = () => {
 
 
 
+
+
+
+
+  const getFilteredDataByDateRange = () => {
+    // If no date range is selected, return the entire dataset
+    if (!dateRange.fromDate || !dateRange.toDate) {
+      return air_monitoring_data;
+    }
+  
+    // Ensure that the date comparison includes the whole day
+    const fromDate = moment(dateRange.fromDate).startOf('day');
+    const toDate = moment(dateRange.toDate).endOf('day');
+  
+    // Filter the data within the selected date range
+    return air_monitoring_data.filter(item => {
+      const itemDate = moment(item.createdAt);
+  
+      // Ensure itemDate is a valid moment object
+      if (!itemDate.isValid()) {
+        return false;
+      }
+  
+      // Check if the itemDate is within the date range (inclusive)
+      return itemDate.isBetween(fromDate, toDate, undefined, '[]');
+    });
+  };
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // const [isFromDateDisabled, setIsFromDateDisabled] = useState<boolean>(false);
+  // const [isToDateDisabled, setIsToDateDisabled] = useState<boolean>(false);
+
+
     // Handle date range changes
-    // const handleDateRangeChange = (date: Moment | null, type: 'fromDate' | 'toDate') => {
-    //   setDateRange(prev => ({
-    //     ...prev,
-    //     [type]: date
-    //   }));
-    // };
+    const handleDateRangeChange = (date: Moment | null, type: 'fromDate' | 'toDate') => {
+      if (date) {
+        setDateRange(prev => ({
+          ...prev,
+          [type]: date
+        }));
+    
+      }
+    
+    };
 
 
-
+    const resetDatePickers = () => {
+      setDateRange({
+        fromDate: null,
+        toDate: null
+      });
+   
+    };
+    
 
   // Validate date range
   // const isDateRangeValid = () => {
@@ -91,13 +151,12 @@ const AirMonitoringTableTop = () => {
   // Handle download click
   const handleDownload = () => {
     if (fileType === "csv") {
-      // if (!isDateRangeValid()) {
-      //   toast.error("Please select a valid date range");
-      //   return;
-      // }
-      // const message = "The file is downloading";
-      // toast.success(message);
+      const message = "Downloading CSV";
+      toast.success(message);
+
     } else if (fileType === "pdf") {
+      const message = "Downloading PDF";
+      toast.success(message);
       toPDF();
     }
     setIsModalVisible(false);
@@ -177,6 +236,8 @@ const AirMonitoringTableTop = () => {
       ...prev,
       [field]: value
     }));
+
+    
   };
 
 
@@ -318,7 +379,11 @@ const [fileType,setFileType]=useState<string | number>("pdf")
                 Filter
               </Button>
               <Button
-              onClick={()=>toPDF()}
+              onClick={()=>{
+                const message = "Preparing file for print";
+                toast.success(message);
+                toPDF()
+              }}
                 className="h-[46px] w-[18% bg-transparent"
                 icon={
                   <img
@@ -512,10 +577,19 @@ const [fileType,setFileType]=useState<string | number>("pdf")
                 From
               </label>
               <DatePicker
+              onMouseEnter={()=>console.log("")}
+              onMouseLeave={()=>console.log("")}
                 className="h-[48px] w-full"
                 placeholder="Select date"
-                // value={dateRange.fromDate ? moment(dateRange.fromDate) : null}
-                // onChange={(date) => handleDateRangeChange(date ? moment(date) : null, 'fromDate')}
+              //   value={dateRange.fromDate ? moment(dateRange.fromDate) : null}
+              //   onChange={(date) => {
+              //     handleDateRangeChange(date ? moment(date) : null, 'fromDate')
+                  
+              //   }
+              // }
+              // disabled={isFromDateDisabled} // Disable after a date is selected
+              value={dateRange.fromDate}
+              onChange={(date) => handleDateRangeChange(date, 'fromDate')}
               />
             </Space>
           </div>
@@ -528,15 +602,33 @@ const [fileType,setFileType]=useState<string | number>("pdf")
                 To
               </label>
               <DatePicker
-                className="h-[48px] w-full"
+                className={`h-[48px] w-full`}
                 placeholder="Select date"
                 // value={dateRange.toDate ? moment(dateRange.toDate) : null}
-                // onChange={(date) => handleDateRangeChange(date ? moment(date) : null, 'toDate')}
+                // onChange={(date) => {
+                //   handleDateRangeChange(date ? moment(date) : null, 'toDate')
+               
+                  
+                // }}
+                // disabled={isToDateDisabled} // Disable after a date is selected
+                value={dateRange.toDate}
+                onChange={(date) => handleDateRangeChange(date, 'toDate')}
+                
               />
             </Space>
           </div>
         </div>
-        <div className="flex justify-end">
+        <div className="flex gap-x-[16px] justify-end">
+        <Button
+              // disabled={isFilterActive}
+                type="default"
+                onClick={resetDatePickers}
+                className="w-[150px] h-[40px] text-[16px] font-[400]"
+              >
+           
+           Reset date
+
+              </Button>
         <Button
               // disabled={isFilterActive}
                 type="primary"
@@ -546,13 +638,9 @@ const [fileType,setFileType]=useState<string | number>("pdf")
                 {
                   fileType === "csv" ? (    <CSVLink
                     filename={"Air_monitoring_data.csv"}
-                    data={air_monitoring_data}
-                    // data={getFilteredDataByDateRange()}
+                   data={getFilteredDataByDateRange()}
                     className="btn btn-primary"
-                    onClick={()=>{
-                      const message ="The file is downloading"
-                      toast.success(message)
-                    }}
+              
                   >
                    <div className="text-[16px] font-[400]">Download</div>
                   </CSVLink>):  (<div className="text-[16px] font-[400]">Download</div>)
