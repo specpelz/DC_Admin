@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, DatePicker, Divider, Input, Modal, Space } from "antd";
+import { Button, DatePicker, Divider, Input, Modal, Space, Tooltip } from "antd";
 import AirMonitoringTable from "./AirMonitoringTable";
 import { useEffect, useState } from "react";
 import Select from "../../components/dashboard/select/Select";
@@ -52,6 +52,7 @@ const AirMonitoringTableTop = () => {
     setSearchQuery(e.target.value);
   };
 
+  const [filter_input_values, set_filter_input_values] = useState<boolean>(false);
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [showFilter_v2, setShowFilter_v2] = useState<boolean>(true);
   const [filterValues, setFilterValues] = useState<FilterValues>({
@@ -102,6 +103,7 @@ const AirMonitoringTableTop = () => {
   }, [showFilter, air_monitoring_data]);
 
   const handleFilterChange = (value: any, field: keyof FilterValues) => {
+    set_filter_input_values(true)
     setFilterValues((prev) => ({
       ...prev,
       [field]: value,
@@ -158,12 +160,15 @@ const AirMonitoringTableTop = () => {
     setFilteredData(air_monitoring_data);
     setShowFilter_v2(false);
     setShowFilter(false);
-    // setTimeout(()=>{
-    //   setShowFilter_v2(true);
-    // }, 100)
+    set_filter_input_values(false)
     setIsFilterActive(false);
   };
 
+
+
+
+
+  useEffect(()=>{clearFilter()},[])
   const set_component = useAirMonitoringStore((state) => state.set_component);
 
   const clickFunction = () => {
@@ -398,16 +403,18 @@ const AirMonitoringTableTop = () => {
              className="w-[234px] h-[48px] text-[16px] font-[400] bg-transparent text-[#9B9B9B]"
              onClick={clearFilter}
            >
-             Clear Filter
+             Cancel
            </Button>
+           <Tooltip title={isFilterActive ? "Cancel existing filter" : ""}>
            <Button
-             disabled={isFilterActive}
+             disabled={isFilterActive ? true : filter_input_values ? false: true }
              type="primary"
              onClick={applyFilter}
              className="w-[234px] h-[48px] text-[16px] font-[400]  bg-BrandPrimary"
            >
              <div className="text-[16px] font-[400]">Apply Filter</div>
            </Button>
+</Tooltip>
          </div>
        </div>}
      
