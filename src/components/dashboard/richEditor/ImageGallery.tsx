@@ -29,7 +29,7 @@ const ImageGallery = ({ visible, onClose }: Props) => {
   const FOLDER_NAME = 'dcadmin-rich-editor-images'; 
 
 
-  console.log(file, "works like magic");
+  // console.log(file, "works like magic");
 
 
   useEffect(() => {

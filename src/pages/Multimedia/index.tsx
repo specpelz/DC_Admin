@@ -142,7 +142,7 @@ const Multimedia = () => {
             <div className="flex flex-col justify-center items-center h-full ">
               <div
                 onChange={handleFileChange}
-                className="relative flex flex-col justify-center items-center mt-[20px] w-full h-full cursor-pointer border-[1.5px] border-BrandBorderGray border-dashed rounded-[10px]"
+                className="relative flex flex-col justify-center items-center mt-[20px] w-full h-full cursor-pointer  border-dashed rounded-[10px bg-[#faf8f8] rounded-[10px] border-[1.5px] border-[E6E6E6] "
               >
                 <MdOutlineCloudUpload size={40} color="#9B9B9B" />
                 <h4 className="text-Fourteen md:text-Sixteen font-[400] text-BrandBlack1 mt-[10px]">

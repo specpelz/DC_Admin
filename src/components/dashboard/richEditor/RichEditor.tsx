@@ -1,17 +1,12 @@
-import {
-  // EditorProvider,
-  EditorContent,
-  useEditor,
-} from "@tiptap/react";
+import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Tools from "./Tools";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Placeholder from "@tiptap/extension-placeholder";
 import ImageGallery from "./ImageGallery";
-import { useState } from "react";
-import Link from "@tiptap/extension-link"
-
+import { useEffect, useState } from "react";
+import Link from "@tiptap/extension-link";
 
 const extensions = [
   StarterKit,
@@ -19,13 +14,13 @@ const extensions = [
   Link.configure({
     openOnClick: false,
     autolink: false,
-    linkOnPaste:true,
-    HTMLAttributes:{
+    linkOnPaste: true,
+    HTMLAttributes: {
       target: "",
-    }
+    },
   }),
   TextAlign.configure({
-    types: ["heading", "paragraph"], // Ensure it's applied to headings and paragraphs
+    types: ["heading", "paragraph"],
   }),
   Placeholder.configure({
     placeholder: "Start writing your blog post...",
@@ -33,49 +28,61 @@ const extensions = [
 ];
 
 interface Props {
-  editorDefault?:string
+  editorDefault?: string;
+  onContentChange: (content: string) => void;
 }
 
-const RichEditor = ({editorDefault=""}:Props) => {
-
-const [showImageGallery, setShowImageGallery] = useState<boolean>(false)
-
-
+const RichEditor = ({ editorDefault = "", onContentChange }: Props) => {
+  const [showImageGallery, setShowImageGallery] = useState<boolean>(false);
 
   const editor = useEditor({
     extensions,
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl  outline-none p-8 w-full",
+          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl outline-none p-8 w-full",
       },
     },
-    content:editorDefault
+    content: editorDefault,
+    onUpdate: ({ editor }) => {
+      const content = editor.getHTML();
+      console.log("Editor content updated:", content);
+      onContentChange(content);
+    },
   });
 
-  //  editor?.commands.setContent("")
-const [editorColor,setEditorColor] = useState<boolean>(false)
+  const [editorColor, setEditorColor] = useState<boolean>(false);
+
+  useEffect(() => {
+    editor?.on("update", () => {
+      const content = editor.getHTML();
+      onContentChange(content);
+    });
+  }, [editor, onContentChange]);
+
   return (
     <>
-     <div className="flex flex-col space-y-6">
-      <div
-       onBlur={()=>setEditorColor(false)}
-       onFocus={()=>setEditorColor(true)}
-      className={`flex flex-col w-full border-[1px] rounded-[4px] h-[245px] overflow-auto ${editorColor === true ? "bg-white border-blue-500 shadow-sm shadow-blue-300":"bg-[#E6E6E6] border-[#9B9B9B] "} `}>
-        <EditorContent
-          editor={editor}
-          className="h-full w-full"
-          // extensions={[StarterKit]}
-          //  content="<H1>Hello world <strong>how are you?</strong></H1>"
-        />
+      <div className="flex flex-col space-y-6">
+        <div
+          onBlur={() => setEditorColor(false)}
+          onFocus={() => setEditorColor(true)}
+          className={`flex flex-col w-full border-[1px] rounded-[4px] h-[245px] overflow-auto ${
+            editorColor === true
+              ? "bg-white border-blue-500 shadow-sm shadow-blue-300"
+              : "bg-[#E6E6E6] border-[#9B9B9B] "
+          } `}
+        >
+          <EditorContent editor={editor} className="h-full w-full" />
+        </div>
+        <div>
+          <Tools
+            editor={editor}
+            onImageSelection={() => setShowImageGallery(true)}
+          />
+        </div>
       </div>
-      <div>
-        <Tools editor={editor} onImageSelection={()=>setShowImageGallery(true) }/>
-      </div>
-    </div> 
-    <ImageGallery visible={showImageGallery} onClose={setShowImageGallery}/>  
+      <ImageGallery visible={showImageGallery} onClose={setShowImageGallery} />
     </>
-
   );
 };
 
