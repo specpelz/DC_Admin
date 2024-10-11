@@ -737,3 +737,5 @@ const handleEditData = (values: any) => {
 };
 
 export default AirMonitoringTable;
+
+
