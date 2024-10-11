@@ -20,6 +20,8 @@ interface SelectProps {
   disabled?: boolean;
   requiredMessage?: string;
   showSearch?: boolean;
+  defaultValue?: string;
+
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -34,6 +36,8 @@ const Select: React.FC<SelectProps> = ({
   requiredMessage = "",
   disabled,
   showSearch = false,
+  defaultValue = "",
+
 }) => {
   console.log("Select options:", options); // Debugging line
 
@@ -47,9 +51,11 @@ const Select: React.FC<SelectProps> = ({
       }
       name={name}
       rules={[{ required, message: requiredMessage }]}
+      // initialValue={value}
     >
       <AntSelect
         value={value}
+        defaultValue={defaultValue}
         onChange={onChange}
         placeholder={placeholder}
         className={`custom-select w-full h-[48px] ${styleClass}`}

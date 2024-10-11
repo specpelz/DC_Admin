@@ -1,3 +1,4 @@
+import React  from "react"
 import { Button, DatePicker, Divider, Input, Modal, Space } from "antd";
 import AirMonitoringTable from "./AirMonitoringTable";
 import { useEffect, useState } from "react";
@@ -5,7 +6,10 @@ import Select from "../../components/dashboard/select/Select";
 import useAirMonitoringStore from "@store/airMonitoring";
 import Select_v2 from "@components/dashboard/select/Select_v2";
 import type { Dayjs } from 'dayjs';
-
+import { CSVLink} from "react-csv";
+import { usePDF } from 'react-to-pdf';
+import toast from "react-hot-toast";
+// import moment, { Moment } from "moment";
 
 
 
@@ -23,11 +27,91 @@ interface SelectOption {
   key: string;
 }
 
+// interface ref_type {
+//   ref?: React.ForwardedRef<HTMLDivElement>;
+// }
 
 
-
+// interface DateRange {
+//   fromDate: Moment | null;
+//   toDate: Moment | null;
+// }
 
 const AirMonitoringTableTop = () => {
+
+
+
+  
+  // DATE RANGE FILTER FUNCTION FOR DOWNLOADING CSV FILE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  // const [dateRange, setDateRange] = useState<DateRange>({
+  //   fromDate: null,
+  //   toDate: null
+  // });
+
+
+  // const getFilteredDataByDateRange = () => {
+  //   if (!dateRange.fromDate || !dateRange.toDate) {
+  //     return air_monitoring_data;
+  //   }
+
+  //   const fromDate = moment(dateRange.fromDate).startOf('day');
+  //   const toDate = moment(dateRange.toDate).endOf('day');
+
+  //   return air_monitoring_data.filter(item => {
+  //     const itemDate = moment(item.createdAt);
+  //     return itemDate.isBetween(fromDate, toDate, 'day', '[]');
+  //   });
+  // };
+
+
+
+
+
+    // Handle date range changes
+    // const handleDateRangeChange = (date: Moment | null, type: 'fromDate' | 'toDate') => {
+    //   setDateRange(prev => ({
+    //     ...prev,
+    //     [type]: date
+    //   }));
+    // };
+
+
+
+
+  // Validate date range
+  // const isDateRangeValid = () => {
+  //   if (!dateRange.fromDate || !dateRange.toDate) {
+  //     return false;
+  //   }
+  //   return moment(dateRange.fromDate).isSameOrBefore(dateRange.toDate);
+  // };
+
+
+
+  // Handle download click
+  const handleDownload = () => {
+    if (fileType === "csv") {
+      // if (!isDateRangeValid()) {
+      //   toast.error("Please select a valid date range");
+      //   return;
+      // }
+      // const message = "The file is downloading";
+      // toast.success(message);
+    } else if (fileType === "pdf") {
+      toPDF();
+    }
+    setIsModalVisible(false);
+  };
+
+
+
+
+
+  // DATE RANGE FILTER FUNCTION FOR DOWNLOADING CSV FILE >>>>>>>>>>>>>>ENDS HERE>>>>>>>>>>>>>>>>>>>>>
+
+ 
+
+
 
   const [isFilterActive, setIsFilterActive] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -163,8 +247,7 @@ const AirMonitoringTableTop = () => {
   };
 
   const handleOk = () => {
-    setIsModalVisible(false);
-    console.log("Winnings confirmed");
+    setIsModalVisible(false); 
   };
 
   const handleCancel = () => {
@@ -192,6 +275,10 @@ const AirMonitoringTableTop = () => {
   // }, [filterValues.country]);
 
 
+
+  const { toPDF, targetRef } = usePDF({filename: 'page.pdf'});
+  
+const [fileType,setFileType]=useState<string | number>("pdf")
   return (
     <div className="h-screen ">
       {/* SEARCH. FILTER, SHARE,DOWNLOAD COMPONENTS------------------------------------------------- */}
@@ -231,6 +318,7 @@ const AirMonitoringTableTop = () => {
                 Filter
               </Button>
               <Button
+              onClick={()=>toPDF()}
                 className="h-[46px] w-[18% bg-transparent"
                 icon={
                   <img
@@ -376,8 +464,10 @@ const AirMonitoringTableTop = () => {
         )}
 
 
-
+<div ref={targetRef}>
 <AirMonitoringTable searchQuery={searchQuery} />
+</div>
+
        
 
 
@@ -391,7 +481,8 @@ const AirMonitoringTableTop = () => {
         onCancel={handleCancel}
         okText="Download"
         okButtonProps={{
-          style: { width: "150px" , height:"40px"}
+          style: { display:"none"}
+          // style: { width: "150px" , height:"40px"}
         }}
         cancelButtonProps={{ style: { display: "none" } }}
         centered
@@ -403,10 +494,12 @@ const AirMonitoringTableTop = () => {
             label="File Type"
             placeholder="Select file type"
             required={false}
+            defaultValue="pdf"
             options = {[
               { value: "pdf", label: "PDF" },
               { value: "csv", label: "CSV" },
             ]}
+            onChange={(value)=>setFileType(value)}
           />
         </div>
         <div className="flex w-full gap-x-[30px]  mb-[28px]">
@@ -421,6 +514,8 @@ const AirMonitoringTableTop = () => {
               <DatePicker
                 className="h-[48px] w-full"
                 placeholder="Select date"
+                // value={dateRange.fromDate ? moment(dateRange.fromDate) : null}
+                // onChange={(date) => handleDateRangeChange(date ? moment(date) : null, 'fromDate')}
               />
             </Space>
           </div>
@@ -435,9 +530,41 @@ const AirMonitoringTableTop = () => {
               <DatePicker
                 className="h-[48px] w-full"
                 placeholder="Select date"
+                // value={dateRange.toDate ? moment(dateRange.toDate) : null}
+                // onChange={(date) => handleDateRangeChange(date ? moment(date) : null, 'toDate')}
               />
             </Space>
           </div>
+        </div>
+        <div className="flex justify-end">
+        <Button
+              // disabled={isFilterActive}
+                type="primary"
+                onClick={handleDownload}
+                className="w-[150px] h-[40px] text-[16px] font-[400]  bg-BrandPrimary"
+              >
+                {
+                  fileType === "csv" ? (    <CSVLink
+                    filename={"Air_monitoring_data.csv"}
+                    data={air_monitoring_data}
+                    // data={getFilteredDataByDateRange()}
+                    className="btn btn-primary"
+                    onClick={()=>{
+                      const message ="The file is downloading"
+                      toast.success(message)
+                    }}
+                  >
+                   <div className="text-[16px] font-[400]">Download</div>
+                  </CSVLink>):  (<div className="text-[16px] font-[400]">Download</div>)
+                  
+                }
+
+                
+         
+        
+
+
+              </Button>
         </div>
       </Modal>
     </div>
