@@ -130,16 +130,6 @@ const AirMonitoringTableTop = () => {
       const lgaMatch = !filterValues.lga || item.lga === filterValues.lga;
       const cityMatch = !filterValues.city || item.city === filterValues.city;
 
-      if (
-        !dateRangeMatch ||
-        !singleDateMatch ||
-        !countryMatch ||
-        !stateMatch ||
-        !lgaMatch ||
-        !cityMatch
-      ) {
-        return [];
-      }
       return (
         dateRangeMatch &&
         singleDateMatch &&
