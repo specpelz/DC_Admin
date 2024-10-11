@@ -17,33 +17,80 @@ import Select from "../../components/dashboard/select/Select";
 import FormItem from "antd/es/form/FormItem";
 import UploadMessage from "@components/dashboard/UploadMessage";
 import useAirMonitoringStore from "@store/airMonitoring";
+import moment from "moment";
+import userToken from "@hooks/userToken";
+import axios from "axios";
+import { BASE_URL } from "@api/index";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import useCountries from "@hooks/useCountries";
+import useStates from "@hooks/useStates";
+import useLGAs from "@hooks/useLGAs";
+import { DataType } from "../../types/airMonitoringDataType";
 
 type TableRowSelection<T extends object = object> =
   TableProps<T>["rowSelection"];
 
-interface DataType {
-  key: React.Key;
-  date: string;
-  country: string;
-  state: string;
-  lga: string;
-  city: string;
-  longitude: string;
-  latitude: string;
-  deviceUrl: string;
+
+
+interface AirMonitoringTableProps {
+  searchQuery: string;
+ 
 }
 
-const AirMonitoringTable = () => {
-  const air_monitoring_data = useAirMonitoringStore(
-    (state) => state.air_monitoring_data
-  );
+const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
+  searchQuery,
 
-  const [form] = Form.useForm();
+}) => {
+  const queryClient = useQueryClient();
+  const { token } = userToken();
 
-  const [isViewModalVisible, set_isViewModalVisible] = useState<boolean>(false);
-  const [isEditModalVisible, set_isEditModalVisible] = useState<boolean>(false);
-  const [isDeleteModalVisible, set_isDeleteModalVisible] =
-    useState<boolean>(false);
+  //  const handleDeleteData=()=>{
+
+  //     set_isDeleteModalVisible(false);
+  //     setdeleteSuccessMessage(true);
+  //     setTimeout(() => {
+  //       setdeleteSuccessMessage(false);
+  //     }, 2000);
+
+  //  }
+
+  // DELETE ASYNC FUNCTION>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+  // const handleDeleteData = async (): Promise<void> => {
+  const deleteItem = async (): Promise<void> => {
+    await axios.delete(`${BASE_URL}/air-monitoring/${selectedRowData?.key}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  };
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteItem,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["get_all_air_monitoring_data"]);
+      set_isDeleteModalVisible(false);
+      setdeleteSuccessMessage(true);
+      setTimeout(() => {
+        setdeleteSuccessMessage(false);
+      }, 2000);
+    },
+    onError: () => {
+      const errorMessage = "An error occurred while deleting the item.";
+      toast.error(errorMessage);
+    },
+  });
+
+  const handleDeleteData = () => {
+    deleteMutation.mutate();
+    
+  };
+
+  // DELETE ASYNC FUNCTION>>>>>ENDS HERE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
 
   const [selectedRowData, setSelectedRowData] = useState<DataType | null>(null);
 
@@ -57,9 +104,111 @@ const AirMonitoringTable = () => {
     deviceurl: selectedRowData?.deviceUrl,
   };
 
+
+
+
+
+  // Edit ASYNC FUNCTION>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// /air-monitoring/{montoringId}
+// const data = {
+//   country:defaultValues?.country,
+//   state: defaultValues?.state,
+//   lga: defaultValues?.lga,
+//   city: defaultValues?.city,
+//   latitude: defaultValues?.latitude,
+//   longitude: defaultValues?.longitude,
+//   deviceUrl: defaultValues?.deviceurl
+// }
+const editItem = async (values: any): Promise<void> => {
+  await axios.patch(
+    `${BASE_URL}/air-monitoring/${selectedRowData?.key}`,
+    values,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+
+const editMutation = useMutation({
+  mutationFn: editItem,
+  onSuccess: () => {
+    setSelectedRowData(null);
+    set_isEditModalVisible(false);
+    setEditSuccessMessage(true);
+    queryClient.invalidateQueries(["get_all_air_monitoring_data"]);
+    setTimeout(() => {
+      setEditSuccessMessage(false);
+    }, 2000);
+  },
+  onError: () => {
+    const errorMessage = "An error occurred while updating the item.";
+    toast.error(errorMessage);
+  },
+});
+
+
+const handleEditData = (values: any) => {
+  editMutation.mutate(values);
+};
+  // Edit ASYNC FUNCTION>>>>>>>>>ENDS>>HERE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+  const formattedDate = (value: string) => {
+    const formattedDate_v1 = moment(value).format("YYYY-MM-DD");
+    return formattedDate_v1;
+  };
+
+  const filtered_data = useAirMonitoringStore((state) => state.filtered_data);
+
+  const air_monitoring_data = useAirMonitoringStore(
+    (state) => state.air_monitoring_data
+  );
+
+  const [form] = Form.useForm();
+
+  const [isViewModalVisible, set_isViewModalVisible] = useState<boolean>(false);
+  const [isEditModalVisible, set_isEditModalVisible] = useState<boolean>(false);
+  const [isDeleteModalVisible, set_isDeleteModalVisible] =
+    useState<boolean>(false);
+
+ 
+
+  // useEffect(() => {
+  //   form.setFieldsValue(defaultValues);
+  // }, [form, defaultValues]);
+
+
+
+
+
+
   useEffect(() => {
-    form.setFieldsValue(defaultValues);
-  }, [form, defaultValues]);
+    if (selectedRowData) {
+      form.setFieldsValue({
+        country: selectedRowData.country,
+        state: selectedRowData.state,
+        lga: selectedRowData.lga,
+        city: selectedRowData.city,
+        latitude: selectedRowData.latitude,
+        longitude: selectedRowData.longitude,
+        deviceUrl: selectedRowData.deviceUrl,
+      });
+      setSelectedCountry(selectedRowData.country);
+      setSelectedState(selectedRowData.state);
+    }
+  }, [selectedRowData, form]);
+
+
+
+
+
+
+
+
+
 
   const handleView = (row: DataType) => {
     setSelectedRowData(row);
@@ -73,6 +222,7 @@ const AirMonitoringTable = () => {
   };
   const [deleteSuccessMessage, setdeleteSuccessMessage] =
     useState<boolean>(false);
+
   const handleDelete = (row: DataType) => {
     setSelectedRowData(row);
     set_isDeleteModalVisible(true);
@@ -85,18 +235,18 @@ const AirMonitoringTable = () => {
   };
 
   const columns: TableColumnsType<DataType> = [
-    { title: "Date", dataIndex: "date",  ellipsis: true, },
-    { title: "Country", dataIndex: "country",  ellipsis: true, },
-    { title: "State", dataIndex: "state" ,  ellipsis: true,},
-    { title: "L.G.A", dataIndex: "lga",  ellipsis: true, },
-    { title: "City", dataIndex: "city",  ellipsis: true, },
-    { title: "Longitude", dataIndex: "longitude",  ellipsis: true, },
-    { title: "Latitude", dataIndex: "latitude",  ellipsis: true, },
+    { title: "Date", dataIndex: "date", ellipsis: true },
+    { title: "Country", dataIndex: "country", ellipsis: true },
+    { title: "State", dataIndex: "state", ellipsis: true },
+    { title: "L.G.A", dataIndex: "lga", ellipsis: true },
+    { title: "City", dataIndex: "city", ellipsis: true },
+    { title: "Longitude", dataIndex: "longitude", ellipsis: true },
+    { title: "Latitude", dataIndex: "latitude", ellipsis: true },
     {
       title: "Device URL",
       dataIndex: "deviceUrl",
       ellipsis: true,
-     
+
       render: (text: string, record: DataType) => {
         const menu = (
           <Menu>
@@ -147,7 +297,7 @@ const AirMonitoringTable = () => {
             <Flex
               align="center"
               justify="space-between"
-              style={{ whiteSpace: "nowrap"}}
+              style={{ whiteSpace: "nowrap" }}
             >
               <Tooltip title={text}>
                 <span
@@ -201,17 +351,27 @@ const AirMonitoringTable = () => {
     },
   ];
 
-  const dataSource = air_monitoring_data?.map((data, i) => ({
-    key: i,
-    date: data.createdAt, // Accessing properties of each item in the array
-    country: data.country,
-    state: data.state,
-    lga: data.lga,
-    city: data.city,
-    longitude: data.longitude,
-    latitude: data.latitude,
-    deviceUrl: data.deviceUrl,
-  }));
+  const dataSource = (
+    filtered_data.length > 0 ? filtered_data : air_monitoring_data
+  )
+    ?.map((data) => ({
+      key: data.id,
+      date: formattedDate(data.createdAt), // Accessing properties of each item in the array
+      country: data.country,
+      state: data.state,
+      lga: data.lga,
+      city: data.city,
+      longitude: data.longitude,
+      latitude: data.latitude,
+      deviceUrl: data.deviceUrl,
+    }))
+    .filter((item) =>
+      Object.values(item).some(
+        (value) =>
+          typeof value === "string" &&
+          value.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
   // const dataSource = Array.from<DataType>({ length: 46 }).map<DataType>(
   //   (_, i) => ({
   //     key: i,
@@ -240,12 +400,40 @@ const AirMonitoringTable = () => {
 
   const hasSelected = selectedRowKeys.length > 0;
 
+
+  const countries = useCountries(); // Fetch countries
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const states = useStates(selectedCountry); // Fetch states based on selected country
+  const [selectedState, setSelectedState] = useState<string | null>(null);
+  const lgas = useLGAs(selectedState); // Fetch LGAs based on selected state
+
+
+
+
+
+
+  const handleCountryChange = (value: string | number) => {
+    setSelectedCountry(value as string);
+    setSelectedState(null);
+    form.setFieldsValue({ state: undefined, lga: undefined });
+  };
+
+  const handleStateChange = (value: string | number) => {
+    setSelectedState(value.toString());
+    form.setFieldsValue({ lga: undefined });
+  };
+
+
+
+
+
+
   return (
     <>
       {editSuccessMessage && (
         <div className="fixed right-0 z-[999] top-[12.5%]">
           <UploadMessage
-            imageName="You have successfully uploaded data for Eleme"
+            imageName={`You have successfully uploaded data for ${selectedRowData?.city}`}
             onClose={() => setEditSuccessMessage(false)}
           />
         </div>
@@ -253,26 +441,23 @@ const AirMonitoringTable = () => {
       {deleteSuccessMessage && (
         <div className="fixed right-0 z-[999] top-[12.5%]">
           <UploadMessage
-            imageName="You have successfully deleted data for Eleme"
+            imageName={`You have successfully deleted data for ${selectedRowData?.city}`}
             onClose={() => setdeleteSuccessMessage(false)}
           />
         </div>
       )}
-      <Flex gap="middle" vertical>
+      <Flex gap="middle" vertical >
         <Flex align="center" gap="middle">
           {hasSelected ? `Selected ${selectedRowKeys.length} items` : null}
         </Flex>
-     
+
         <Table<DataType>
           rowSelection={rowSelection}
           columns={columns}
           dataSource={dataSource}
           className="custom-table"
-        
+          
         />
-
-  
-
       </Flex>
 
       <Modal
@@ -310,7 +495,7 @@ const AirMonitoringTable = () => {
           <div className="flex flex-col gap-y-[5px]  w-[300px]">
             <div className="text-[#757575] text-[16px] font-[400]">City</div>
             <div className="text-[#2C2C2C] text-[16px] font-[400]">
-              {selectedRowData?.lga}
+              {selectedRowData?.city}
             </div>
           </div>
         </div>
@@ -342,15 +527,12 @@ const AirMonitoringTable = () => {
             </div>
           </div>
           <div className="flex flex-col gap-y-[5px]  w-[300px]">
-            <div className="text-[#757575] text-[16px] font-[400]">
-              Date
-            </div>
+            <div className="text-[#757575] text-[16px] font-[400]">Date</div>
             <div className="text-[#2C2C2C] text-[16px] font-[400]">
               {selectedRowData?.date}
             </div>
           </div>
         </div>
-    
       </Modal>
       <Modal
         title="Edit Data"
@@ -367,14 +549,7 @@ const AirMonitoringTable = () => {
         <Form
           form={form}
           initialValues={defaultValues}
-          onFinish={() => {
-            set_isEditModalVisible(false);
-            setEditSuccessMessage(true);
-
-            setTimeout(() => {
-              setEditSuccessMessage(false);
-            }, 2000);
-          }}
+          onFinish={handleEditData}
         >
           <div className="w-full bg-white rounded-[4px]  lg:h-[492px] mt-[16px]">
             <div className="lg:flex lg:gap-x-[27px]">
@@ -385,6 +560,9 @@ const AirMonitoringTable = () => {
                   placeholder="Enter the country"
                   required={true}
                   requiredMessage="Please enter the country!"
+                  options={countries} // Ensure countries is an array of { value, label }
+                  onChange={handleCountryChange}
+                  showSearch={true}
                 />
               </div>
               <div className="lg:w-[50%] h-[100px]">
@@ -394,6 +572,13 @@ const AirMonitoringTable = () => {
                   placeholder="Enter the state"
                   required={true}
                   requiredMessage="Please enter the state!"
+                  options={states.map((state) => ({
+                    value: state.value, // Use 'state.value' here
+                    label: state.label, // Use 'state.label' here
+                  }))}
+                  onChange={handleStateChange} // This should now work
+                  disabled={!selectedCountry || states.length === 0}
+                  showSearch={true}
                 />
               </div>
             </div>
@@ -405,6 +590,9 @@ const AirMonitoringTable = () => {
                   placeholder="Enter the Local Government"
                   required={true}
                   requiredMessage="Please enter the L.G.A!"
+                  options={lgas} // Use the mapped LGAs
+                  disabled={!selectedState} // Disable until a state is selected
+                  showSearch={true}
                 />
               </div>
               <div className="lg:w-[50%] h-[100px]">
@@ -484,7 +672,7 @@ const AirMonitoringTable = () => {
               <div className="lg:w-[49%] h-[100px]">
                 <FormItem
                   layout="vertical"
-                  name="deviceurl"
+                  name="deviceUrl"
                   label={
                     <span className="text-[16px] font-[400] text-BrandBlack1 ">
                       Device URL
@@ -509,11 +697,12 @@ const AirMonitoringTable = () => {
             <div className="flex justify-end mt-[50px]">
               <FormItem>
                 <Button
+                 loading={editMutation.isLoading}
                   type="primary"
                   htmlType="submit"
                   className="w-[234px] h-[48px] text-[16px] font-[400]  bg-BrandPrimary"
                 >
-                  <div className="text-[16px] font-[400]">Upload Data</div>
+                  <div className="text-[16px] font-[400]">Update Data</div>
                 </Button>
               </FormItem>
             </div>
@@ -523,19 +712,15 @@ const AirMonitoringTable = () => {
       <Modal
         title={`Delete ${selectedRowData?.state}-${selectedRowData?.lga}`}
         open={isDeleteModalVisible}
-        onOk={() => {
-          set_isDeleteModalVisible(false);
-          setdeleteSuccessMessage(true);
-          setTimeout(() => {
-            setdeleteSuccessMessage(false);
-          }, 2000);
-        }}
+        onOk={handleDeleteData}
         onCancel={handleCancel}
         okButtonProps={{
+          disabled: deleteMutation.isLoading,
           style: { width: "150px", height: "40px", backgroundColor: "#F33B3B" },
         }}
         cancelButtonProps={{ style: { width: "150px", height: "40px" } }}
         centered
+        okText={deleteMutation.isLoading ? "Deleting..." : "Delete"}
       >
         <Divider className="mt-0" />
         <p className="text-[#2C2C2C]">

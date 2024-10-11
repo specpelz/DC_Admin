@@ -6,6 +6,7 @@ import "./select.css";
 interface SelectOption {
   value: string | number;
   label: string;
+  key: string;
 }
 
 interface SelectProps {
@@ -20,12 +21,10 @@ interface SelectProps {
   disabled?: boolean;
   requiredMessage?: string;
   showSearch?: boolean;
-  defaultValue?: string;
-
 }
 
-const Select: React.FC<SelectProps> = ({
-  options = [{ value: "", label: "" }],
+const Select_v2: React.FC<SelectProps> = ({
+  options = [{ value: "", label: "" ,key:""}],
   value = "",
   onChange = (value) => console.log("value", value),
   placeholder = "Select an option",
@@ -36,8 +35,6 @@ const Select: React.FC<SelectProps> = ({
   requiredMessage = "",
   disabled,
   showSearch = false,
-  defaultValue = "",
-
 }) => {
   console.log("Select options:", options); // Debugging line
 
@@ -51,11 +48,9 @@ const Select: React.FC<SelectProps> = ({
       }
       name={name}
       rules={[{ required, message: requiredMessage }]}
-      // initialValue={value}
     >
       <AntSelect
         value={value}
-        defaultValue={defaultValue}
         onChange={onChange}
         placeholder={placeholder}
         className={`custom-select w-full h-[48px] ${styleClass}`}
@@ -71,7 +66,7 @@ const Select: React.FC<SelectProps> = ({
         optionFilterProp="children" 
       >
         {options.map((option) => (
-          <AntSelect.Option key={option.value} value={option.value}>
+          <AntSelect.Option key={option.key} value={option.value}>
             {option.label}
           </AntSelect.Option>
         ))}
@@ -80,4 +75,4 @@ const Select: React.FC<SelectProps> = ({
   );
 };
 
-export default Select;
+export default Select_v2;
