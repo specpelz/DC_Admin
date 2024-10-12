@@ -8,7 +8,6 @@ interface Props {
 
 const GalleryImage = ({ src,onDeleteClick,onSelectClick }: Props) => {
   return (
-  
       <div className="relative w-full aspect-square overflow-hidden rounded-sm">
         <img src={src} alt="image" className="w-full h-full object-cover" />
         <div className="flex absolute left-0 right-0 bottom-0">
@@ -20,7 +19,6 @@ const GalleryImage = ({ src,onDeleteClick,onSelectClick }: Props) => {
           </button>
         </div>
       </div>
-
   );
 };
 
