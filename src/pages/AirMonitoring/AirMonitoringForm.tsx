@@ -10,11 +10,19 @@ import UploadMessage from "../../components/dashboard/UploadMessage";
 import { AirMonitoring_data_type } from "../../types/airMonitoringDataType";
 import usePostAirMonitoring from "@hooks/usePostAirMonitoring";
 import useAirMonitoringStore from "@store/airMonitoring";
+import { useQueryClient } from "@tanstack/react-query";
+
+import useFetchUpdatedData from "@hooks/useFetchUpdatedData";
 
 const AirMonitoringForm: React.FC = () => {
-
-  const successMessage = useAirMonitoringStore((state) => state.upload_air_monitoring_success);
-  const set_success_message = useAirMonitoringStore((state) => state.set_upload_air_monitoring_success);
+  const queryClient = useQueryClient();
+  const { fetchUpdatedData } = useFetchUpdatedData();
+  const successMessage = useAirMonitoringStore(
+    (state) => state.upload_air_monitoring_success
+  );
+  const set_success_message = useAirMonitoringStore(
+    (state) => state.set_upload_air_monitoring_success
+  );
   // const set_component = useAirMonitoringStore((state) => state.set_component);
 
   const countries = useCountries(); // Fetch countries
@@ -39,12 +47,12 @@ const AirMonitoringForm: React.FC = () => {
   console.log("LGAs:", lgas);
 
   const { postData, isLoading } = usePostAirMonitoring();
- const [city,set_city]=useState<string>("")
+  const [city, set_city] = useState<string>("");
   const handleSubmit = async (values: AirMonitoring_data_type) => {
     const { country, state, lga, city, latitude, longitude, deviceUrl } =
       values;
-      set_city(city)
- console.log({ country, state, lga, city, latitude, longitude, deviceUrl })
+    set_city(city);
+    console.log({ country, state, lga, city, latitude, longitude, deviceUrl });
     await postData({
       country,
       state,
@@ -54,9 +62,8 @@ const AirMonitoringForm: React.FC = () => {
       longitude,
       deviceUrl,
     });
-    // setSuccessMessage(true);
-    //   setSuccessMessage(false);
-    //   set_component({ value: "data" });
+    await fetchUpdatedData();
+    queryClient.invalidateQueries(["get_all_air_monitoring_data"]);
   };
 
   return (
@@ -200,7 +207,8 @@ const AirMonitoringForm: React.FC = () => {
                   message: "Please enter the device URL",
                 },
                 {
-                  pattern: /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/,
+                  pattern:
+                    /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$/,
                   message: "Please enter a valid device URL",
                 },
               ]}
@@ -216,7 +224,7 @@ const AirMonitoringForm: React.FC = () => {
         <div className="flex justify-end">
           <FormItem>
             <Button
-            loading={isLoading}
+              loading={isLoading}
               type="primary"
               htmlType="submit"
               className="w-[234px] h-[48px] text-[16px] font-[400]  bg-BrandPrimary"
