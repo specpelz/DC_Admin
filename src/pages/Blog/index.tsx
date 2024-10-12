@@ -12,6 +12,28 @@ interface BlogData {
   content: string;
   image: string;
 }
+interface fetch_blog_type {
+  setLoadingImages:React.Dispatch<React.SetStateAction<boolean>>;
+  setBlogs:React.Dispatch<React.SetStateAction<BlogData[]>>;
+
+}
+
+export const fetchBlogs = async ({setLoadingImages,setBlogs}:fetch_blog_type) => {
+  setLoadingImages(true);
+  try {
+    const response = await fetch(`${BASE_URL}/blog`);
+    const data = await response.json();
+    if (data.status === "success") {
+      setBlogs(data.data);
+    }
+  } catch (error) {
+    console.error("Error fetching blog data:", error);
+  } finally {
+    setLoadingImages(false);
+  }
+};
+
+
 
 const Blog = () => {
   const set_component = useBlogStore((state) => state.set_component);
@@ -28,23 +50,12 @@ const Blog = () => {
     useState<boolean>(false);
   const [editSuccessMessage, setEditSuccessMessage] = useState<boolean>(false);
 
-  const fetchBlogs = async () => {
-    setLoadingImages(true);
-    try {
-      const response = await fetch(`${BASE_URL}/blog`);
-      const data = await response.json();
-      if (data.status === "success") {
-        setBlogs(data.data);
-      }
-    } catch (error) {
-      console.error("Error fetching blog data:", error);
-    } finally {
-      setLoadingImages(false);
-    }
-  };
 
+  const handlefetchBlogs = () => {
+    fetchBlogs({setLoadingImages,setBlogs});
+  };
   useEffect(() => {
-    fetchBlogs();
+    handlefetchBlogs();
   }, []);
 
   // let data: string[] = [];
@@ -90,12 +101,12 @@ const Blog = () => {
           loading={loadingImages}
         />
       ) : component.value == "upload" ? (
-        <UploadBlog fetchBlogs={fetchBlogs} />
+        <UploadBlog fetchBlogs={handlefetchBlogs} />
       ) : (
         <UploadedBlog
           loadingImages={loadingImages}
           blogs={blogs}
-          fetchBlogs={fetchBlogs}
+          fetchBlogs={handlefetchBlogs}
           setEditSuccessMessage={setEditSuccessMessage}
           setDeleteSuccessMessage={setDeleteSuccessMessage}
         />

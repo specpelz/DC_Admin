@@ -28,11 +28,11 @@ const extensions = [
 ];
 
 interface Props {
-  editorDefault?: string;
+  editorDefault: string;
   onContentChange: (content: string) => void;
 }
 
-const RichEditor = ({ editorDefault = "", onContentChange }: Props) => {
+const RichEditor = ({ editorDefault , onContentChange }: Props) => {
   const [showImageGallery, setShowImageGallery] = useState<boolean>(false);
 
   const editor = useEditor({
@@ -46,7 +46,6 @@ const RichEditor = ({ editorDefault = "", onContentChange }: Props) => {
     content: editorDefault,
     onUpdate: ({ editor }) => {
       const content = editor.getHTML();
-      console.log("Editor content updated:", content);
       onContentChange(content);
     },
   });
@@ -54,11 +53,10 @@ const RichEditor = ({ editorDefault = "", onContentChange }: Props) => {
   const [editorColor, setEditorColor] = useState<boolean>(false);
 
   useEffect(() => {
-    editor?.on("update", () => {
-      const content = editor.getHTML();
-      onContentChange(content);
-    });
-  }, [editor, onContentChange]);
+    if (editor && editor.getHTML() !== editorDefault) {
+      editor.commands.setContent(editorDefault);
+    }
+  }, [editor, editorDefault]);
 
   return (
     <>

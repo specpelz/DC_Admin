@@ -14,7 +14,8 @@ import {
   MdOutlineModeEditOutline,
 } from "react-icons/md";
 
-interface BlogData {
+
+ interface BlogData {
   id: string;
   title: string;
   content: string;
@@ -29,11 +30,34 @@ interface UploadedBlogProps {
   setEditSuccessMessage: (value: boolean) => void;
 }
 
+
+
+
+
+
+export const handleCancelEditModal = (
+  setIsEditModalVisible: React.Dispatch<React.SetStateAction<boolean>>,
+  setSelectedBlog: React.Dispatch<React.SetStateAction<BlogData | null>>,
+  setImageDetails: React.Dispatch<React.SetStateAction<File | null>>
+) => {
+  setIsEditModalVisible(false);
+  setSelectedBlog(null);
+  setImageDetails(null);
+
+};
+
+
+
+
+
+
+
+
+
 const UploadedBlog: React.FC<UploadedBlogProps> = ({
   blogs,
   loadingImages,
   fetchBlogs,
-  // setDeleteSuccessMessage,
   setEditSuccessMessage,
 }) => {
   const token = localStorage.getItem("DC_Token") || "";
@@ -43,7 +67,10 @@ const UploadedBlog: React.FC<UploadedBlogProps> = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState<BlogData | null>(null);
-  console.log("selectedBlog:", selectedBlog);
+ 
+
+
+  
 
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -57,7 +84,11 @@ const UploadedBlog: React.FC<UploadedBlogProps> = ({
     blog.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const [content, setContent] = useState<string>("");
+
+  const [editorContent, setEditorContent] = useState<string>("");
+
+
+
 
   const [loading, setLoading] = useState(false);
 
@@ -110,9 +141,11 @@ const UploadedBlog: React.FC<UploadedBlogProps> = ({
     setIsModalVisible(true);
   };
 
+
   const showEditModal = (blog: BlogData) => {
     setSelectedBlog(blog);
-    form.setFieldsValue({ blogtitle: blog.title, blogcontent: blog.content });
+    form.setFieldsValue({ blogtitle: blog.title });
+    setEditorContent(blog.content);
     setIsEditModalVisible(true);
   };
 
@@ -121,14 +154,11 @@ const UploadedBlog: React.FC<UploadedBlogProps> = ({
     setSelectedBlog(null);
   };
 
-  const handleCancelEditModal = () => {
-    setIsEditModalVisible(false);
-    setSelectedBlog(null);
-    setImageDetails(null);
+  const handleCancelEditModalInternal = () => {
+    handleCancelEditModal(setIsEditModalVisible, setSelectedBlog, setImageDetails);
   };
-
   const handleContentChange = (content: string) => {
-    setContent(content);
+    setEditorContent(content);
     console.log("Content in UploadBlog updated:", content);
   };
 
@@ -142,7 +172,7 @@ const UploadedBlog: React.FC<UploadedBlogProps> = ({
 
     const formData = new FormData();
     formData.append("title", values.blogtitle);
-    formData.append("content", content);
+    formData.append("content", editorContent);
 
     if (imageDetails) {
       formData.append("file", imageDetails);
@@ -335,7 +365,7 @@ const UploadedBlog: React.FC<UploadedBlogProps> = ({
         }
         open={isEditModalVisible}
         centered
-        onCancel={handleCancelEditModal}
+        onCancel={handleCancelEditModalInternal}
         okButtonProps={{ style: { display: "none" } }}
         cancelButtonProps={{ style: { display: "none" } }}
       >
@@ -443,8 +473,8 @@ const UploadedBlog: React.FC<UploadedBlogProps> = ({
               Blog Detail
             </div>
             <RichEditor
-              editorDefault={selectedBlog?.content}
-              onContentChange={handleContentChange}
+                 editorDefault={editorContent}
+                  onContentChange={handleContentChange}
             />
           </div>
 
