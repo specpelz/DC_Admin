@@ -352,7 +352,7 @@ const handleEditData = (values: any) => {
   ];
 
   const dataSource = (
-    filtered_data.length > 0 ? filtered_data : air_monitoring_data
+    filtered_data.length > 0 ? filtered_data : filtered_data.length === 0 ?[]:air_monitoring_data
   )
     ?.map((data) => ({
       key: data.id,
