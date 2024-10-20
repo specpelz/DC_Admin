@@ -1,5 +1,6 @@
 import React, { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
+import PrivateRoutes from "./PrivateRoutes";
 
 const Login = lazy(() => import("@pages/Auth/Login"));
 
@@ -23,23 +24,41 @@ const AppRoutes = () => {
           }
         />
 
-        {/* Dashboard */}
+        {/* Protected Admin Routes */}
         <Route
           path="/admin"
           element={
-            <React.Suspense>
-              <AirMonitoring />
-            </React.Suspense>
+            <PrivateRoutes>
+              <React.Suspense>
+                <AirMonitoring />
+              </React.Suspense>
+            </PrivateRoutes>
           }
         >
-          <Route path="multimedia" element={<Multimedia />} />
-          <Route path="blog" element=
-          {
-            <React.Suspense>
-          <Blog />
-          </React.Suspense>
-          } />
-          <Route path="content" element={<WebsiteContent />} />
+          <Route
+            path="multimedia"
+            element={
+              <React.Suspense>
+                <Multimedia />
+              </React.Suspense>
+            }
+          />
+          <Route
+            path="blog"
+            element={
+              <React.Suspense>
+                <Blog />
+              </React.Suspense>
+            }
+          />
+          <Route
+            path="content"
+            element={
+              <React.Suspense>
+                <WebsiteContent />
+              </React.Suspense>
+            }
+          />
         </Route>
       </Routes>
     </>

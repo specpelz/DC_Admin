@@ -31,6 +31,7 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
   const handleUploadClick = () => {
     setUploadedData(false);
     setIsUploading(true);
+    // setCurrentPage(1);
   };
 
   const showDeleteModal = (
@@ -79,6 +80,9 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
           if (newImages.length < indexOfLastImage && currentPage > 1) {
             setCurrentPage(currentPage - 1);
           }
+
+          // Ensure latest data is shown on the first page
+          // setCurrentPage(1);
 
           return newImages;
         });
