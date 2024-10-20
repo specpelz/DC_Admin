@@ -31,16 +31,12 @@ import { DataType } from "../../types/airMonitoringDataType";
 type TableRowSelection<T extends object = object> =
   TableProps<T>["rowSelection"];
 
-
-
 interface AirMonitoringTableProps {
   searchQuery: string;
- 
 }
 
 const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
   searchQuery,
-
 }) => {
   const queryClient = useQueryClient();
   const { token } = userToken();
@@ -84,13 +80,9 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
 
   const handleDeleteData = () => {
     deleteMutation.mutate();
-    
   };
 
   // DELETE ASYNC FUNCTION>>>>>ENDS HERE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-
 
   const [selectedRowData, setSelectedRowData] = useState<DataType | null>(null);
 
@@ -104,56 +96,50 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
     deviceurl: selectedRowData?.deviceUrl,
   };
 
-
-
-
-
   // Edit ASYNC FUNCTION>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-// /air-monitoring/{montoringId}
-// const data = {
-//   country:defaultValues?.country,
-//   state: defaultValues?.state,
-//   lga: defaultValues?.lga,
-//   city: defaultValues?.city,
-//   latitude: defaultValues?.latitude,
-//   longitude: defaultValues?.longitude,
-//   deviceUrl: defaultValues?.deviceurl
-// }
-const editItem = async (values: any): Promise<void> => {
-  await axios.patch(
-    `${BASE_URL}/air-monitoring/${selectedRowData?.key}`,
-    values,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-};
+  // /air-monitoring/{montoringId}
+  // const data = {
+  //   country:defaultValues?.country,
+  //   state: defaultValues?.state,
+  //   lga: defaultValues?.lga,
+  //   city: defaultValues?.city,
+  //   latitude: defaultValues?.latitude,
+  //   longitude: defaultValues?.longitude,
+  //   deviceUrl: defaultValues?.deviceurl
+  // }
+  const editItem = async (values: any): Promise<void> => {
+    await axios.patch(
+      `${BASE_URL}/air-monitoring/${selectedRowData?.key}`,
+      values,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  };
 
+  const editMutation = useMutation({
+    mutationFn: editItem,
+    onSuccess: () => {
+      setSelectedRowData(null);
+      set_isEditModalVisible(false);
+      setEditSuccessMessage(true);
+      queryClient.invalidateQueries(["get_all_air_monitoring_data"]);
+      setTimeout(() => {
+        setEditSuccessMessage(false);
+      }, 2000);
+    },
+    onError: () => {
+      const errorMessage = "An error occurred while updating the item.";
+      toast.error(errorMessage);
+    },
+  });
 
-const editMutation = useMutation({
-  mutationFn: editItem,
-  onSuccess: () => {
-    setSelectedRowData(null);
-    set_isEditModalVisible(false);
-    setEditSuccessMessage(true);
-    queryClient.invalidateQueries(["get_all_air_monitoring_data"]);
-    setTimeout(() => {
-      setEditSuccessMessage(false);
-    }, 2000);
-  },
-  onError: () => {
-    const errorMessage = "An error occurred while updating the item.";
-    toast.error(errorMessage);
-  },
-});
-
-
-const handleEditData = (values: any) => {
-  editMutation.mutate(values);
-};
+  const handleEditData = (values: any) => {
+    editMutation.mutate(values);
+  };
   // Edit ASYNC FUNCTION>>>>>>>>>ENDS>>HERE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
   const formattedDate = (value: string) => {
@@ -174,16 +160,9 @@ const handleEditData = (values: any) => {
   const [isDeleteModalVisible, set_isDeleteModalVisible] =
     useState<boolean>(false);
 
- 
-
   // useEffect(() => {
   //   form.setFieldsValue(defaultValues);
   // }, [form, defaultValues]);
-
-
-
-
-
 
   useEffect(() => {
     if (selectedRowData) {
@@ -200,15 +179,6 @@ const handleEditData = (values: any) => {
       setSelectedState(selectedRowData.state);
     }
   }, [selectedRowData, form]);
-
-
-
-
-
-
-
-
-
 
   const handleView = (row: DataType) => {
     setSelectedRowData(row);
@@ -352,7 +322,11 @@ const handleEditData = (values: any) => {
   ];
 
   const dataSource = (
-    filtered_data.length > 0 ? filtered_data : filtered_data.length === 0 ?[]:air_monitoring_data
+    filtered_data.length > 0
+      ? filtered_data
+      : filtered_data.length === 0
+      ? []
+      : air_monitoring_data
   )
     ?.map((data) => ({
       key: data.id,
@@ -400,17 +374,11 @@ const handleEditData = (values: any) => {
 
   const hasSelected = selectedRowKeys.length > 0;
 
-
   const countries = useCountries(); // Fetch countries
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const states = useStates(selectedCountry); // Fetch states based on selected country
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const lgas = useLGAs(selectedState); // Fetch LGAs based on selected state
-
-
-
-
-
 
   const handleCountryChange = (value: string | number) => {
     setSelectedCountry(value as string);
@@ -422,11 +390,6 @@ const handleEditData = (values: any) => {
     setSelectedState(value.toString());
     form.setFieldsValue({ lga: undefined });
   };
-
-
-
-
-
 
   return (
     <>
@@ -446,7 +409,7 @@ const handleEditData = (values: any) => {
           />
         </div>
       )}
-      <Flex gap="middle" vertical >
+      <Flex gap="middle" vertical>
         <Flex align="center" gap="middle">
           {hasSelected ? `Selected ${selectedRowKeys.length} items` : null}
         </Flex>
@@ -456,7 +419,6 @@ const handleEditData = (values: any) => {
           columns={columns}
           dataSource={dataSource}
           className="custom-table"
-          
         />
       </Flex>
 
@@ -697,7 +659,7 @@ const handleEditData = (values: any) => {
             <div className="flex justify-end mt-[50px]">
               <FormItem>
                 <Button
-                 loading={editMutation.isLoading}
+                  loading={editMutation.isLoading}
                   type="primary"
                   htmlType="submit"
                   className="w-[234px] h-[48px] text-[16px] font-[400]  bg-BrandPrimary"
@@ -737,5 +699,3 @@ const handleEditData = (values: any) => {
 };
 
 export default AirMonitoringTable;
-
-
