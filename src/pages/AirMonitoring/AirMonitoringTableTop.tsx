@@ -40,6 +40,7 @@ interface SelectOption {
 // }
 
 const AirMonitoringTableTop = () => {
+  // const airMonitoringData = useAirMonitoringStore((state) => state.air_monitoring_data);
   // Handle download click
   const handleDownload = () => {
     if (fileType === "csv") {
@@ -76,6 +77,9 @@ const AirMonitoringTableTop = () => {
   const air_monitoring_data = useAirMonitoringStore(
     (state) => state.air_monitoring_data
   );
+  useEffect(() => {
+    console.log("Table data updated:", air_monitoring_data);
+  }, [air_monitoring_data]);
   const setFilteredData = useAirMonitoringStore(
     (state) => state.setFilteredData
   );
@@ -109,8 +113,10 @@ const AirMonitoringTableTop = () => {
     if (showFilter) {
       generateFilterOptions();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showFilter, air_monitoring_data]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleFilterChange = (value: any, field: keyof FilterValues) => {
     set_filter_input_values(true);
     setFilterValues((prev) => ({
@@ -142,7 +148,6 @@ const AirMonitoringTableTop = () => {
       const lgaMatch = !filterValues.lga || item.lga === filterValues.lga;
       const cityMatch = !filterValues.city || item.city === filterValues.city;
 
-
       return (
         dateRangeMatch &&
         singleDateMatch &&
@@ -169,7 +174,7 @@ const AirMonitoringTableTop = () => {
     });
     setFilteredData(air_monitoring_data);
     setShowFilter_v2(false);
-   
+
     setShowFilter(false);
     set_filter_input_values(false);
     setIsFilterActive(false);
@@ -420,9 +425,7 @@ const AirMonitoringTableTop = () => {
               </Button>
               <Tooltip title={isFilterActive ? "Cancel existing filter" : ""}>
                 <Button
-                  disabled={
-                    filter_input_values ? false : true
-                  }
+                  disabled={filter_input_values ? false : true}
                   // disabled={
                   //   isFilterActive ? true : filter_input_values ? false : true
                   // }

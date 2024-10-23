@@ -1,4 +1,12 @@
-import { useEffect, useState } from "react";
+import { BASE_URL } from "@api/index";
+import UploadMessage from "@components/dashboard/UploadMessage";
+import useCountries from "@hooks/useCountries";
+import useLGAs from "@hooks/useLGAs";
+import userToken from "@hooks/userToken";
+import useStates from "@hooks/useStates";
+import useAirMonitoringStore from "@store/airMonitoring";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { TableColumnsType, TableProps } from "antd";
 import {
   Button,
   Divider,
@@ -11,22 +19,14 @@ import {
   Table,
   Tooltip,
 } from "antd";
-import type { TableColumnsType, TableProps } from "antd";
-import "./customDropdown.css";
-import Select from "../../components/dashboard/select/Select";
 import FormItem from "antd/es/form/FormItem";
-import UploadMessage from "@components/dashboard/UploadMessage";
-import useAirMonitoringStore from "@store/airMonitoring";
-import moment from "moment";
-import userToken from "@hooks/userToken";
 import axios from "axios";
-import { BASE_URL } from "@api/index";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import moment from "moment";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import useCountries from "@hooks/useCountries";
-import useStates from "@hooks/useStates";
-import useLGAs from "@hooks/useLGAs";
+import Select from "../../components/dashboard/select/Select";
 import { DataType } from "../../types/airMonitoringDataType";
+import "./customDropdown.css";
 
 type TableRowSelection<T extends object = object> =
   TableProps<T>["rowSelection"];
@@ -40,6 +40,7 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const { token } = userToken();
+  // const { fetchUpdatedData } = useFetchUpdatedData();
 
   //  const handleDeleteData=()=>{
 
@@ -62,10 +63,23 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
     });
   };
 
+  // Assuming you have set_air_monitoring_data in your store
   const deleteMutation = useMutation({
     mutationFn: deleteItem,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["get_all_air_monitoring_data"]);
+    onSuccess: async () => {
+      console.log("item deleted successfully");
+
+      // Invalidate the queries
+      await queryClient.invalidateQueries(["get_all_air_monitoring_data"]);
+
+      // Update Zustand state directly to remove the deleted item
+      const currentData = useAirMonitoringStore.getState().air_monitoring_data;
+      const updatedData = currentData.filter(
+        (item) => item.id !== selectedRowData?.key
+      );
+      useAirMonitoringStore.getState().set_air_monitoring_data(updatedData);
+
+      // Close modal and show success message
       set_isDeleteModalVisible(false);
       setdeleteSuccessMessage(true);
       setTimeout(() => {
@@ -108,6 +122,7 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
   //   longitude: defaultValues?.longitude,
   //   deviceUrl: defaultValues?.deviceurl
   // }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const editItem = async (values: any): Promise<void> => {
     await axios.patch(
       `${BASE_URL}/air-monitoring/${selectedRowData?.key}`,
@@ -137,6 +152,7 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleEditData = (values: any) => {
     editMutation.mutate(values);
   };
@@ -147,7 +163,7 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
     return formattedDate_v1;
   };
 
-  const filtered_data = useAirMonitoringStore((state) => state.filtered_data);
+  // const filtered_data = useAirMonitoringStore((state) => state.filtered_data);
 
   const air_monitoring_data = useAirMonitoringStore(
     (state) => state.air_monitoring_data
@@ -321,16 +337,10 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
     },
   ];
 
-  const dataSource = (
-    filtered_data.length > 0
-      ? filtered_data
-      : filtered_data.length === 0
-      ? []
-      : air_monitoring_data
-  )
+  const dataSource = air_monitoring_data
     ?.map((data) => ({
       key: data.id,
-      date: formattedDate(data.createdAt), // Accessing properties of each item in the array
+      date: formattedDate(data.createdAt),
       country: data.country,
       state: data.state,
       lga: data.lga,
