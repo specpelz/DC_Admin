@@ -31,8 +31,8 @@ const AirMonitoring = () => {
     return response.json();
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data, error, isLoading } = useQuery({
+  // data, 
+  const { error, isLoading } = useQuery({
     queryKey: ["get_all_air_monitoring_data", token], 
     queryFn: fetch_air_monitoring_data,
     enabled: !!token,
