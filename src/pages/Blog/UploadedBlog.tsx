@@ -14,8 +14,7 @@ import {
   MdOutlineModeEditOutline,
 } from "react-icons/md";
 
-
- interface BlogData {
+interface BlogData {
   id: string;
   title: string;
   content: string;
@@ -30,11 +29,6 @@ interface UploadedBlogProps {
   setEditSuccessMessage: (value: boolean) => void;
 }
 
-
-
-
-
-
 export const handleCancelEditModal = (
   setIsEditModalVisible: React.Dispatch<React.SetStateAction<boolean>>,
   setSelectedBlog: React.Dispatch<React.SetStateAction<BlogData | null>>,
@@ -43,16 +37,7 @@ export const handleCancelEditModal = (
   setIsEditModalVisible(false);
   setSelectedBlog(null);
   setImageDetails(null);
-
 };
-
-
-
-
-
-
-
-
 
 const UploadedBlog: React.FC<UploadedBlogProps> = ({
   blogs,
@@ -67,10 +52,6 @@ const UploadedBlog: React.FC<UploadedBlogProps> = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState<BlogData | null>(null);
- 
-
-
-  
 
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -84,11 +65,7 @@ const UploadedBlog: React.FC<UploadedBlogProps> = ({
     blog.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-
   const [editorContent, setEditorContent] = useState<string>("");
-
-
-
 
   const [loading, setLoading] = useState(false);
 
@@ -141,7 +118,6 @@ const UploadedBlog: React.FC<UploadedBlogProps> = ({
     setIsModalVisible(true);
   };
 
-
   const showEditModal = (blog: BlogData) => {
     setSelectedBlog(blog);
     form.setFieldsValue({ blogtitle: blog.title });
@@ -155,7 +131,11 @@ const UploadedBlog: React.FC<UploadedBlogProps> = ({
   };
 
   const handleCancelEditModalInternal = () => {
-    handleCancelEditModal(setIsEditModalVisible, setSelectedBlog, setImageDetails);
+    handleCancelEditModal(
+      setIsEditModalVisible,
+      setSelectedBlog,
+      setImageDetails
+    );
   };
   const handleContentChange = (content: string) => {
     setEditorContent(content);
@@ -230,37 +210,39 @@ const UploadedBlog: React.FC<UploadedBlogProps> = ({
   return (
     <>
       {/* Search & Upload Section */}
-      <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-0 justify-between lg:items-center">
-        <div
-          className={
-            "flex space-x-3 items-center px-[1.9rem] py-[1.3rem] w-full border border-BrandTextColor rounded-[8px] lg:w-[30%]"
-          }
-        >
-          <IoSearch size={24} />
-          <input
-            type="text"
-            className="text-[#000] bg-BrandLightPrimary border-BrandTextColor text-Sixteen outline-none w-[100%]"
-            placeholder={"Search..."}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-
-        <Button
-          type="primary"
-          onClick={handleUploadClick}
-          className="lg:w-[234px] h-[48px] text-[16px] font-[400] bg-BrandPrimary"
-        >
-          <div className="flex gap-x-[16px] items-center">
-            <img
-              src="/cross.svg"
-              alt="Upload Icon"
-              className="w-[14px] h-[14px]"
+      {!loadingImages && (
+        <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-0 justify-between lg:items-center">
+          <div
+            className={
+              "flex space-x-3 items-center px-[1.9rem] py-[1.3rem] w-full border border-BrandTextColor rounded-[8px] lg:w-[30%]"
+            }
+          >
+            <IoSearch size={24} />
+            <input
+              type="text"
+              className="text-[#000] bg-BrandLightPrimary border-BrandTextColor text-Sixteen outline-none w-[100%]"
+              placeholder={"Search..."}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <div className="text-[16px] font-[400]">Upload Blog</div>
           </div>
-        </Button>
-      </div>
+
+          <Button
+            type="primary"
+            onClick={handleUploadClick}
+            className="lg:w-[234px] h-[48px] text-[16px] font-[400] bg-BrandPrimary"
+          >
+            <div className="flex gap-x-[16px] items-center">
+              <img
+                src="/cross.svg"
+                alt="Upload Icon"
+                className="w-[14px] h-[14px]"
+              />
+              <div className="text-[16px] font-[400]">Upload Blog</div>
+            </div>
+          </Button>
+        </div>
+      )}
 
       {/* Blog Cards */}
       {loadingImages ? (
@@ -473,8 +455,8 @@ const UploadedBlog: React.FC<UploadedBlogProps> = ({
               Blog Detail
             </div>
             <RichEditor
-                 editorDefault={editorContent}
-                  onContentChange={handleContentChange}
+              editorDefault={editorContent}
+              onContentChange={handleContentChange}
             />
           </div>
 

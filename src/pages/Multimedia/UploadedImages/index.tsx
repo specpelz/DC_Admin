@@ -11,7 +11,7 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
   images,
   setIsUploading,
   setUploadedData,
-  loadingImages,
+  // loadingImages,
   setImages,
 }) => {
   const token = localStorage.getItem("DC_Token") || "";
@@ -130,37 +130,24 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
 
       <div className="bg-[#fff] my-[16px] py-[30px] px-[20px] rounded-[4px]">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 justify-center">
-          {loadingImages
-            ? Array.from({ length: imagesPerPage }).map((_, index) => (
-                <div
-                  key={index}
-                  className="relative w-full h-[180px] flex flex-col gap-2"
-                >
-                  {/* Delete icon skeleton */}
-                  <div className="absolute top-4 right-4 bg-gray-200 animate-pulse w-[26px] h-[26px] rounded-full"></div>
-
-                  {/* Image skeleton */}
-                  <div className="w-full h-[180px] bg-gray-200 animate-pulse rounded-[14px]"></div>
-                </div>
-              ))
-            : currentImages.map((item, index) => (
-                <div
-                  key={index}
-                  className="w-full h-[180px] flex flex-col gap-2 relative"
-                >
-                  <div
-                    className="absolute top-4 right-4 bg-[#fff] shadow-lg w-[26px] h-[26px] rounded-full flex justify-center items-center cursor-pointer"
-                    onClick={() => showDeleteModal(item)}
-                  >
-                    <MdOutlineDeleteOutline size={16} color="#9B9B9B" />
-                  </div>
-                  <img
-                    src={item.media}
-                    alt="uploaded image"
-                    className="w-full h-[180px] rounded-[14px] object-cover"
-                  />
-                </div>
-              ))}
+          {currentImages.map((item, index) => (
+            <div
+              key={index}
+              className="w-full h-[180px] flex flex-col gap-2 relative"
+            >
+              <div
+                className="absolute top-4 right-4 bg-[#fff] shadow-lg w-[26px] h-[26px] rounded-full flex justify-center items-center cursor-pointer"
+                onClick={() => showDeleteModal(item)}
+              >
+                <MdOutlineDeleteOutline size={16} color="#9B9B9B" />
+              </div>
+              <img
+                src={item.media}
+                alt="uploaded image"
+                className="w-full h-[180px] rounded-[14px] object-cover"
+              />
+            </div>
+          ))}
         </div>
       </div>
 

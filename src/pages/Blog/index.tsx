@@ -1,6 +1,6 @@
 import UploadBlog from "@pages/Blog/UploadBlog";
 import UploadedBlog from "@pages/Blog/UploadedBlog";
-import NoData from "@components/dashboard/NoData";
+// import NoData from "@components/dashboard/NoData";
 import useBlogStore from "@store/blog";
 import { useEffect, useState } from "react";
 import { BASE_URL } from "@api/index";
@@ -13,12 +13,15 @@ interface BlogData {
   image: string;
 }
 interface fetch_blog_type {
-  setLoadingImages:React.Dispatch<React.SetStateAction<boolean>>;
-  setBlogs:React.Dispatch<React.SetStateAction<BlogData[]>>;
-
+  setLoadingImages: React.Dispatch<React.SetStateAction<boolean>>;
+  setBlogs: React.Dispatch<React.SetStateAction<BlogData[]>>;
 }
 
-export const fetchBlogs = async ({setLoadingImages,setBlogs}:fetch_blog_type) => {
+// eslint-disable-next-line react-refresh/only-export-components
+export const fetchBlogs = async ({
+  setLoadingImages,
+  setBlogs,
+}: fetch_blog_type) => {
   setLoadingImages(true);
   try {
     const response = await fetch(`${BASE_URL}/blog`);
@@ -33,15 +36,13 @@ export const fetchBlogs = async ({setLoadingImages,setBlogs}:fetch_blog_type) =>
   }
 };
 
-
-
 const Blog = () => {
   const set_component = useBlogStore((state) => state.set_component);
   const component = useBlogStore((state) => state.component);
 
-  const handleUploadClick = () => {
-    set_component({ value: "upload" });
-  };
+  // const handleUploadClick = () => {
+  //   set_component({ value: "upload" });
+  // };
 
   // nodata,upload,data
   const [loadingImages, setLoadingImages] = useState(true);
@@ -50,9 +51,8 @@ const Blog = () => {
     useState<boolean>(false);
   const [editSuccessMessage, setEditSuccessMessage] = useState<boolean>(false);
 
-
   const handlefetchBlogs = () => {
-    fetchBlogs({setLoadingImages,setBlogs});
+    fetchBlogs({ setLoadingImages, setBlogs });
   };
   useEffect(() => {
     handlefetchBlogs();
@@ -68,7 +68,7 @@ const Blog = () => {
 
   return (
     <div>
-      <div className="flex flex-row-reverse w-full items-center justify-between mb-4">
+      <div className="flex flex-row-reverse w-full items-center justify-between ">
         <div>
           {editSuccessMessage && (
             <UploadMessage
@@ -90,17 +90,7 @@ const Blog = () => {
             : "Upload Blog"}
         </div>
       </div>
-      {component.value == "nodata" ? (
-        <NoData
-          buttonFunction={handleUploadClick}
-          title="No Blog Uploaded"
-          message="Start Uploading Blog"
-          buttonText={`${
-            loadingImages ? "Uploading Images..." : "Upload Image"
-          }`}
-          loading={loadingImages}
-        />
-      ) : component.value == "upload" ? (
+      {component.value == "upload" ? (
         <UploadBlog fetchBlogs={handlefetchBlogs} />
       ) : (
         <UploadedBlog

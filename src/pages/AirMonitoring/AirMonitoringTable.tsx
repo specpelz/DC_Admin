@@ -1,4 +1,12 @@
-import { useEffect, useState } from "react";
+import { BASE_URL } from "@api/index";
+import UploadMessage from "@components/dashboard/UploadMessage";
+import useCountries from "@hooks/useCountries";
+import useLGAs from "@hooks/useLGAs";
+import userToken from "@hooks/userToken";
+import useStates from "@hooks/useStates";
+import useAirMonitoringStore from "@store/airMonitoring";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { TableColumnsType, TableProps } from "antd";
 import {
   Button,
   Divider,
@@ -11,22 +19,14 @@ import {
   Table,
   Tooltip,
 } from "antd";
-import type { TableColumnsType, TableProps } from "antd";
-import "./customDropdown.css";
-import Select from "../../components/dashboard/select/Select";
 import FormItem from "antd/es/form/FormItem";
-import UploadMessage from "@components/dashboard/UploadMessage";
-import useAirMonitoringStore from "@store/airMonitoring";
-import moment from "moment";
-import userToken from "@hooks/userToken";
 import axios from "axios";
-import { BASE_URL } from "@api/index";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import moment from "moment";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import useCountries from "@hooks/useCountries";
-import useStates from "@hooks/useStates";
-import useLGAs from "@hooks/useLGAs";
+import Select from "../../components/dashboard/select/Select";
 import { DataType } from "../../types/airMonitoringDataType";
+import "./customDropdown.css";
 
 type TableRowSelection<T extends object = object> =
   TableProps<T>["rowSelection"];
@@ -40,6 +40,7 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const { token } = userToken();
+  // const { fetchUpdatedData } = useFetchUpdatedData();
 
   //  const handleDeleteData=()=>{
 
@@ -62,10 +63,23 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
     });
   };
 
+  // Assuming you have set_air_monitoring_data in your store
   const deleteMutation = useMutation({
     mutationFn: deleteItem,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["get_all_air_monitoring_data"]);
+    onSuccess: async () => {
+      console.log("item deleted successfully");
+
+      // Invalidate the queries
+      await queryClient.invalidateQueries(["get_all_air_monitoring_data"]);
+
+      // Update Zustand state directly to remove the deleted item
+      const currentData = useAirMonitoringStore.getState().air_monitoring_data;
+      const updatedData = currentData.filter(
+        (item) => item.id !== selectedRowData?.key
+      );
+      useAirMonitoringStore.getState().set_air_monitoring_data(updatedData);
+
+      // Close modal and show success message
       set_isDeleteModalVisible(false);
       setdeleteSuccessMessage(true);
       setTimeout(() => {
@@ -108,6 +122,7 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
   //   longitude: defaultValues?.longitude,
   //   deviceUrl: defaultValues?.deviceurl
   // }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const editItem = async (values: any): Promise<void> => {
     await axios.patch(
       `${BASE_URL}/air-monitoring/${selectedRowData?.key}`,
@@ -120,15 +135,22 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
     );
   };
 
+  const [successCityName, setSuccessCityName] = useState<string | null>(null);
+
   const editMutation = useMutation({
     mutationFn: editItem,
     onSuccess: () => {
+      const cityName: string | undefined = selectedRowData?.city;
       setSelectedRowData(null);
       set_isEditModalVisible(false);
       setEditSuccessMessage(true);
+      
+      setSuccessCityName(cityName ?? null); 
+      
       queryClient.invalidateQueries(["get_all_air_monitoring_data"]);
       setTimeout(() => {
         setEditSuccessMessage(false);
+        setSuccessCityName(null); // Reset city name when closing
       }, 2000);
     },
     onError: () => {
@@ -136,7 +158,9 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
       toast.error(errorMessage);
     },
   });
+  
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleEditData = (values: any) => {
     editMutation.mutate(values);
   };
@@ -147,7 +171,7 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
     return formattedDate_v1;
   };
 
-  const filtered_data = useAirMonitoringStore((state) => state.filtered_data);
+  // const filtered_data = useAirMonitoringStore((state) => state.filtered_data);
 
   const air_monitoring_data = useAirMonitoringStore(
     (state) => state.air_monitoring_data
@@ -321,16 +345,10 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
     },
   ];
 
-  const dataSource = (
-    filtered_data.length > 0
-      ? filtered_data
-      : filtered_data.length === 0
-      ? []
-      : air_monitoring_data
-  )
+  const dataSource = air_monitoring_data
     ?.map((data) => ({
       key: data.id,
-      date: formattedDate(data.createdAt), // Accessing properties of each item in the array
+      date: formattedDate(data.createdAt),
       country: data.country,
       state: data.state,
       lga: data.lga,
@@ -346,19 +364,6 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
           value.toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
-  // const dataSource = Array.from<DataType>({ length: 46 }).map<DataType>(
-  //   (_, i) => ({
-  //     key: i,
-  //     date: `Oct - 10 -2023 ${i}`,
-  //     country: "Nigeria",
-  //     state: `Rivers ${i}`,
-  //     lga: `Eleme ${i}`,
-  //     city: `Eleme Agbon ${i}`,
-  //     longitude: `7.0498° E ${i}`,
-  //     latitude: `7.0498° E ${i}`,
-  //     deviceURL: `https://api.airqualitymonitor....${i}`,
-  //   })
-  // );
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
@@ -391,13 +396,18 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
     form.setFieldsValue({ lga: undefined });
   };
 
+  console.log("selectedRowData", selectedRowData);
+
   return (
     <>
       {editSuccessMessage && (
         <div className="fixed right-0 z-[999] top-[12.5%]">
           <UploadMessage
-            imageName={`You have successfully uploaded data for ${selectedRowData?.city}`}
-            onClose={() => setEditSuccessMessage(false)}
+            imageName={`You have successfully uploaded data for ${successCityName}`}
+            onClose={() => {
+              setEditSuccessMessage(false);
+              setSuccessCityName(null);
+            }}
           />
         </div>
       )}

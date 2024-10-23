@@ -1,5 +1,5 @@
 import { BASE_URL } from "@api/index";
-import NoData from "@components/dashboard/NoData";
+// import NoData from "@components/dashboard/NoData";
 import UploadMessage from "@components/dashboard/UploadMessage";
 import { Button } from "antd";
 import axios from "axios";
@@ -25,10 +25,10 @@ const Multimedia = () => {
   const [loadingImages, setLoadingImages] = useState(true);
   const [images, setImages] = useState<ImageType[]>([]);
 
-  const handleUploadClick = () => {
-    setIsUploading(true);
-    setImageDetails(null);
-  };
+  // const handleUploadClick = () => {
+  //   setIsUploading(true);
+  //   setImageDetails(null);
+  // };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -211,18 +211,23 @@ const Multimedia = () => {
               loadingImages={loadingImages}
               setImages={setImages}
             />
-          ) : images && images.length === 0 ? (
-            <NoData
-              buttonFunction={handleUploadClick}
-              title="No Image Uploaded"
-              message="Start Uploading Images"
-              buttonText={`${
-                loadingImages ? "Uploading Images..." : "Upload Image"
-              }`}
-              loading={loadingImages}
-            />
           ) : (
-            ""
+            <div className="bg-[#fff] my-[16px] py-[30px] px-[20px] rounded-[4px]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 justify-center">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="relative w-full h-[180px] flex flex-col gap-2"
+                  >
+                    {/* Delete icon skeleton */}
+                    <div className="absolute top-4 right-4 bg-gray-200 animate-pulse w-[26px] h-[26px] rounded-full"></div>
+
+                    {/* Image skeleton */}
+                    <div className="w-full h-[180px] bg-gray-200 animate-pulse rounded-[14px]"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
         </>
       )}

@@ -28,3 +28,25 @@ html {
   max-width: 100% !important;
 }
 
+.custom-table-skeleton {
+  width: 100%; 
+  margin-top: 20px; /* Adjust as needed */
+}
+
+/* Ensure that the skeleton rows mimic the height of your actual table rows */
+.custom-table-skeleton .ant-skeleton {
+  border-radius: 4px; /* Match your table's border radius */
+}
+
+/* Optional: Style for the skeleton rows to align with table's padding */
+.custom-table-skeleton .ant-skeleton-title,
+.custom-table-skeleton .ant-skeleton-paragraph {
+  margin-bottom: 8px; /* Adjust spacing between skeleton rows */
+}
+
+/* Adjust height if necessary to mimic your table rows */
+.custom-table-skeleton .ant-skeleton-title {
+  height: 20px; /* Adjust height as per your table row */
+}
+
+
