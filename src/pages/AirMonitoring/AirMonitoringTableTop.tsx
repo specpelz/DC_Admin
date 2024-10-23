@@ -5,6 +5,7 @@ import {
   Divider,
   Input,
   Modal,
+  Skeleton,
   Space,
   Tooltip,
 } from "antd";
@@ -39,7 +40,12 @@ interface SelectOption {
 //   ref?: React.ForwardedRef<HTMLDivElement>;
 // }
 
-const AirMonitoringTableTop = () => {
+// Define the props interface
+interface AirMonitoringTableTopProps {
+  isLoading: boolean; // Define isLoading as a boolean
+}
+
+const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading }) => {
   // const airMonitoringData = useAirMonitoringStore((state) => state.air_monitoring_data);
   // Handle download click
   const handleDownload = () => {
@@ -113,7 +119,7 @@ const AirMonitoringTableTop = () => {
     if (showFilter) {
       generateFilterOptions();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showFilter, air_monitoring_data]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -231,7 +237,7 @@ const AirMonitoringTableTop = () => {
   return (
     <div className="h-screen ">
       {/* SEARCH. FILTER, SHARE,DOWNLOAD COMPONENTS------------------------------------------------- */}
-      <div className="w-full flex items-center gap-x-[30px] mt-[32px]">
+      <div className="w-full flex items-center gap-x-[30px] mt-[16px]">
         <div className="w-[30%]">
           <Input
             placeholder="Search for data... "
@@ -440,9 +446,13 @@ const AirMonitoringTableTop = () => {
           </div>
         )}
 
-        <div ref={targetRef}>
-          <AirMonitoringTable searchQuery={searchQuery} />
-        </div>
+        {isLoading ? (
+           <Skeleton active className="custom-table-skeleton" paragraph={{ rows: 5 }} /> 
+        ) : (
+          <div ref={targetRef}>
+            <AirMonitoringTable searchQuery={searchQuery} />
+          </div>
+        )}
       </div>
 
       <Modal

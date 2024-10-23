@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import NoData from "../../components/dashboard/NoData";
+// import NoData from "../../components/dashboard/NoData";
 import useAirMonitoringStore from "@store/airMonitoring";
 import AirMonitoringForm from "./AirMonitoringForm";
 import AirMonitoringTableTop from "./AirMonitoringTableTop";
@@ -54,6 +54,7 @@ const AirMonitoring = () => {
       queryClient.invalidateQueries(["get_all_air_monitoring_data"]);
     };
   }, [set_component, queryClient]);
+  
 
   if (error) {
     console.error("Error fetching terminals:", error);
@@ -69,18 +70,10 @@ const AirMonitoring = () => {
           ? "Upload Data"
           : "Air Monitoring Data"}
       </div>
-      {component.value === "nodata" ? (
-        <NoData
-          buttonFunction={() => set_component({ value: "upload" })}
-          title="No Data Uploaded"
-          message="Start Uploading Data"
-          buttonText="Upload Data"
-          loading={isLoading}
-        />
-      ) : component.value === "upload" ? (
+      { component.value === "upload" ? (
         <AirMonitoringForm />
       ) : (
-        <AirMonitoringTableTop />
+        <AirMonitoringTableTop isLoading={isLoading} />
       )}
     </div>
   );

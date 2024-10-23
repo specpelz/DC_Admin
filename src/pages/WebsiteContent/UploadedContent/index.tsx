@@ -14,7 +14,7 @@ const UploadedContent: React.FC<UploadedContentProps> = ({
   setUploadedData,
   setIsEditing,
   ContentDetails,
-  LoadingContentDetails,
+  // LoadingContentDetails,
   handleEditContent,
   selectedContentId,
   setSelectedContentId,
@@ -110,7 +110,7 @@ const UploadedContent: React.FC<UploadedContentProps> = ({
           className={`flex space-x-3 items-center px-[1.9rem] py-[1.3rem] w-full border border-BrandTextColor rounded-[8px] lg:w-[30%]`}
         >
           <IoSearch size={24} />
-          
+
           <input
             type="text"
             className="text-[#000] bg-BrandLightPrimary border-BrandTextColor text-Sixteen outline-none w-[100%]"
@@ -136,35 +136,7 @@ const UploadedContent: React.FC<UploadedContentProps> = ({
         </Button>
       </div>
 
-      {LoadingContentDetails ? (
-        <div className="bg-[#fff] my-[16px] py-[30px] px-[20px] rounded-[4px]">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 justify-center">
-            {Array.from({ length: contentPerPage }).map((_, index) => (
-              <div
-                key={index}
-                className="w-full flex flex-col gap-2 bg-BrandGray p-[16px] animate-pulse"
-              >
-                <div className="h-6 bg-gray-300 rounded mb-4"></div>{" "}
-                {/* Title Skeleton */}
-                <div className="flex items-center gap-4 justify-between w-full">
-                  <div className="h-4 bg-gray-300 rounded w-1/3"></div>{" "}
-                  {/* Placeholder for action icons */}
-                  <div className="flex gap-2">
-                    <div className="bg-[#e0e0e0] w-[26px] h-[26px] rounded-full flex justify-center items-center cursor-not-allowed">
-                      <MdOutlineDeleteOutline size={16} color="#9B9B9B" />
-                    </div>
-                    <div className="bg-[#e0e0e0] w-[26px] h-[26px] rounded-full flex justify-center items-center cursor-not-allowed">
-                      <MdOutlineEdit size={16} color="#9B9B9B" />
-                    </div>
-                  </div>
-                </div>
-                <div className="h-4 bg-gray-300 rounded mt-4"></div>{" "}
-                {/* Content Skeleton */}
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : webContent.length > 0 ? (
+      {webContent.length > 0 ? (
         <div className="bg-[#fff] my-[16px] py-[30px] px-[20px] rounded-[4px]">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 justify-center">
             {webContent.map((item, index) => (

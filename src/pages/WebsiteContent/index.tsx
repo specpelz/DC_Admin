@@ -1,5 +1,5 @@
 import { BASE_URL } from "@api/index";
-import NoData from "@components/dashboard/NoData";
+// import NoData from "@components/dashboard/NoData";
 import Select from "@components/dashboard/select/Select";
 import UploadMessage from "@components/dashboard/UploadMessage";
 import { Button, Form, Input, message } from "antd";
@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { ContentDetail } from "../../types/UploadedImages";
 import UploadedContent from "./UploadedContent";
+import { MdOutlineDeleteOutline, MdOutlineEdit } from "react-icons/md";
 
 const WebsiteContent = () => {
   const token = localStorage.getItem("DC_Token") || "";
@@ -17,11 +18,11 @@ const WebsiteContent = () => {
   const [isFormValid, setIsFormValid] = useState(false);
   const [isFormEmpty, setIsFormEmpty] = useState(true);
 
-  const handleUploadClick = () => {
-    setIsEditing(false);
-    setUploadedData(false);
-    setIsUploading(true);
-  };
+  // const handleUploadClick = () => {
+  //   setIsEditing(false);
+  //   setUploadedData(false);
+  //   setIsUploading(true);
+  // };
 
   const pageOptions = [
     { label: "About Us", value: "About Us" },
@@ -106,7 +107,6 @@ const WebsiteContent = () => {
       // Handle successful upload
       console.log("Content uploaded successfully", response);
       if (response.data.status === "success") {
-        
         setUploadSuccess(true);
         form.resetFields();
         setTimeout(() => {
@@ -217,7 +217,7 @@ const WebsiteContent = () => {
 
   useEffect(() => {
     fetchContentDetails();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, uploadedData, EditData]);
 
   return (
@@ -345,17 +345,33 @@ const WebsiteContent = () => {
               fetchContentDetails={fetchContentDetails}
             />
           ) : (
-            <NoData
-              buttonFunction={handleUploadClick}
-              title="No Content Displayed"
-              message="Start adding text more to create a captivating experience for your visitors."
-              buttonText={`${
-                LoadingContentDetails
-                  ? "Uploading Content..."
-                  : "Upload Content"
-              }`}
-              loading={LoadingContentDetails}
-            />
+            <div className="bg-[#fff] my-[16px] py-[30px] px-[20px] rounded-[4px]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 justify-center">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="w-full flex flex-col gap-2 bg-BrandGray p-[16px] animate-pulse"
+                  >
+                    <div className="h-6 bg-gray-300 rounded mb-4"></div>{" "}
+                    {/* Title Skeleton */}
+                    <div className="flex items-center gap-4 justify-between w-full">
+                      <div className="h-4 bg-gray-300 rounded w-1/3"></div>{" "}
+                      {/* Placeholder for action icons */}
+                      <div className="flex gap-2">
+                        <div className="bg-[#e0e0e0] w-[26px] h-[26px] rounded-full flex justify-center items-center cursor-not-allowed">
+                          <MdOutlineDeleteOutline size={16} color="#9B9B9B" />
+                        </div>
+                        <div className="bg-[#e0e0e0] w-[26px] h-[26px] rounded-full flex justify-center items-center cursor-not-allowed">
+                          <MdOutlineEdit size={16} color="#9B9B9B" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="h-4 bg-gray-300 rounded mt-4"></div>{" "}
+                    {/* Content Skeleton */}
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
         </div>
       )}

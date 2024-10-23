@@ -135,15 +135,22 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
     );
   };
 
+  const [successCityName, setSuccessCityName] = useState<string | null>(null);
+
   const editMutation = useMutation({
     mutationFn: editItem,
     onSuccess: () => {
+      const cityName: string | undefined = selectedRowData?.city;
       setSelectedRowData(null);
       set_isEditModalVisible(false);
       setEditSuccessMessage(true);
+      
+      setSuccessCityName(cityName ?? null); 
+      
       queryClient.invalidateQueries(["get_all_air_monitoring_data"]);
       setTimeout(() => {
         setEditSuccessMessage(false);
+        setSuccessCityName(null); // Reset city name when closing
       }, 2000);
     },
     onError: () => {
@@ -151,6 +158,7 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
       toast.error(errorMessage);
     },
   });
+  
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleEditData = (values: any) => {
@@ -356,19 +364,6 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
           value.toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
-  // const dataSource = Array.from<DataType>({ length: 46 }).map<DataType>(
-  //   (_, i) => ({
-  //     key: i,
-  //     date: `Oct - 10 -2023 ${i}`,
-  //     country: "Nigeria",
-  //     state: `Rivers ${i}`,
-  //     lga: `Eleme ${i}`,
-  //     city: `Eleme Agbon ${i}`,
-  //     longitude: `7.0498° E ${i}`,
-  //     latitude: `7.0498° E ${i}`,
-  //     deviceURL: `https://api.airqualitymonitor....${i}`,
-  //   })
-  // );
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
@@ -401,13 +396,18 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
     form.setFieldsValue({ lga: undefined });
   };
 
+  console.log("selectedRowData", selectedRowData);
+
   return (
     <>
       {editSuccessMessage && (
         <div className="fixed right-0 z-[999] top-[12.5%]">
           <UploadMessage
-            imageName={`You have successfully uploaded data for ${selectedRowData?.city}`}
-            onClose={() => setEditSuccessMessage(false)}
+            imageName={`You have successfully uploaded data for ${successCityName}`}
+            onClose={() => {
+              setEditSuccessMessage(false);
+              setSuccessCityName(null);
+            }}
           />
         </div>
       )}
