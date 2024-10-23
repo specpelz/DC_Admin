@@ -55,7 +55,6 @@ const Nav = () => {
                 </SecondaryBtn>
               </Link>
             </li>
-       
           </ul>
         </div>
         {/* <MobileNav /> */}
