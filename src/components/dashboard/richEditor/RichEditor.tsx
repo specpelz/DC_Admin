@@ -23,7 +23,7 @@ const extensions = [
     types: ["heading", "paragraph"],
   }),
   Placeholder.configure({
-    placeholder: "Start writing typing...",
+    placeholder: "Start typing...",
   }),
 ];
 
