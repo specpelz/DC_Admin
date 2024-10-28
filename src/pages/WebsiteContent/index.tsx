@@ -26,7 +26,6 @@ const WebsiteContent = () => {
   // };
   const handleContentChange = (content: string) => {
     setContent(content);
-
   };
 
   const pageOptions = [
@@ -79,7 +78,7 @@ const WebsiteContent = () => {
     setIsEditing(false);
     setIsUploading(false);
     form.resetFields(); // Clear the form when going back
-    setContent("")
+    setContent("");
     setIsFormValid(false); // Reset form validity
     setIsFormEmpty(true); // Reset form empty state
   };
@@ -100,8 +99,8 @@ const WebsiteContent = () => {
         `${BASE_URL}/web-content`,
         {
           title: values.page, // Include title
-          // content: values.contentDetails, 
-          content: content, 
+          // content: values.contentDetails,
+          content: content,
         },
         {
           headers: {
@@ -116,7 +115,7 @@ const WebsiteContent = () => {
       if (response.data.status === "success") {
         setUploadSuccess(true);
         form.resetFields();
-        setContent("")
+        setContent("");
         setTimeout(() => {
           setUploadSuccess(false);
           setUploadedData(true);
@@ -144,10 +143,10 @@ const WebsiteContent = () => {
   );
   const handleEditContent = (content: ContentDetail) => {
     form.setFieldsValue({
-      page: content.title, 
+      page: content.title,
       // contentDetails: content.content,
     });
-    setContent(content.content)
+    setContent(content.content);
     setSelectedContentId(content.id); // Store selected content ID for updating
     setUploadedData(false);
     // setIsUploading(true); // Set to uploading state for the form
@@ -181,7 +180,7 @@ const WebsiteContent = () => {
       if (response.data.status === "success") {
         setEditSuccess(true);
         form.resetFields();
-        setContent("")
+        setContent("");
         setTimeout(() => {
           setEditSuccess(false);
           setEditData(true);
@@ -312,10 +311,10 @@ const WebsiteContent = () => {
                     </Form.Item>
                   </div> */}
 
-<RichEditor
-          editorDefault={content}
-          onContentChange={handleContentChange}
-        />
+                  <RichEditor
+                    editorDefault={content}
+                    onContentChange={handleContentChange}
+                  />
                 </div>
 
                 <div className="w-full flex justify-end items-end ">
@@ -323,8 +322,10 @@ const WebsiteContent = () => {
                     onClick={isEditing ? EditContent : UploadContent}
                     type="primary"
                     className="w-[234px] h-[48px] text-[16px] font-[400] mt-[16px] bg-BrandPrimary"
-                    disabled={!isEditing && (!isFormValid || isFormEmpty || !content) } // Disable only when not editing and form is invalid/empty
-                    // disabled={content.length > 0 ? false:true} 
+                    disabled={
+                      !isEditing && (!isFormValid || isFormEmpty || !content)
+                    } // Disable only when not editing and form is invalid/empty
+                    // disabled={content.length > 0 ? false:true}
                     loading={isEditing ? EditLoading : loading} // Show loading state when submitting
                   >
                     {isEditing ? (
