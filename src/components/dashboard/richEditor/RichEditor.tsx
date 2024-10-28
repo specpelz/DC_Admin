@@ -23,7 +23,7 @@ const extensions = [
     types: ["heading", "paragraph"],
   }),
   Placeholder.configure({
-    placeholder: "Start writing your blog post...",
+    placeholder: "Start writing typing...",
   }),
 ];
 
@@ -32,7 +32,7 @@ interface Props {
   onContentChange: (content: string) => void;
 }
 
-const RichEditor = ({ editorDefault , onContentChange }: Props) => {
+const RichEditor = ({ editorDefault, onContentChange }: Props) => {
   const [showImageGallery, setShowImageGallery] = useState<boolean>(false);
 
   const editor = useEditor({
