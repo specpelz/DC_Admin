@@ -26,11 +26,13 @@ html {
 
 .ProseMirror.prose {
   max-width: 100% !important;
+  font-size: 14px !important;
 }
 
 .custom-table-skeleton {
   width: 100%; 
   margin-top: 20px; /* Adjust as needed */
+  font-size: 14px;
 }
 
 /* Ensure that the skeleton rows mimic the height of your actual table rows */

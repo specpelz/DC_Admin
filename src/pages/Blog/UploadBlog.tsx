@@ -53,7 +53,7 @@ const UploadBlog: React.FC<UploadBlogProps> = ({ fetchBlogs }) => {
 
   const handleContentChange = (content: string) => {
     setContent(content);
-    console.log("Content in UploadBlog updated:", content);
+
   };
 
   const isEmpty = !title || !content || !imageDetails?.file;

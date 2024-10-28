@@ -5,6 +5,7 @@ import useBlogStore from "@store/blog";
 import { useEffect, useState } from "react";
 import { BASE_URL } from "@api/index";
 import UploadMessage from "@components/dashboard/UploadMessage";
+import { IoIosArrowBack } from "react-icons/io";
 
 interface BlogData {
   id: string;
@@ -84,10 +85,20 @@ const Blog = () => {
             />
           )}
         </div>
-        <div className="text-[20px] font-[600] text-BrandBlack1 mb-[16px]">
+        <div className="flex gap-x-4 items-center mb-[16px]">
+            {
+                component.value == "upload"   && <div
+                    onClick={()=>  set_component({value:"data"})}
+                    className=" w-[30px] flex justify-center border cursor-pointer"
+                  >
+                    <IoIosArrowBack size={20} />
+                  </div>
+            }
+        <div className="text-[20px] font-[600] text-BrandBlack1 ">
           {component.value === "nodata" || component.value === "data"
             ? "Blog"
             : "Upload Blog"}
+        </div>
         </div>
       </div>
       {component.value == "upload" ? (

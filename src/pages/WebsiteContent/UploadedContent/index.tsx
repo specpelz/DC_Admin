@@ -138,11 +138,11 @@ const UploadedContent: React.FC<UploadedContentProps> = ({
 
       {webContent.length > 0 ? (
         <div className="bg-[#fff] my-[16px] py-[30px] px-[20px] rounded-[4px]">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 justify-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-center">
             {webContent.map((item, index) => (
               <div
                 key={index}
-                className="w-full flex flex-col gap-2 bg-BrandGray p-[16px]"
+                className="w-full flex flex-col gap-2 bg-BrandGray p-[16px] h-[300px] overflow-auto"
               >
                 <div className="flex items-center gap-4 justify-between w-full">
                   <h2 className="text-[16px] font-[600]">{item.title}</h2>
@@ -161,8 +161,12 @@ const UploadedContent: React.FC<UploadedContentProps> = ({
                     </div>
                   </div>
                 </div>
-
-                <p className="text-[14px] font-[500] mt-4">{item.content}</p>
+                <div 
+      className="prose max-w-none text-[14px]"
+      dangerouslySetInnerHTML={{ __html: item.content }}
+    />
+                
+                {/* <p className="text-[14px] font-[500] mt-4">{}</p> */}
               </div>
             ))}
           </div>

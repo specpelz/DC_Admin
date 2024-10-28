@@ -67,7 +67,7 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
   const deleteMutation = useMutation({
     mutationFn: deleteItem,
     onSuccess: async () => {
-      console.log("item deleted successfully");
+     
 
       // Invalidate the queries
       await queryClient.invalidateQueries(["get_all_air_monitoring_data"]);
@@ -368,7 +368,7 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
+
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
@@ -396,7 +396,7 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
     form.setFieldsValue({ lga: undefined });
   };
 
-  console.log("selectedRowData", selectedRowData);
+
 
   return (
     <>

@@ -2,13 +2,14 @@ import { BASE_URL } from "@api/index";
 // import NoData from "@components/dashboard/NoData";
 import Select from "@components/dashboard/select/Select";
 import UploadMessage from "@components/dashboard/UploadMessage";
-import { Button, Form, Input, message } from "antd";
+import { Button, Form, message } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { ContentDetail } from "../../types/UploadedImages";
 import UploadedContent from "./UploadedContent";
 import { MdOutlineDeleteOutline, MdOutlineEdit } from "react-icons/md";
+import RichEditor from "@components/dashboard/richEditor/RichEditor";
 
 const WebsiteContent = () => {
   const token = localStorage.getItem("DC_Token") || "";
@@ -17,12 +18,16 @@ const WebsiteContent = () => {
   const [form] = Form.useForm();
   const [isFormValid, setIsFormValid] = useState(false);
   const [isFormEmpty, setIsFormEmpty] = useState(true);
-
+  const [content, setContent] = useState<string>("");
   // const handleUploadClick = () => {
   //   setIsEditing(false);
   //   setUploadedData(false);
   //   setIsUploading(true);
   // };
+  const handleContentChange = (content: string) => {
+    setContent(content);
+
+  };
 
   const pageOptions = [
     { label: "About Us", value: "About Us" },
@@ -74,6 +79,7 @@ const WebsiteContent = () => {
     setIsEditing(false);
     setIsUploading(false);
     form.resetFields(); // Clear the form when going back
+    setContent("")
     setIsFormValid(false); // Reset form validity
     setIsFormEmpty(true); // Reset form empty state
   };
@@ -94,7 +100,8 @@ const WebsiteContent = () => {
         `${BASE_URL}/web-content`,
         {
           title: values.page, // Include title
-          content: values.contentDetails, // Include content
+          // content: values.contentDetails, 
+          content: content, 
         },
         {
           headers: {
@@ -109,6 +116,7 @@ const WebsiteContent = () => {
       if (response.data.status === "success") {
         setUploadSuccess(true);
         form.resetFields();
+        setContent("")
         setTimeout(() => {
           setUploadSuccess(false);
           setUploadedData(true);
@@ -136,9 +144,10 @@ const WebsiteContent = () => {
   );
   const handleEditContent = (content: ContentDetail) => {
     form.setFieldsValue({
-      page: content.title, // Assuming title is used for page
-      contentDetails: content.content,
+      page: content.title, 
+      // contentDetails: content.content,
     });
+    setContent(content.content)
     setSelectedContentId(content.id); // Store selected content ID for updating
     setUploadedData(false);
     // setIsUploading(true); // Set to uploading state for the form
@@ -158,7 +167,8 @@ const WebsiteContent = () => {
         `${BASE_URL}/web-content/${selectedContentId}`,
         {
           title: values.page,
-          content: values.contentDetails,
+          // content: values.contentDetails,
+          content: content,
         },
         {
           headers: {
@@ -171,6 +181,7 @@ const WebsiteContent = () => {
       if (response.data.status === "success") {
         setEditSuccess(true);
         form.resetFields();
+        setContent("")
         setTimeout(() => {
           setEditSuccess(false);
           setEditData(true);
@@ -279,7 +290,7 @@ const WebsiteContent = () => {
                     />
                   </div>
 
-                  <div className="w-[100%] mb-[20px]">
+                  {/* <div className="w-[100%] mb-[20px]">
                     <Form.Item
                       label={
                         <p className="text-[16px] font-[400]">
@@ -299,7 +310,12 @@ const WebsiteContent = () => {
                         placeholder="Enter the website content details here..."
                       />
                     </Form.Item>
-                  </div>
+                  </div> */}
+
+<RichEditor
+          editorDefault={content}
+          onContentChange={handleContentChange}
+        />
                 </div>
 
                 <div className="w-full flex justify-end items-end ">
@@ -307,7 +323,8 @@ const WebsiteContent = () => {
                     onClick={isEditing ? EditContent : UploadContent}
                     type="primary"
                     className="w-[234px] h-[48px] text-[16px] font-[400] mt-[16px] bg-BrandPrimary"
-                    disabled={!isEditing && (!isFormValid || isFormEmpty)} // Disable only when not editing and form is invalid/empty
+                    disabled={!isEditing && (!isFormValid || isFormEmpty || !content) } // Disable only when not editing and form is invalid/empty
+                    // disabled={content.length > 0 ? false:true} 
                     loading={isEditing ? EditLoading : loading} // Show loading state when submitting
                   >
                     {isEditing ? (

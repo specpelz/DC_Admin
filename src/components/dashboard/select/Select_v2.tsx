@@ -36,7 +36,7 @@ const Select_v2: React.FC<SelectProps> = ({
   disabled,
   showSearch = false,
 }) => {
-  console.log("Select options:", options); // Debugging line
+
 
   return (
     <FormItem
@@ -57,10 +57,10 @@ const Select_v2: React.FC<SelectProps> = ({
         disabled={disabled}
         showSearch={showSearch}
         filterOption={(input, option) => {
-          console.log(`option`, option);
+    
           const label = String(option?.value).toLowerCase();
           const inputLower = input.toLowerCase();
-          console.log(`Comparing "${inputLower}" with "${label}"`);
+
           return label.includes(inputLower);
         }}
         optionFilterProp="children" 
