@@ -1,6 +1,7 @@
 import React, { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import PrivateRoutes from "./PrivateRoutes";
+import Spinner from "@components/spinner";
 
 const Login = lazy(() => import("@pages/Auth/Login"));
 
@@ -18,7 +19,7 @@ const AppRoutes = () => {
         <Route
           path="/"
           element={
-            <React.Suspense>
+            <React.Suspense fallback={<Spinner />}>
               <Login />
             </React.Suspense>
           }
@@ -29,7 +30,7 @@ const AppRoutes = () => {
           path="/admin"
           element={
             <PrivateRoutes>
-              <React.Suspense>
+              <React.Suspense fallback={<Spinner />}>
                 <AirMonitoring />
               </React.Suspense>
             </PrivateRoutes>
@@ -38,7 +39,7 @@ const AppRoutes = () => {
           <Route
             path="multimedia"
             element={
-              <React.Suspense>
+              <React.Suspense fallback={<Spinner />}>
                 <Multimedia />
               </React.Suspense>
             }
@@ -46,7 +47,7 @@ const AppRoutes = () => {
           <Route
             path="blog"
             element={
-              <React.Suspense>
+              <React.Suspense fallback={<Spinner />}>
                 <Blog />
               </React.Suspense>
             }
@@ -54,7 +55,7 @@ const AppRoutes = () => {
           <Route
             path="content"
             element={
-              <React.Suspense>
+              <React.Suspense fallback={<Spinner />}>
                 <WebsiteContent />
               </React.Suspense>
             }

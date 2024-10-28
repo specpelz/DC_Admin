@@ -1,20 +1,33 @@
-import useCountries from "@hooks/useCountries";
+// import useCountries from "@hooks/useCountries";
 import useLGAs from "@hooks/useLGAs";
 import useStates from "@hooks/useStates";
 // import useAirMonitoringStore from "@store/airMonitoring";
 import { Button, Form, Input } from "antd";
 import FormItem from "antd/es/form/FormItem";
-import { useState } from "react";
+import {useState } from "react";
 import Select from "../../components/dashboard/select/Select";
 import UploadMessage from "../../components/dashboard/UploadMessage";
 import { AirMonitoring_data_type } from "../../types/airMonitoringDataType";
 import usePostAirMonitoring from "@hooks/usePostAirMonitoring";
 import useAirMonitoringStore from "@store/airMonitoring";
 import { useQueryClient } from "@tanstack/react-query";
+// import { Country, State, City }  from 'country-state-city';
+
+
+
 
 import useFetchUpdatedData from "@hooks/useFetchUpdatedData";
 
 const AirMonitoringForm: React.FC = () => {
+
+// useEffect(()=>{
+//   console.log(Country.getAllCountries(),"contouring jaws")
+//     console.log(State.getAllStates(),"contouring jaws2")
+// },[])
+
+
+
+
   const queryClient = useQueryClient();
   const { fetchUpdatedData } = useFetchUpdatedData();
   const successMessage = useAirMonitoringStore(
@@ -25,7 +38,10 @@ const AirMonitoringForm: React.FC = () => {
   );
   // const set_component = useAirMonitoringStore((state) => state.set_component);
 
-  const countries = useCountries(); // Fetch countries
+  // const countries = useCountries();
+  const countries = [{
+    value:"Nigeria",label:"Nigeria"
+  }]; 
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const states = useStates(selectedCountry); // Fetch states based on selected country
   const [selectedState, setSelectedState] = useState<string | null>(null);
@@ -34,17 +50,15 @@ const AirMonitoringForm: React.FC = () => {
   const handleCountryChange = (value: string | number) => {
     setSelectedCountry(value as string);
     setSelectedState(null); // Reset selected state when country changes
-    console.log("Selected Country:", value);
+
   };
 
   const handleStateChange = (value: string | number) => {
     setSelectedState(value.toString());
-    console.log("Selected State:", value);
+
   };
   // Log countries, states, and lgas to debug
-  console.log("Countries:", countries);
-  console.log("States:", states);
-  console.log("LGAs:", lgas);
+
 
   const { postData, isLoading } = usePostAirMonitoring();
   const [city, set_city] = useState<string>("");
@@ -54,7 +68,7 @@ const AirMonitoringForm: React.FC = () => {
     const { country, state, lga, city, latitude, longitude, deviceUrl } =
       values;
     set_city(city);
-    console.log({ country, state, lga, city, latitude, longitude, deviceUrl });
+
     await postData({
       country,
       state,
