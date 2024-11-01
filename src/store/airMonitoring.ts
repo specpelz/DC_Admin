@@ -1,3 +1,4 @@
+import { AirMonitoringData, data_type } from "../types/airMonitoringDataType";
 import { create } from "zustand";
 
 // interface useAirMonitoringStore_type{
@@ -7,30 +8,7 @@ interface value_type {
   value: string;
 }
 
-interface data_type {
-  city: string;
-  country: string;
-  createdAt: string;
-  deviceUrl: string;
-  id: string;
-  latitude: string;
-  lga: string;
-  longitude: string;
-  state: string;
-  updatedAt: string;
-}
 
-interface AirMonitoringData {
-  id:string;
-  createdAt: string;
-  country: string;
-  state: string;
-  lga: string;
-  city: string;
-  longitude: string;
-  latitude: string;
-  deviceUrl: string;
-}
 
 
 interface success_type {
