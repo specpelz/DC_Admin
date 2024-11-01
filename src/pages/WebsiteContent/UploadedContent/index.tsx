@@ -161,11 +161,11 @@ const UploadedContent: React.FC<UploadedContentProps> = ({
                     </div>
                   </div>
                 </div>
-                <div 
-      className="prose max-w-none text-[14px]"
-      dangerouslySetInnerHTML={{ __html: item.content }}
-    />
-                
+                <div
+                  className="prose max-w-none text-[14px]"
+                  dangerouslySetInnerHTML={{ __html: item.content }}
+                />
+
                 {/* <p className="text-[14px] font-[500] mt-4">{}</p> */}
               </div>
             ))}
