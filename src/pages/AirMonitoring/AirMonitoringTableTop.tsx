@@ -19,6 +19,7 @@ import { CSVLink } from "react-csv";
 import { usePDF } from "react-to-pdf";
 import toast from "react-hot-toast";
 import moment from "moment";
+import {  data_type } from "../../types/airMonitoringDataType";
 const { RangePicker } = DatePicker;
 
 interface FilterValues {
@@ -67,6 +68,14 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
     setSearchQuery(e.target.value);
   };
 
+
+
+
+
+ 
+
+
+  const [filteredItems, setFilteredItems] = useState<data_type[]>([]);
   const [filter_input_values, set_filter_input_values] =
     useState<boolean>(false);
   const [showFilter, setShowFilter] = useState<boolean>(false);
@@ -83,25 +92,39 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
   const air_monitoring_data = useAirMonitoringStore(
     (state) => state.air_monitoring_data
   );
-  useEffect(() => {
-    console.log("Table data updated:", air_monitoring_data);
-  }, [air_monitoring_data]);
-  const setFilteredData = useAirMonitoringStore(
-    (state) => state.setFilteredData
-  );
-  const the_FilteredData = useAirMonitoringStore(
-    (state) => state.filtered_data
-  );
 
+
+
+
+
+
+
+
+  // Initial data setup
+  useEffect(() => {
+    // set_air_monitoring_data(AQI_datas);
+    setFilteredItems(air_monitoring_data);
+  }, [air_monitoring_data]);
+
+
+
+
+
+
+  
+
+
+
+  
   const [countryOptions, setCountryOptions] = useState<SelectOption[]>([]);
   const [stateOptions, setStateOptions] = useState<SelectOption[]>([]);
   const [lgaOptions, setLgaOptions] = useState<SelectOption[]>([]);
   const [cityOptions, setCityOptions] = useState<SelectOption[]>([]);
 
   const generateFilterOptions = () => {
-    const uniqueOptions = (field: keyof (typeof air_monitoring_data)[0]) => {
+    const uniqueOptions = (field: keyof (typeof filteredItems)[0]) => {
       return Array.from(
-        new Set(air_monitoring_data.map((item) => item[field]))
+        new Set(filteredItems.map((item) => item[field]))
       ).map((value, key) => ({
         value: value,
         label: value,
@@ -120,7 +143,7 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
       generateFilterOptions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showFilter, air_monitoring_data]);
+  }, [showFilter, filteredItems]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleFilterChange = (value: any, field: keyof FilterValues) => {
@@ -164,7 +187,7 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
       );
     });
 
-    setFilteredData(filteredData);
+    setFilteredItems(filteredData);
     setShowFilter(false);
     setIsFilterActive(true);
   };
@@ -178,7 +201,7 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
       lga: null,
       city: null,
     });
-    setFilteredData(air_monitoring_data);
+    setFilteredItems(air_monitoring_data);
     setShowFilter_v2(false);
 
     setShowFilter(false);
@@ -212,28 +235,36 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
     console.log("Modal closed without confirmation");
   };
 
-  // useEffect(() => {
-  //   if (filterValues.country) {
-  //     const filteredStates = air_monitoring_data
-  //       .filter(item => item.country === filterValues.country)
-  //       .map(item => item.state);
-
-  //     const stateOptions = Array.from(new Set(filteredStates))
-  //       .map((value, key) => ({
-  //         value,
-  //         label: value,
-  //         key: key.toString(),
-  //       }));
-
-  //     setStateOptions(stateOptions);
-  //   } else {
-  //     generateFilterOptions(); // Reset to all options
-  //   }
-  // }, [filterValues.country]);
 
   const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
 
   const [fileType, setFileType] = useState<string | number>("pdf");
+
+
+
+  useEffect(() => {
+    let result = air_monitoring_data;
+
+    // Apply search query
+    if (searchQuery) {
+      result = result.filter((AQI_data) => {
+        const searchLower = searchQuery.toLowerCase();
+        return (
+          AQI_data.country.toLowerCase().includes(searchLower) ||
+          AQI_data.state.toLowerCase().includes(searchLower) ||
+          AQI_data.city.toLowerCase().includes(searchLower) ||
+          AQI_data.lga.toLowerCase().includes(searchLower)
+        );
+      });
+    }
+
+    setFilteredItems(result);
+   
+  }, [searchQuery, air_monitoring_data]);
+
+
+
+
   return (
     <div className="h-screen ">
       {/* SEARCH. FILTER, SHARE,DOWNLOAD COMPONENTS------------------------------------------------- */}
@@ -399,6 +430,7 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
                 <Select_v2
                   name="city"
                   label="City"
+                  required={false}
                   placeholder="Select city"
                   options={cityOptions}
                   value={filterValues.city || undefined}
@@ -450,7 +482,10 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
            <Skeleton active className="custom-table-skeleton" paragraph={{ rows: 5 }} /> 
         ) : (
           <div ref={targetRef}>
-            <AirMonitoringTable searchQuery={searchQuery} />
+            <AirMonitoringTable
+            // searchQuery={searchQuery}
+            filtered = {filteredItems}
+             />
           </div>
         )}
       </div>
@@ -494,7 +529,8 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
             {fileType === "csv" ? (
               <CSVLink
                 filename={"Air_monitoring_data.csv"}
-                data={the_FilteredData}
+                data={filteredItems}
+                // data={the_FilteredData}
                 className="btn btn-primary"
               >
                 <div className="text-[16px] font-[400]">Download</div>

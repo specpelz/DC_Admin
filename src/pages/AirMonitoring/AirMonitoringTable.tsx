@@ -25,18 +25,19 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Select from "../../components/dashboard/select/Select";
-import { DataType } from "../../types/airMonitoringDataType";
+import { data_type, DataType } from "../../types/airMonitoringDataType";
 import "./customDropdown.css";
 
 type TableRowSelection<T extends object = object> =
   TableProps<T>["rowSelection"];
 
 interface AirMonitoringTableProps {
-  searchQuery: string;
+  // searchQuery: string;
+  filtered: data_type[];
 }
 
 const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
-  searchQuery,
+  filtered,
 }) => {
   const queryClient = useQueryClient();
   const { token } = userToken();
@@ -67,8 +68,6 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
   const deleteMutation = useMutation({
     mutationFn: deleteItem,
     onSuccess: async () => {
-     
-
       // Invalidate the queries
       await queryClient.invalidateQueries(["get_all_air_monitoring_data"]);
 
@@ -144,9 +143,9 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
       setSelectedRowData(null);
       set_isEditModalVisible(false);
       setEditSuccessMessage(true);
-      
-      setSuccessCityName(cityName ?? null); 
-      
+
+      setSuccessCityName(cityName ?? null);
+
       queryClient.invalidateQueries(["get_all_air_monitoring_data"]);
       setTimeout(() => {
         setEditSuccessMessage(false);
@@ -158,7 +157,6 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
       toast.error(errorMessage);
     },
   });
-  
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleEditData = (values: any) => {
@@ -173,9 +171,9 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
 
   // const filtered_data = useAirMonitoringStore((state) => state.filtered_data);
 
-  const air_monitoring_data = useAirMonitoringStore(
-    (state) => state.air_monitoring_data
-  );
+  // const air_monitoring_data = useAirMonitoringStore(
+  //   (state) => state.air_monitoring_data
+  // );
 
   const [form] = Form.useForm();
 
@@ -345,30 +343,29 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
     },
   ];
 
-  const dataSource = air_monitoring_data
-    ?.map((data) => ({
-      key: data.id,
-      date: formattedDate(data.createdAt),
-      country: data.country,
-      state: data.state,
-      lga: data.lga,
-      city: data.city,
-      longitude: data.longitude,
-      latitude: data.latitude,
-      deviceUrl: data.deviceUrl,
-    }))
-    .filter((item) =>
-      Object.values(item).some(
-        (value) =>
-          typeof value === "string" &&
-          value.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    );
+  // const dataSource = air_monitoring_data?.map((data) => ({
+  const dataSource = filtered?.map((data) => ({
+    key: data.id,
+    date: formattedDate(data.createdAt),
+    country: data.country,
+    state: data.state,
+    lga: data.lga,
+    city: data.city,
+    longitude: data.longitude,
+    latitude: data.latitude,
+    deviceUrl: data.deviceUrl,
+  }));
+  // .filter((item) =>
+  //   Object.values(item).some(
+  //     (value) =>
+  //       typeof value === "string" &&
+  //       value.toLowerCase().includes(searchQuery.toLowerCase())
+  //   )
+  // );
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
@@ -395,8 +392,6 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
     setSelectedState(value.toString());
     form.setFieldsValue({ lga: undefined });
   };
-
-
 
   return (
     <>

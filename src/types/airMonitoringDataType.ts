@@ -34,6 +34,9 @@ export interface AirMonitoring_data_type_form {
     updatedAt: string
     }
 
+
+    
+
 export interface Air_monitoring_data_type_v2{
     
         status: string,
@@ -52,3 +55,29 @@ export interface air_monitoring_fetch_response_data_type{
     data: {}
       
 }
+
+
+export interface data_type {
+    city: string;
+    country: string;
+    createdAt: string;
+    deviceUrl: string;
+    id: string;
+    latitude: string;
+    lga: string;
+    longitude: string;
+    state: string;
+    updatedAt: string;
+  }
+  
+ export interface AirMonitoringData {
+    id:string;
+    createdAt: string;
+    country: string;
+    state: string;
+    lga: string;
+    city: string;
+    longitude: string;
+    latitude: string;
+    deviceUrl: string;
+  }
