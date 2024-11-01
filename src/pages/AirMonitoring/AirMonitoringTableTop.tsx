@@ -19,7 +19,7 @@ import { CSVLink } from "react-csv";
 import { usePDF } from "react-to-pdf";
 import toast from "react-hot-toast";
 import moment from "moment";
-import { AirMonitoringData } from "../../types/airMonitoringDataType";
+import {  data_type } from "../../types/airMonitoringDataType";
 const { RangePicker } = DatePicker;
 
 interface FilterValues {
@@ -68,7 +68,14 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
     setSearchQuery(e.target.value);
   };
 
-  const [filteredItems, setFilteredItems] = useState<AirMonitoringData[]>([]);
+
+
+
+
+ 
+
+
+  const [filteredItems, setFilteredItems] = useState<data_type[]>([]);
   const [filter_input_values, set_filter_input_values] =
     useState<boolean>(false);
   const [showFilter, setShowFilter] = useState<boolean>(false);
@@ -85,16 +92,11 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
   const air_monitoring_data = useAirMonitoringStore(
     (state) => state.air_monitoring_data
   );
-  // const set_air_monitoring_data = useAirMonitoringStore(
-  //   (state) => state.set_air_monitoring_data
-  // );
 
-  // const setFilteredData = useAirMonitoringStore(
-  //   (state) => state.setFilteredData
-  // );
-  // const the_FilteredData = useAirMonitoringStore(
-  //   (state) => state.filtered_data
-  // );
+
+
+
+
 
 
 

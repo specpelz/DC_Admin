@@ -25,7 +25,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Select from "../../components/dashboard/select/Select";
-import { AirMonitoringData, DataType } from "../../types/airMonitoringDataType";
+import { data_type, DataType } from "../../types/airMonitoringDataType";
 import "./customDropdown.css";
 
 type TableRowSelection<T extends object = object> =
@@ -33,7 +33,7 @@ type TableRowSelection<T extends object = object> =
 
 interface AirMonitoringTableProps {
   // searchQuery: string;
-  filtered: AirMonitoringData[];
+  filtered: data_type[];
 }
 
 const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
