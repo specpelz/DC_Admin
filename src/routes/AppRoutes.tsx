@@ -15,7 +15,6 @@ const AppRoutes = () => {
   return (
     <>
       <Routes>
-        {/* Authentication */}
         <Route
           path="/"
           element={
