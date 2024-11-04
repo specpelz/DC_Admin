@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 
 export interface ImageType {
   id: string;
+  title: string;
   media: string;
   mediaKey: string;
   createdAt: string;

@@ -1,7 +1,7 @@
 import { BASE_URL } from "@api/index";
 // import NoData from "@components/dashboard/NoData";
 import UploadMessage from "@components/dashboard/UploadMessage";
-import { Button } from "antd";
+import { Button, Input } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -11,6 +11,7 @@ import { MdOutlineCloudUpload } from "react-icons/md";
 import UploadedImages from "./UploadedImages";
 import { ImageType } from "../../types/ImageType";
 import ErrorComponent from "@components/error/ErrorComponent";
+import FormItem from "antd/es/form/FormItem";
 
 const Multimedia = () => {
   const token = localStorage.getItem("DC_Token") || "";
@@ -26,7 +27,8 @@ const Multimedia = () => {
   const [loadingImages, setLoadingImages] = useState(true);
   const [images, setImages] = useState<ImageType[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  console.log("errorMessage", errorMessage);
+  // console.log("errorMessage", errorMessage);
+  const [title, setTitle] = useState<string>("");
 
   // const handleUploadClick = () => {
   //   setIsUploading(true);
@@ -54,12 +56,13 @@ const Multimedia = () => {
   };
 
   const handleUploadImage = async () => {
-    if (!imageDetails?.file) return;
+    if (!imageDetails?.file || !title.trim()) return;
 
     // Create a new FormData object
     const formData = new FormData();
     // Append the image file to the form data
     formData.append("file", imageDetails.file);
+    formData.append("title", title);
 
     setLoading(true);
 
@@ -76,6 +79,7 @@ const Multimedia = () => {
       if (response.data.status === "success") {
         setUploadSuccess(true);
         setImageDetails(null);
+        setTitle("");
         setTimeout(() => {
           setUploadSuccess(false);
           setUploadedData(true);
@@ -103,7 +107,8 @@ const Multimedia = () => {
         console.log("fetchImages", response);
 
         if (response.data.status === "success") {
-          setImages(response.data.data);
+          setImages(response.data.data.reverse());
+          // setImages(response.data.reverse()); 
         }
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -142,11 +147,31 @@ const Multimedia = () => {
 
       {isUploading && !uploadedData ? (
         <div>
-          <div className="bg-[#fff] py-[40px] px-[20px] h-[435px] rounded-[4px]">
-            <div className="flex flex-col justify-center items-center h-full ">
+          <div className="bg-[#fff] py-[40px] px-[20px]  rounded-[4px]">
+            <div className="flex flex-col  ">
+              <div className="w-full ">
+                <div className="text-[16px] font-[400] text-[#2C2C2C] mb-[10px]">
+                  Title
+                </div>
+                <FormItem
+                  layout="vertical"
+                  name="title"
+                  rules={[
+                    { required: true, message: "Please enter the blog title" },
+                  ]}
+                >
+                  <Input
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Enter image title"
+                    className="h-[45px] rounded-[4px] border border-gray-300"
+                  />
+                </FormItem>
+              </div>
+
               <div
                 onChange={handleFileChange}
-                className="relative flex flex-col justify-center items-center mt-[20px] w-full h-full cursor-pointer  border-dashed rounded-[10px bg-[#faf8f8] rounded-[10px] border-[1.5px] border-[E6E6E6] "
+                className="relative flex flex-col justify-center items-center w-full h-[300px] cursor-pointer  border-dashed rounded-[10px bg-[#faf8f8] rounded-[10px] border-[1.5px] border-[E6E6E6] "
               >
                 <MdOutlineCloudUpload size={40} color="#9B9B9B" />
                 <h4 className="text-Fourteen md:text-Sixteen font-[400] text-BrandBlack1 mt-[10px]">
@@ -190,6 +215,7 @@ const Multimedia = () => {
                   </button>
                 )}
               </div>
+
               <div className="w-full flex justify-end items-end mt-[32px]">
                 <Button
                   onClick={handleUploadImage}

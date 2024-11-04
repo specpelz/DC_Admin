@@ -133,19 +133,27 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
           {currentImages.map((item, index) => (
             <div
               key={index}
-              className="w-full h-[180px] flex flex-col gap-2 relative"
+              className="w-full h-[180px] flex flex-col gap-2 relative group"
             >
               <div
-                className="absolute top-4 right-4 bg-[#fff] shadow-lg w-[26px] h-[26px] rounded-full flex justify-center items-center cursor-pointer"
+                className="absolute top-4 right-4 z-10 bg-[#fff] shadow-lg w-[26px] h-[26px] rounded-full flex justify-center items-center cursor-pointer"
                 onClick={() => showDeleteModal(item)}
               >
                 <MdOutlineDeleteOutline size={16} color="#9B9B9B" />
               </div>
+
               <img
                 src={item.media}
                 alt="uploaded image"
                 className="w-full h-[180px] rounded-[14px] object-cover"
               />
+
+              {/* Overlay with title */}
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-[14px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <span className="text-white text-[14px] font-semibold">
+                  {item.title}
+                </span>
+              </div>
             </div>
           ))}
         </div>
