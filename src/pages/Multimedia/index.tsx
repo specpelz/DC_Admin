@@ -10,6 +10,7 @@ import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdOutlineCloudUpload } from "react-icons/md";
 import UploadedImages from "./UploadedImages";
 import { ImageType } from "../../types/ImageType";
+import ErrorComponent from "@components/error/ErrorComponent";
 
 const Multimedia = () => {
   const token = localStorage.getItem("DC_Token") || "";
@@ -24,6 +25,8 @@ const Multimedia = () => {
   const [loading, setLoading] = useState(false);
   const [loadingImages, setLoadingImages] = useState(true);
   const [images, setImages] = useState<ImageType[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  console.log("errorMessage", errorMessage);
 
   // const handleUploadClick = () => {
   //   setIsUploading(true);
@@ -106,6 +109,7 @@ const Multimedia = () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         toast.error(error?.response?.data.message || "Error fetching image");
+        setErrorMessage(error?.response?.data.message);
       } finally {
         setLoadingImages(false);
       }
@@ -202,7 +206,9 @@ const Multimedia = () => {
         </div>
       ) : (
         <>
-          {images && images.length > 0 ? (
+          {errorMessage ? (
+            <ErrorComponent errorMessage={errorMessage} />
+          ) : images && images.length > 0 ? (
             <UploadedImages
               setUploadedData={setUploadedData}
               isUploading={isUploading}
