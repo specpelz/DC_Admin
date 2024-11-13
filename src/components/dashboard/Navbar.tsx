@@ -3,10 +3,23 @@ import PText from "@components/commons/headings/PText";
 import Input from "@components/commons/input";
 import { IoIosContact, IoMdNotificationsOutline } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
+import MobileNavBar from "./MobileNavBar";
+import { Input as MyInput,  Popover } from 'antd'; 
+import { SearchOutlined } from '@ant-design/icons'
+import { useState } from "react";
 
 const Navbar: React.FC<{ activeTab: string; collapsed: boolean }> = ({
   collapsed,
 }) => {
+  const [visible, setVisible] = useState(false);
+   const handleSearchClick = () => { setVisible(!visible); }; 
+   const content = ( 
+   <MyInput placeholder="Search..." 
+    suffix={<SearchOutlined />} 
+    autoFocus 
+    onBlur={() => setVisible(false)} /> 
+  )
+
   const storedUser = localStorage.getItem("DC_User");
   const user = storedUser ? JSON.parse(storedUser) : null;
 
@@ -14,10 +27,22 @@ const Navbar: React.FC<{ activeTab: string; collapsed: boolean }> = ({
   return (
     <div
       className={`${
-        collapsed ? "pl-[12rem]" : "pl-[25rem]"
-      } w-[100%] h-[8.1rem] bg-[#fff] px-10 flex items-center`}
+        collapsed ? "md:pl-[12rem]" : "md:pl-[25rem]"
+      } w-[100%] h-[8.1rem] bg-[#fff] px-[20px] flex items-center`}
     >
-      <div className="flex justify-end md:justify-between w-full items-center">
+         <div className="md:hidden">
+          <MobileNavBar/>
+        </div>
+      <div className="flex gap-x-[16px] justify-end md:justify-between w-full items-center">
+
+      <Popover content={content} 
+      trigger="click" 
+      visible={visible} 
+      placement="bottom" 
+      className="md:hidden"
+      onVisibleChange={setVisible} >
+         {<img src="/search2.svg" alt="search logo" width={40} height={"auto"} onClick={handleSearchClick}/>}   </Popover>
+   
         <div className="hidden md:flex  w-[60%]">
           <Input
             icon={<IoSearch color="#9B9B9B" size={25} />}
@@ -28,9 +53,9 @@ const Navbar: React.FC<{ activeTab: string; collapsed: boolean }> = ({
         </div>
 
         <div className="flex items-center gap-[2.4rem] cursor-pointer ">
-          <div className=" bg-BrandGray p-4 rounded-full">
+          <div className=" bg-[#F2F2F2] p-4 rounded-full">
             <div className="relative">
-              <IoMdNotificationsOutline size={25} color="#9B9B9B" />
+              <IoMdNotificationsOutline size={20} color="#9B9B9B" />
               <span className="absolute -top-1 right-0 bg-BrandBlack rounded-full w-6 h-6 text-sm flex items-center justify-center text-[#fff] font-bold">
                 5
               </span>
