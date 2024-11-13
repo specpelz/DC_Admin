@@ -33,22 +33,20 @@ const SideBar: React.FC<SideBarProps> = ({
 
   return (
     <div
-      className={`h-screen bg-[#fff] py-2 px-1 lg:px-[1Btnrem] flex flex-col justify-between `}
+      className={`md:flex h-screen bg-[#fff] py-2 px-1 lg:px-[1rem]  flex-col justify-between `}
     >
       <div>
         <Link to="/">
           <div
-            className={`${
-              collapsed ? "mt-[2rem]" : "mb-[2rem]"
-            } px-10 cursor-pointer`}
+   
           >
-            <img src={Logo} alt="Logo" />
+            <img src={Logo} alt="Logo" width={70} height={70} />
           </div>
         </Link>
 
         <div
-          className={`flex flex-col gap-[2rem] justify-center  ${
-            collapsed ? "collapsed" : ""
+          className={`hidden md:flex flex-col gap-[2rem] justify-center  ${
+            collapsed ? "md:collapsed" : ""
           }`}
         >
           <div
@@ -237,7 +235,7 @@ const SideBar: React.FC<SideBarProps> = ({
 
       {/* log out */}
       <div
-        className={`cursor-pointer flex gap-2 items-center pl-[3.2rem] pr-[2rem]`}
+        className={`hidden cursor-pointer md:flex gap-2 items-center pl-[3.2rem] pr-[2rem]`}
         onClick={logOutHandler}
       >
         {collapsed ? (

@@ -1,3 +1,4 @@
+// import MobileNavBar from "@components/dashboard/mobileNavBar";
 import Navbar from "@components/dashboard/Navbar";
 import SideBar from "@components/dashboard/Sidebar";
 import { ReactNode, useEffect, useState } from "react";
@@ -22,9 +23,10 @@ const DashboardLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
 
       {/* max-w-[144rem] */}
       <div className="flex  w-full mx-auto px-0">
+
         <div
-          className={`fixed top-0 z-[999] ${
-            collapsed ? "w-[10rem]" : "w-[23rem]"
+          className={`hidden md:block fixed top-0 z-[999] ${
+            collapsed ? " w-[10rem]" : "w-[23rem]"
           }`}
         >
           <SideBar
@@ -35,7 +37,7 @@ const DashboardLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
         </div>
         <div
           className={`w-full  bg-[#f9f7f7] h-full ${
-            collapsed ? "ml-[10rem]" : "ml-[23rem]"
+            collapsed ? "md:ml-[10rem]" : "md:ml-[23rem]"
           }`}
         >
           <div

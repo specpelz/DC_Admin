@@ -268,8 +268,8 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
   return (
     <div className="h-screen ">
       {/* SEARCH. FILTER, SHARE,DOWNLOAD COMPONENTS------------------------------------------------- */}
-      <div className="w-full flex items-center gap-x-[30px] mt-[16px]">
-        <div className="w-[30%]">
+      <div className="w-full lg:flex items-center gap-x-[30px] mt-[16px]">
+        <div className="flex gap-x-[16px] lg:w-[30%]">
           <Input
             placeholder="Search for data... "
             prefix={
@@ -279,16 +279,31 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
                 className="w-[17.5px] h-[17.5px]"
               />
             }
-            className="h-[46px] w-[100%] bg-transparent"
+            className="h-[46px] w-[90%] bg-transparent"
             value={searchQuery}
             onChange={handleSearchChange}
           />
+                    <Button
+            type="primary"
+            onClick={clickFunction}
+            icon={
+              <img
+                src="/cross.svg"
+                alt="Upload Icon"
+                className="w-[14px] h-[14px]"
+              />
+            }
+            style={{width:70}}
+            className="h-[46px]  lg:hidden bg-BrandPrimary"
+          >
+          
+          </Button>
         </div>
-        <div className="flex w-[70%]">
-          <div className="w-[70%]">
-            <div className="flex items-center w-[100%] gap-x-[10px] border-r-[0.5px] pr-[10px] border-gray-300">
+        <div className="flex w-full mt-[20px] lg:w-[70%] lg:mt-[unset]">
+          <div className="w-full lg:w-[70%]">
+            <div className="flex items-center w-[100%] gap-x-[10px] lg:border-r-[0.5px] pr-[10px] lg:border-gray-300">
               <Button
-                className={`h-[46px] w-[18%  ${
+                className={`h-[46px] w-[30%]   xl:w-[18%] ${
                   showFilter === true || isFilterActive === true
                     ? "bg-[white] border-w-[05px] border-blue-500"
                     : "bg-transparent"
@@ -313,7 +328,7 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
                   toast.success(message);
                   toPDF();
                 }}
-                className="h-[46px] w-[18% bg-transparent"
+                className="h-[46px]  w-[30%] xl:w-[18%] bg-transparent"
                 icon={
                   <img
                     src="/print.svg"
@@ -325,7 +340,7 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
                 Print
               </Button>
               <Button
-                className="h-[46px] flex-grow bg-transparent"
+                className="h-[46px] w-[30%] xl:flex-grow bg-transparent"
                 onClick={showModal}
                 icon={
                   <img
@@ -361,9 +376,9 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
                 className="w-[14px] h-[14px]"
               />
             }
-            className="w-[30%] h-[48px] text-[16px] font-[400]  bg-BrandPrimary"
+            className="hidden lg:flex gap-x-[16px] w-[30%] h-[48px] text-[16px]  font-[400] bg-BrandPrimary"
           >
-            <div className="text-[16px] font-[400]">Upload data</div>
+            Upload data
           </Button>
         </div>
       </div>
