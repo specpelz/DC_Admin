@@ -72,7 +72,7 @@ const RichEditor = ({ editorDefault, onContentChange }: Props) => {
         >
           <EditorContent editor={editor} className="h-full w-full" />
         </div>
-        <div>
+        <div className="overflow-auto lg:overflow-hidden">
           <Tools
             editor={editor}
             onImageSelection={() => setShowImageGallery(true)}
