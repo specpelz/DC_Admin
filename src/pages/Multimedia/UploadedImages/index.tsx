@@ -6,6 +6,7 @@ import { MdOutlineDeleteOutline } from "react-icons/md";
 import { ImageType, UploadedImagesProps } from "../../../types/ImageType";
 import { CustomError } from "../../../types/Error";
 import { BASE_URL } from "@api/index";
+import NoSearchData from "@components/dashboard/NoSearchData";
 
 const UploadedImages: React.FC<UploadedImagesProps> = ({
   images,
@@ -22,11 +23,23 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
     id: string;
   } | null>(null);
 
+  const [searchQuery, setSearchQuery] = useState("");
+
   const [isDeleting, setIsDeleting] = useState(false);
+
   const imagesPerPage = 8;
+  const filteredImages = images.filter(
+    (image) =>
+      image.title &&
+      image.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const indexOfLastImage = currentPage * imagesPerPage;
   const indexOfFirstImage = indexOfLastImage - imagesPerPage;
-  const currentImages = images.slice(indexOfFirstImage, indexOfLastImage);
+  const currentImages = filteredImages.slice(
+    indexOfFirstImage,
+    indexOfLastImage
+  );
 
   const handleUploadClick = () => {
     setUploadedData(false);
@@ -107,8 +120,10 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
           <IoSearch size={24} />
           <input
             type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="text-[#000] bg-BrandLightPrimary border-BrandTextColor text-Sixteen outline-none w-[100%]"
-            placeholder="Nothing to Search..."
+            placeholder="Search images by title..."
           />
         </div>
 
@@ -129,34 +144,38 @@ const UploadedImages: React.FC<UploadedImagesProps> = ({
       </div>
 
       <div className="bg-[#fff] my-[16px] py-[30px] px-[20px] rounded-[4px]">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 justify-center">
-          {currentImages.map((item, index) => (
-            <div
-              key={index}
-              className="w-full h-[180px] flex flex-col gap-2 relative group"
-            >
+        {currentImages.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 justify-center">
+            {currentImages.map((item, index) => (
               <div
-                className="absolute top-4 right-4 z-10 bg-[#fff] shadow-lg w-[26px] h-[26px] rounded-full flex justify-center items-center cursor-pointer"
-                onClick={() => showDeleteModal(item)}
+                key={index}
+                className="w-full h-[180px] flex flex-col gap-2 relative group"
               >
-                <MdOutlineDeleteOutline size={16} color="#9B9B9B" />
-              </div>
+                <div
+                  className="absolute top-4 right-4 z-10 bg-[#fff] shadow-lg w-[26px] h-[26px] rounded-full flex justify-center items-center cursor-pointer"
+                  onClick={() => showDeleteModal(item)}
+                >
+                  <MdOutlineDeleteOutline size={16} color="#9B9B9B" />
+                </div>
 
-              <img
-                src={item.media}
-                alt="uploaded image"
-                className="w-full h-[180px] rounded-[14px] object-cover"
-              />
+                <img
+                  src={item.media}
+                  alt="uploaded image"
+                  className="w-full h-[180px] rounded-[14px] object-cover"
+                />
 
-              {/* Overlay with title */}
-              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-[14px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                <span className="text-white text-[14px] font-semibold">
-                  {item.title}
-                </span>
+                {/* Overlay with title */}
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-[14px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                  <span className="text-white text-[14px] font-semibold">
+                    {item.title || "Untitled"}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <NoSearchData />
+        )}
       </div>
 
       <div className="mt-6 flex justify-end">
