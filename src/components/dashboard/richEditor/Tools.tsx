@@ -180,7 +180,7 @@ const getSelectedHeading = ():HeadingType => {
 }
 
   return (
-    <div className="border-t-[1px] border-t-[#9B9B9B] border-b-[1px] border-b-[#9B9B9B] py-[5px] flex justify-between ">
+    <div className="border-t-[1px] border-t-[#9B9B9B] border-b-[1px] border-b-[#9B9B9B] py-[5px] flex justify-between overflow-auto">
       <select 
       value={getSelectedHeading()}
       className="bg-white p-2 text-[16px] text-[#9B9B9B]" 
