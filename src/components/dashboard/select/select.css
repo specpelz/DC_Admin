@@ -1,0 +1,38 @@
+
+.custom-select .ant-select-selector {
+    height: 48px !important; 
+    display: flex;
+    align-items: center; 
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 8px; 
+    color: #2C2C2C ;
+ 
+  }
+
+  .custom-select .ant-select-arrow {
+    margin-top: -5px;
+
+  }
+  
+  /* For mobile screens */
+  @media (max-width: 576px) {
+    .custom-select .ant-select-selector {
+      /* Adjust height for smaller screens */
+    }
+  }
+  
+  /* For tablets and larger screens */
+  @media (min-width: 768px) {
+    .custom-select .ant-select-selector {
+      /* Increase height for larger screens */
+    }
+  }
+  
+  /* For tablets and larger screens */
+  @media (min-width: 1024px) {
+    .custom-select .ant-select-selector {
+      /* Increase height for larger screens */
+    }
+  }
+  
