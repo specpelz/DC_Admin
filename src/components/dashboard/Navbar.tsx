@@ -1,24 +1,24 @@
 import H5Heading from "@components/commons/headings/H5Heading";
 import PText from "@components/commons/headings/PText";
-import Input from "@components/commons/input";
-import { IoIosContact, IoMdNotificationsOutline } from "react-icons/io";
-import { IoSearch } from "react-icons/io5";
+
+import { IoIosContact, } from "react-icons/io";
+
 import MobileNavBar from "./MobileNavBar";
-import { Input as MyInput,  Popover } from 'antd'; 
-import { SearchOutlined } from '@ant-design/icons'
-import { useState } from "react";
+// import { Input as MyInput } from 'antd'; 
+// import { SearchOutlined } from '@ant-design/icons'
+// import { useState } from "react";
 
 const Navbar: React.FC<{ activeTab: string; collapsed: boolean }> = ({
   collapsed,
 }) => {
-  const [visible, setVisible] = useState(false);
-   const handleSearchClick = () => { setVisible(!visible); }; 
-   const content = ( 
-   <MyInput placeholder="Search..." 
-    suffix={<SearchOutlined />} 
-    autoFocus 
-    onBlur={() => setVisible(false)} /> 
-  )
+  // const [visible, setVisible] = useState(false);
+  //  const handleSearchClick = () => { setVisible(!visible); }; 
+  //  const content = ( 
+  //  <MyInput placeholder="Search..." 
+  //   suffix={<SearchOutlined />} 
+  //   autoFocus 
+  //   onBlur={() => setVisible(false)} /> 
+  // )
 
   const storedUser = localStorage.getItem("DC_User");
   const user = storedUser ? JSON.parse(storedUser) : null;
