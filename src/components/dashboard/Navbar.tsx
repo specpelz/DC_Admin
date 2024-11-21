@@ -33,34 +33,34 @@ const Navbar: React.FC<{ activeTab: string; collapsed: boolean }> = ({
          <div className="md:hidden">
           <MobileNavBar/>
         </div>
-      <div className="flex gap-x-[16px] justify-end md:justify-between w-full items-center">
+      <div className="flex gap-x-[16px] justify-end  w-full items-center">
 
-      <Popover content={content} 
+      {/* <Popover content={content} 
       trigger="click" 
       visible={visible} 
       placement="bottom" 
       className="md:hidden"
       onVisibleChange={setVisible} >
-         {<img src="/search2.svg" alt="search logo" width={40} height={"auto"} onClick={handleSearchClick}/>}   </Popover>
+         {<img src="/search2.svg" alt="search logo" width={40} height={"auto"} onClick={handleSearchClick}/>}   </Popover> */}
    
-        <div className="hidden md:flex  w-[60%]">
+        {/* <div className="hidden md:flex  w-[60%]">
           <Input
             icon={<IoSearch color="#9B9B9B" size={25} />}
             placeholder="Search here."
             iconPosition="left"
             className="rounded-[3rem] bg-BrandLightGray "
           />
-        </div>
+        </div> */}
 
         <div className="flex items-center gap-[2.4rem] cursor-pointer ">
-          <div className=" bg-[#F2F2F2] p-4 rounded-full">
+          {/* <div className=" bg-[#F2F2F2] p-4 rounded-full">
             <div className="relative">
               <IoMdNotificationsOutline size={20} color="#9B9B9B" />
               <span className="absolute -top-1 right-0 bg-BrandBlack rounded-full w-6 h-6 text-sm flex items-center justify-center text-[#fff] font-bold">
                 5
               </span>
             </div>
-          </div>
+          </div> */}
           <div className="flex items-center gap-2">
             <IoIosContact size={50} color="#6e6f70" />
             <div className="hidden md:flex flex-col">
