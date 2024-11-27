@@ -1,25 +1,20 @@
 export interface AirMonitoring_data_type {
-    city: string;
-    country: string;
-    latitude: string;
-    lga: string;
-    longitude: string;
-    state: string;
-    deviceUrl: string;
+
+    deviceUid: string;
     }
 
 
 
 export interface DataType {
-    key: React.Key;
-    date: string;
-    country: string;
-    state: string;
-    lga: string;
-    city: string;
-    longitude: string;
-    latitude: string;
-    deviceUrl: string;
+      key: string;
+      date: string;
+      country: string;
+      state: string;
+      lga: string;
+      city: string;
+      longitude: string;
+      latitude: string;
+      deviceUrl: string;
   }
   
 export interface AirMonitoring_data_type_form {
@@ -58,14 +53,17 @@ export interface air_monitoring_fetch_response_data_type{
 
 
 export interface data_type {
+    lon: string;
+    lat: string;
+    device_uid: string;
     city: string;
     country: string;
     createdAt: string;
-    deviceUrl: string;
+    // deviceUrl: string;
     id: string;
-    latitude: string;
+    // latitude: string;
     lga: string;
-    longitude: string;
+    // longitude: string;
     state: string;
     updatedAt: string;
   }

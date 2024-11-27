@@ -41,23 +41,91 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const { token } = userToken();
-  // const { fetchUpdatedData } = useFetchUpdatedData();
 
-  //  const handleDeleteData=()=>{
 
-  //     set_isDeleteModalVisible(false);
-  //     setdeleteSuccessMessage(true);
-  //     setTimeout(() => {
-  //       setdeleteSuccessMessage(false);
-  //     }, 2000);
 
-  //  }
+
+
+
+
+
+  const getLocation = async (
+    latitude: string, 
+    longitude: string, 
+    type: 'country' | 'state' | 'city' | 'lga'
+  ): Promise<string> => {
+    const lat = latitude;
+    const long = longitude;
+    const apiKey = "AIzaSyDzofLb9GTpwTJDg2U-l0Ez-Ya4iw5dVss";
+
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${apiKey}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.results && data.results.length > 0) {
+        const addressComponents = data.results[3]?.address_components || [];
+        
+        const componentMap: Record<string, string> = {};
+        addressComponents.forEach((component: any) => {
+          if (component.types.includes("country")) {
+            componentMap['country'] = component.long_name;
+          } else if (component.types.includes("administrative_area_level_1")) {
+            componentMap['state'] = component.long_name;
+          } else if (component.types.includes("administrative_area_level_2")) {
+            componentMap['city'] = component.long_name;
+          } else if (component.types.includes("administrative_area_level_3")) {
+            componentMap['lga'] = component.long_name;
+          }
+        });
+
+        return componentMap[type] || componentMap["state"];
+      } else {
+        console.log("No results found.");
+        return data.results[3]?.address_components[0].componentMap["state"]
+      }
+    } catch (error) {
+      console.error("Error fetching location data:", error);
+      return 'Unknown';
+    }
+  };
+
+
+
+
+  const [dataSource, setDataSource] = useState<DataType[]>([]);
+
+  useEffect(() => {
+    const fetchLocationData = async () => {
+      const processedData = await Promise.all(filtered.map(async (data) => ({
+        key: data.id,
+        date: moment(data.createdAt).format("YYYY-MM-DD"),
+        country: await getLocation(data.lat, data.lon, "country"),
+        state: await getLocation(data.lat, data.lon, "state"),
+        lga: await getLocation(data.lat, data.lon, "lga"),
+        city: await getLocation(data.lat, data.lon, "city"),
+        longitude: data.lon,
+        latitude: data.lat,
+        deviceUrl: data.device_uid,
+      })));
+
+      setDataSource(processedData);
+    };
+
+    fetchLocationData();
+  }, [filtered]);
+
+
+
+
 
   // DELETE ASYNC FUNCTION>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
   // const handleDeleteData = async (): Promise<void> => {
   const deleteItem = async (): Promise<void> => {
-    await axios.delete(`${BASE_URL}/air-monitoring/${selectedRowData?.key}`, {
+
+    await axios.delete(`${BASE_URL}/air-monitoring/${selectedRowData?.deviceUrl}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -111,20 +179,9 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
 
   // Edit ASYNC FUNCTION>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-  // /air-monitoring/{montoringId}
-  // const data = {
-  //   country:defaultValues?.country,
-  //   state: defaultValues?.state,
-  //   lga: defaultValues?.lga,
-  //   city: defaultValues?.city,
-  //   latitude: defaultValues?.latitude,
-  //   longitude: defaultValues?.longitude,
-  //   deviceUrl: defaultValues?.deviceurl
-  // }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const editItem = async (values: any): Promise<void> => {
     await axios.patch(
-      `${BASE_URL}/air-monitoring/${selectedRowData?.key}`,
+      `${BASE_URL}/air-monitoring/${selectedRowData?.deviceUrl}`,
       values,
       {
         headers: {
@@ -164,10 +221,10 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
   };
   // Edit ASYNC FUNCTION>>>>>>>>>ENDS>>HERE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-  const formattedDate = (value: string) => {
-    const formattedDate_v1 = moment(value).format("YYYY-MM-DD");
-    return formattedDate_v1;
-  };
+  // const formattedDate = (value: string) => {
+  //   const formattedDate_v1 = moment(value).format("YYYY-MM-DD");
+  //   return formattedDate_v1;
+  // };
 
   // const filtered_data = useAirMonitoringStore((state) => state.filtered_data);
 
@@ -235,7 +292,7 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
     { title: "Longitude", dataIndex: "longitude", ellipsis: true },
     { title: "Latitude", dataIndex: "latitude", ellipsis: true },
     {
-      title: "Device URL",
+      title: "Device Uid",
       dataIndex: "deviceUrl",
       ellipsis: true,
 
@@ -343,25 +400,18 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
     },
   ];
 
-  // const dataSource = air_monitoring_data?.map((data) => ({
-  const dataSource = filtered?.map((data) => ({
-    key: data.id,
-    date: formattedDate(data.createdAt),
-    country: data.country,
-    state: data.state,
-    lga: data.lga,
-    city: data.city,
-    longitude: data.longitude,
-    latitude: data.latitude,
-    deviceUrl: data.deviceUrl,
-  }));
-  // .filter((item) =>
-  //   Object.values(item).some(
-  //     (value) =>
-  //       typeof value === "string" &&
-  //       value.toLowerCase().includes(searchQuery.toLowerCase())
-  //   )
-  // );
+  // const dataSource = filtered?.map((data) => ({
+  //   key: data.id,
+  //   date: formattedDate(data.createdAt),
+  //   country: getLocation(data.lat,data.lon,"country"),
+  //   state: getLocation(data.lat,data.lon,"state"),
+  //   lga: getLocation(data.lat,data.lon,"lga"),
+  //   city: getLocation(data.lat,data.lon,"city"),
+  //   longitude: data.lon,
+  //   latitude: data.lat,
+  //   deviceUrl: data.device_uid,
+  // }));
+ 
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
@@ -487,7 +537,7 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
         <div className="flex w-full justify-between  mb-[20px] ">
           <div className="flex flex-col gap-y-[5px]">
             <div className="text-[#757575] text-[16px] font-[400]">
-              Device URL
+              Device Uid
             </div>
             <div className="text-[#2C2C2C] text-[16px] font-[400]">
               {selectedRowData?.deviceUrl}
@@ -642,7 +692,7 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
                   name="deviceUrl"
                   label={
                     <span className="text-[16px] font-[400] text-BrandBlack1 ">
-                      Device URL
+                      Device Uid
                     </span>
                   }
                   rules={[
