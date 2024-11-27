@@ -24,8 +24,7 @@ const usePostAirMonitoring = () => {
       setIsLoading(true);
       try {
         const response = await axios.post<air_monitoring_fetch_response_data_type>(
-          `${BASE_URL}/air-monitoring`,
-          data,
+          `${BASE_URL}/air-monitoring/${data}`,
           {
             headers: {
               'Content-Type': 'application/json',
