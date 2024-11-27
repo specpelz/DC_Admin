@@ -19,7 +19,7 @@ import { CSVLink } from "react-csv";
 import { usePDF } from "react-to-pdf";
 import toast from "react-hot-toast";
 import moment from "moment";
-import {  data_type } from "../../types/airMonitoringDataType";
+import { data_type } from "../../types/airMonitoringDataType";
 const { RangePicker } = DatePicker;
 
 interface FilterValues {
@@ -46,7 +46,9 @@ interface AirMonitoringTableTopProps {
   isLoading: boolean; // Define isLoading as a boolean
 }
 
-const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading }) => {
+const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
+  isLoading,
+}) => {
   // const airMonitoringData = useAirMonitoringStore((state) => state.air_monitoring_data);
   // Handle download click
   const handleDownload = () => {
@@ -68,13 +70,6 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
     setSearchQuery(e.target.value);
   };
 
-
-
-
-
- 
-
-
   const [filteredItems, setFilteredItems] = useState<data_type[]>([]);
   const [filter_input_values, set_filter_input_values] =
     useState<boolean>(false);
@@ -93,29 +88,12 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
     (state) => state.air_monitoring_data
   );
 
-
-
-
-
-
-
-
   // Initial data setup
   useEffect(() => {
     // set_air_monitoring_data(AQI_datas);
     setFilteredItems(air_monitoring_data);
   }, [air_monitoring_data]);
 
-
-
-
-
-
-  
-
-
-
-  
   const [countryOptions, setCountryOptions] = useState<SelectOption[]>([]);
   const [stateOptions, setStateOptions] = useState<SelectOption[]>([]);
   const [lgaOptions, setLgaOptions] = useState<SelectOption[]>([]);
@@ -123,13 +101,13 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
 
   const generateFilterOptions = () => {
     const uniqueOptions = (field: keyof (typeof filteredItems)[0]) => {
-      return Array.from(
-        new Set(filteredItems.map((item) => item[field]))
-      ).map((value, key) => ({
-        value: value,
-        label: value,
-        key: key.toString(),
-      }));
+      return Array.from(new Set(filteredItems.map((item) => item[field]))).map(
+        (value, key) => ({
+          value: value,
+          label: value,
+          key: key.toString(),
+        })
+      );
     };
 
     setCountryOptions(uniqueOptions("country"));
@@ -235,12 +213,9 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
     console.log("Modal closed without confirmation");
   };
 
-
   const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
 
   const [fileType, setFileType] = useState<string | number>("pdf");
-
-
 
   useEffect(() => {
     let result = air_monitoring_data;
@@ -259,11 +234,7 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
     }
 
     setFilteredItems(result);
-   
   }, [searchQuery, air_monitoring_data]);
-
-
-
 
   return (
     <div className="h-screen ">
@@ -283,7 +254,7 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
             value={searchQuery}
             onChange={handleSearchChange}
           />
-                    <Button
+          <Button
             type="primary"
             onClick={clickFunction}
             icon={
@@ -293,11 +264,9 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
                 className="w-[14px] h-[14px]"
               />
             }
-            style={{width:70}}
+            style={{ width: 70 }}
             className="h-[46px]  lg:hidden bg-BrandPrimary"
-          >
-          
-          </Button>
+          ></Button>
         </div>
         <div className="flex w-full mt-[20px] lg:w-[70%] lg:mt-[unset]">
           <div className="w-full lg:w-[70%]">
@@ -494,13 +463,17 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({ isLoading
         )}
 
         {isLoading ? (
-           <Skeleton active className="custom-table-skeleton" paragraph={{ rows: 5 }} /> 
+          <Skeleton
+            active
+            className="custom-table-skeleton"
+            paragraph={{ rows: 5 }}
+          />
         ) : (
           <div ref={targetRef}>
             <AirMonitoringTable
-            // searchQuery={searchQuery}
-            filtered = {filteredItems}
-             />
+              // searchQuery={searchQuery}
+              filtered={filteredItems}
+            />
           </div>
         )}
       </div>

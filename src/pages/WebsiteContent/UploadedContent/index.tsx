@@ -29,7 +29,7 @@ const UploadedContent: React.FC<UploadedContentProps> = ({
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  const contentPerPage = 8;
+  const contentPerPage = 9;
 
   const handleUploadClick = () => {
     setUploadedData(false);
@@ -91,7 +91,16 @@ const UploadedContent: React.FC<UploadedContentProps> = ({
       if (response.ok) {
         message.success(`Content has been deleted successfully.`);
         setIsModalVisible(false);
-        fetchContentDetails();
+        fetchContentDetails(); // Re-fetch content after deletion
+
+        // Check if there are no items on the current page, then go to page 1
+        const remainingItems = filteredContent.length - 1; // subtract the deleted item
+        const totalPages = Math.ceil(remainingItems / contentPerPage);
+
+        // If current page exceeds the number of pages, go back to page 1
+        if (currentPage > totalPages) {
+          setCurrentPage(1);
+        }
       } else {
         message.error("Failed to delete the Content. Please try again.");
       }
@@ -102,6 +111,10 @@ const UploadedContent: React.FC<UploadedContentProps> = ({
       setIsDeleting(false);
     }
   };
+
+  console.log("FilteredContent", filteredContent); // Check how many items remain after filtering
+  console.log("ContentDetails", ContentDetails); // Check total number of items before filtering
+  console.log("webContent", webContent); // Check number of items after pagination
 
   return (
     <>
@@ -175,12 +188,12 @@ const UploadedContent: React.FC<UploadedContentProps> = ({
         <NoSearchData />
       )}
 
-      {webContent && webContent.length > 0 && (
+      {filteredContent && filteredContent.length > 0 && (
         <div className="mt-6 flex justify-end">
           <Pagination
             current={currentPage}
             pageSize={contentPerPage}
-            total={webContent.length}
+            total={filteredContent.length}
             onChange={onPageChange}
           />
         </div>

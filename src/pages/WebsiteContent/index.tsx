@@ -1,8 +1,8 @@
 import { BASE_URL } from "@api/index";
 // import NoData from "@components/dashboard/NoData";
-import Select from "@components/dashboard/select/Select";
+// import Select from "@components/dashboard/select/Select";
 import UploadMessage from "@components/dashboard/UploadMessage";
-import { Button, Form, message } from "antd";
+import { Button, Form, Input, message } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
@@ -28,11 +28,11 @@ const WebsiteContent = () => {
     setContent(content);
   };
 
-  const pageOptions = [
-    { label: "About Us", value: "About Us" },
-    { label: "Contact Us", value: "Contact Us" },
-    { label: "Services", value: "Services" },
-  ];
+  // const pageOptions = [
+  //   { label: "About Us", value: "About Us" },
+  //   { label: "Contact Us", value: "Contact Us" },
+  //   { label: "Services", value: "Services" },
+  // ];
 
   // Function to check form validity
   const onValuesChange = () => {
@@ -279,37 +279,19 @@ const WebsiteContent = () => {
               <div className="flex flex-col justify-center items-center h-full">
                 <div className="flex flex-col w-full h-full cursor-pointer">
                   <div className="w-[100%] h-[100px]">
-                    <Select
-                      name="page"
-                      label="Where do you want to see this content displayed?"
-                      placeholder="Select the page you want to display content in?"
-                      required={true}
-                      options={pageOptions}
-                      requiredMessage="Please enter the page you want to display content in!"
-                    />
-                  </div>
-
-                  {/* <div className="w-[100%] mb-[20px]">
                     <Form.Item
-                      label={
-                        <p className="text-[16px] font-[400]">
-                          Website Content Details
-                        </p>
-                      }
-                      name="contentDetails"
+                      label="Where do you want to see this content displayed?"
+                      name="page"
                       rules={[
                         {
                           required: true,
-                          message: "Please enter the content details!",
+                          message: "Please enter the title!",
                         },
                       ]}
                     >
-                      <Input.TextArea
-                        rows={10}
-                        placeholder="Enter the website content details here..."
-                      />
+                      <Input placeholder="Enter title" required />
                     </Form.Item>
-                  </div> */}
+                  </div>
 
                   <RichEditor
                     editorDefault={content}
