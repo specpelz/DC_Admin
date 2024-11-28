@@ -27,6 +27,7 @@ const AirMonitoringForm: React.FC = () => {
 
   const handleSubmit = async (values: AirMonitoring_data_type) => {
     const { deviceUid } = values;
+
     set_city(city);
 
     await postData({
@@ -52,7 +53,7 @@ const AirMonitoringForm: React.FC = () => {
           <div className="lg:w-[49%] h-[100px]">
             <FormItem
               layout="vertical"
-              name="deviceUrl"
+              name="deviceUid"
               label={
                 <span className="text-[16px] font-[400] text-BrandBlack1 ">
                   Device Uid

@@ -124,7 +124,7 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
 
   // const handleDeleteData = async (): Promise<void> => {
   const deleteItem = async (): Promise<void> => {
-
+console.log(selectedRowData?.deviceUrl)
     await axios.delete(`${BASE_URL}/air-monitoring/${selectedRowData?.deviceUrl}`, {
       headers: {
         Authorization: `Bearer ${token}`,
