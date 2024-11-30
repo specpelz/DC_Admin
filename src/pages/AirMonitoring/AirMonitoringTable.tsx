@@ -27,6 +27,7 @@ import toast from "react-hot-toast";
 import Select from "../../components/dashboard/select/Select";
 import { data_type, DataType } from "../../types/airMonitoringDataType";
 import "./customDropdown.css";
+// import { CSVLink } from "react-csv";
 
 type TableRowSelection<T extends object = object> =
   TableProps<T>["rowSelection"];
@@ -107,6 +108,7 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
         city: await getLocation(data.lat, data.lon, "city"),
         longitude: data.lon,
         latitude: data.lat,
+        // deviceUrl: data.id,
         deviceUrl: data.device_uid,
       })));
 
@@ -124,8 +126,8 @@ const AirMonitoringTable: React.FC<AirMonitoringTableProps> = ({
 
   // const handleDeleteData = async (): Promise<void> => {
   const deleteItem = async (): Promise<void> => {
-console.log(selectedRowData?.deviceUrl)
-    await axios.delete(`${BASE_URL}/air-monitoring/${selectedRowData?.deviceUrl}`, {
+console.log(selectedRowData?.key)
+    await axios.delete(`${BASE_URL}/air-monitoring/${selectedRowData?.key}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -265,10 +267,10 @@ console.log(selectedRowData?.deviceUrl)
   };
 
   const [editSuccessMessage, setEditSuccessMessage] = useState<boolean>(false);
-  const handleEdit = (row: DataType) => {
-    setSelectedRowData(row);
-    set_isEditModalVisible(true);
-  };
+  // const handleEdit = (row: DataType) => {
+  //   setSelectedRowData(row);
+  //   set_isEditModalVisible(true);
+  // };
   const [deleteSuccessMessage, setdeleteSuccessMessage] =
     useState<boolean>(false);
 
@@ -312,7 +314,7 @@ console.log(selectedRowData?.deviceUrl)
             >
               View More Data
             </Menu.Item>
-            <Menu.Item
+            {/* <Menu.Item
               key="edit"
               icon={
                 <img
@@ -324,7 +326,7 @@ console.log(selectedRowData?.deviceUrl)
               onClick={() => handleEdit(record)}
             >
               Edit Data
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Item
               key="delete"
               icon={
@@ -371,7 +373,22 @@ console.log(selectedRowData?.deviceUrl)
                         className="w-[14px] h-[14px]"
                       />
                     }
-                    onClick={() => navigator.clipboard.writeText(text)}
+                    onClick={() =>{ 
+                      navigator.clipboard.writeText(text)
+                      toast.success("Copied!", {
+                        duration: 2000,
+                        position: 'bottom-center',
+                        style: {
+                          background: '#4CAF50',
+                          color: 'white',
+                          fontWeight: 'bold',
+                          padding: '12px 20px',
+                          borderRadius: '8px'
+                        },
+                        // icon: '✅',
+                      });
+
+                    }}
                     type="link"
                   />
                 </div>

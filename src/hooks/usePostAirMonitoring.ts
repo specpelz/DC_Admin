@@ -45,7 +45,7 @@ const usePostAirMonitoring = () => {
           set_success_message(false);
           set_component({ value: "data" });
         }, 2000);
-
+  console.log(response.data.data,"     get the key or id")
         return {
           status: response.data.status,
           statusCode: response.data.statusCode,

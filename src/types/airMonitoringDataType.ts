@@ -59,11 +59,8 @@ export interface data_type {
     city: string;
     country: string;
     createdAt: string;
-    // deviceUrl: string;
     id: string;
-    // latitude: string;
     lga: string;
-    // longitude: string;
     state: string;
     updatedAt: string;
   }
