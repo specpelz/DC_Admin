@@ -42,7 +42,7 @@ const AirMonitoringForm: React.FC = () => {
       {successMessage && (
         <div className="fixed right-0 z-[999] top-[12.5%]">
           <UploadMessage
-            imageName={`You have successfully uploaded data for ${city}`}
+            imageName={`device Uid uploaded successfully`}
             onClose={() => set_success_message(false)}
           />
         </div>
