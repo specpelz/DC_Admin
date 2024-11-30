@@ -7,7 +7,7 @@ import {
   Modal,
   Skeleton,
   Space,
-  Tooltip,
+
 } from "antd";
 import AirMonitoringTable from "./AirMonitoringTable";
 import { useEffect, useState } from "react";
@@ -53,11 +53,34 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
   // Handle download click
   const handleDownload = () => {
     if (fileType === "csv") {
-      const message = "Downloading CSV";
-      toast.success(message);
+    
+      toast.success("Downloading CSV!", {
+        duration: 2000,
+        position: 'bottom-center',
+        style: {
+          background: '#4CAF50',
+          color: 'white',
+          fontWeight: 'bold',
+          padding: '12px 20px',
+          borderRadius: '8px'
+        },
+        // icon: '✅',
+      });
     } else if (fileType === "pdf") {
-      const message = "Downloading PDF";
-      toast.success(message);
+    
+
+      toast.success("Downloading PDF!", {
+        duration: 2000,
+        position: 'bottom-center',
+        style: {
+          background: '#4CAF50',
+          color: 'white',
+          fontWeight: 'bold',
+          padding: '12px 20px',
+          borderRadius: '8px'
+        },
+        // icon: '✅',
+      });
       toPDF();
     }
     setIsModalVisible(false);
@@ -70,6 +93,7 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
     setSearchQuery(e.target.value);
   };
 
+  const [csvItems, setCsvItems] = useState<data_type[]>([]);
   const [filteredItems, setFilteredItems] = useState<data_type[]>([]);
   const [filter_input_values, set_filter_input_values] =
     useState<boolean>(false);
@@ -88,6 +112,92 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
     (state) => state.air_monitoring_data
   );
 
+
+
+
+
+
+  const getLocation = async (
+    latitude: string, 
+    longitude: string, 
+    type: 'country' | 'state' | 'city' | 'lga'
+  ): Promise<string> => {
+    const lat = latitude;
+    const long = longitude;
+    const apiKey = "AIzaSyDzofLb9GTpwTJDg2U-l0Ez-Ya4iw5dVss";
+
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${apiKey}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.results && data.results.length > 0) {
+        const addressComponents = data.results[3]?.address_components || [];
+        
+        const componentMap: Record<string, string> = {};
+        addressComponents.forEach((component: any) => {
+          if (component.types.includes("country")) {
+            componentMap['country'] = component.long_name;
+          } else if (component.types.includes("administrative_area_level_1")) {
+            componentMap['state'] = component.long_name;
+          } else if (component.types.includes("administrative_area_level_2")) {
+            componentMap['city'] = component.long_name;
+          } else if (component.types.includes("administrative_area_level_3")) {
+            componentMap['lga'] = component.long_name;
+          }
+        });
+
+        return componentMap[type] || componentMap["state"];
+      } else {
+        console.log("No results found.");
+        return data.results[3]?.address_components[0].componentMap["state"]
+      }
+    } catch (error) {
+      console.error("Error fetching location data:", error);
+      return 'Unknown';
+    }
+  };
+
+
+
+
+
+
+
+
+
+useEffect(() => {
+  const fetchLocations = async () => {
+    const newCSVData = await Promise.all(
+      filteredItems.map(async (item) => ({
+        id: item.id,
+        device_uid: item.device_uid,
+        country: await getLocation(item.lat, item.lon, "country"),
+        state: await getLocation(item.lat, item.lon, "state"),
+        city: await getLocation(item.lat, item.lon, "city"),
+        lga: await getLocation(item.lat, item.lon, "country"),
+        lat: item.lat,
+        lon: item.lon,
+        createdAt: moment(item.createdAt).format("YYYY-MM-DD"),
+        updatedAt: moment(item.updatedAt).format("YYYY-MM-DD"),
+      }))
+    );
+
+    setCsvItems(newCSVData);
+  };
+
+  fetchLocations();
+}, [filteredItems]);
+
+
+
+
+
+
+
+
+
   // Initial data setup
   useEffect(() => {
     // set_air_monitoring_data(AQI_datas);
@@ -99,9 +209,50 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
   const [lgaOptions, setLgaOptions] = useState<SelectOption[]>([]);
   const [cityOptions, setCityOptions] = useState<SelectOption[]>([]);
 
-  const generateFilterOptions = () => {
-    const uniqueOptions = (field: keyof (typeof filteredItems)[0]) => {
-      return Array.from(new Set(filteredItems.map((item) => item[field]))).map(
+
+
+
+
+
+  // const generateFilterOptions = () => {
+  //   const uniqueOptions = (field: keyof (typeof filteredItems)[0]) => {
+  //     return Array.from(new Set(filteredItems.map((item) => item[field]))).map(
+  //       (value, key) => ({
+  //         value: value,
+  //         label: value,
+  //         key: key.toString(),
+  //       })
+  //     );
+  //   };
+
+  //   setCountryOptions(uniqueOptions("country"));
+  //   setStateOptions(uniqueOptions("state"));
+  //   setLgaOptions(uniqueOptions("lga"));
+  //   setCityOptions(uniqueOptions("city"));
+  // };
+
+
+
+
+
+
+
+ 
+
+
+  const generateFilterOptions = async () => {
+    const processedData = await Promise.all(
+      filteredItems.map(async (data) => ({
+        ...data,
+        country: await getLocation(data.lat, data.lon, "country"),
+        state: await getLocation(data.lat, data.lon, "state"),
+        city: await getLocation(data.lat, data.lon, "city"),
+        lga: await getLocation(data.lat, data.lon, "lga"),
+      }))
+    );
+  
+    const uniqueOptions = (field: keyof typeof processedData[0]) => {
+      return Array.from(new Set(processedData.map((item) => item[field]))).map(
         (value, key) => ({
           value: value,
           label: value,
@@ -109,12 +260,23 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
         })
       );
     };
-
+  
     setCountryOptions(uniqueOptions("country"));
     setStateOptions(uniqueOptions("state"));
     setLgaOptions(uniqueOptions("lga"));
     setCityOptions(uniqueOptions("city"));
   };
+
+
+
+
+
+
+
+
+
+
+
 
   useEffect(() => {
     if (showFilter) {
@@ -132,43 +294,66 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
     }));
   };
 
-  const applyFilter = () => {
-    const filteredData = air_monitoring_data.filter((item) => {
-      const itemDate = moment(item.createdAt);
 
-      const singleDateMatch =
-        !filterValues.date ||
-        new Date(item.createdAt).toDateString() ===
-          filterValues.date.toDate().toDateString();
 
-      const [startDate, endDate] = filterValues.dateRange;
-      const dateRangeMatch =
-        !startDate ||
-        !endDate ||
-        (itemDate.isSameOrAfter(startDate.toDate()) &&
-          itemDate.isSameOrBefore(endDate.toDate()));
 
-      const countryMatch =
-        !filterValues.country || item.country === filterValues.country;
-      const stateMatch =
-        !filterValues.state || item.state === filterValues.state;
-      const lgaMatch = !filterValues.lga || item.lga === filterValues.lga;
-      const cityMatch = !filterValues.city || item.city === filterValues.city;
 
-      return (
-        dateRangeMatch &&
-        singleDateMatch &&
-        countryMatch &&
-        stateMatch &&
-        lgaMatch &&
-        cityMatch
-      );
-    });
 
-    setFilteredItems(filteredData);
+
+  const applyFilter = async () => {
+    const filteredData = await Promise.all(
+      air_monitoring_data.map(async (item) => {
+        const itemDate = moment(item.createdAt);
+        
+        const country = await getLocation(item.lat, item.lon, "country");
+        const state = await getLocation(item.lat, item.lon, "state");
+        const city = await getLocation(item.lat, item.lon, "city");
+        const lga = await getLocation(item.lat, item.lon, "lga");
+  
+        const singleDateMatch =
+          !filterValues.date ||
+          new Date(item.createdAt).toDateString() ===
+            filterValues.date.toDate().toDateString();
+  
+        const [startDate, endDate] = filterValues.dateRange;
+        const dateRangeMatch =
+          !startDate ||
+          !endDate ||
+          (itemDate.isSameOrAfter(startDate.toDate()) &&
+            itemDate.isSameOrBefore(endDate.toDate()));
+  
+        const countryMatch = !filterValues.country || country === filterValues.country;
+        const stateMatch = !filterValues.state || state === filterValues.state;
+        const lgaMatch = !filterValues.lga || lga === filterValues.lga;
+        const cityMatch = !filterValues.city || city === filterValues.city;
+  
+        return (
+          dateRangeMatch &&
+          singleDateMatch &&
+          countryMatch &&
+          stateMatch &&
+          lgaMatch &&
+          cityMatch
+            ? { ...item, country, state, city, lga }
+            : null
+        );
+      })
+    );
+  
+    const finalFilteredData = filteredData.filter(Boolean) as data_type[];
+  
+    setFilteredItems(finalFilteredData);
     setShowFilter(false);
     setIsFilterActive(true);
   };
+
+
+
+
+
+
+
+
 
   const clearFilter = () => {
     setFilterValues({
@@ -217,23 +402,36 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
 
   const [fileType, setFileType] = useState<string | number>("pdf");
 
-  useEffect(() => {
-    let result = air_monitoring_data;
-
-    // Apply search query
+  const filterData = async () => {
+    let result: data_type[] = air_monitoring_data;
+  
     if (searchQuery) {
-      result = result.filter((AQI_data) => {
-        const searchLower = searchQuery.toLowerCase();
-        return (
-          AQI_data.country.toLowerCase().includes(searchLower) ||
-          AQI_data.state.toLowerCase().includes(searchLower) ||
-          AQI_data.city.toLowerCase().includes(searchLower) ||
-          AQI_data.lga.toLowerCase().includes(searchLower)
-        );
-      });
+      const filteredResults: data_type[] = [];
+  
+      for (const item of result) {
+        const country = await getLocation(item.lat, item.lon, "country");
+        const state = await getLocation(item.lat, item.lon, "state");
+        const city = await getLocation(item.lat, item.lon, "city");
+        const lga = await getLocation(item.lat, item.lon, "lga");
+        const matchesSearch = 
+          country.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          state.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          lga.toLowerCase().includes(searchQuery.toLowerCase());
+  
+        if (matchesSearch) {
+          filteredResults.push(item);
+        }
+      }
+  
+      result = filteredResults;
     }
-
+  
     setFilteredItems(result);
+  };
+  
+  useEffect(() => {
+    filterData();
   }, [searchQuery, air_monitoring_data]);
 
   return (
@@ -293,8 +491,19 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
               </Button>
               <Button
                 onClick={() => {
-                  const message = "Preparing file for print";
-                  toast.success(message);
+               
+                  toast.success("Preparing file for print!", {
+                    duration: 2000,
+                    position: 'bottom-center',
+                    style: {
+                      background: '#4CAF50',
+                      color: 'white',
+                      fontWeight: 'bold',
+                      padding: '12px 20px',
+                      borderRadius: '8px'
+                    },
+                    // icon: '✅',
+                  });
                   toPDF();
                 }}
                 className="h-[46px]  w-[30%] xl:w-[18%] bg-transparent"
@@ -445,7 +654,7 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
               >
                 Cancel
               </Button>
-              <Tooltip title={isFilterActive ? "Cancel existing filter" : ""}>
+
                 <Button
                   disabled={filter_input_values ? false : true}
                   // disabled={
@@ -457,7 +666,7 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
                 >
                   <div className="text-[16px] font-[400]">Apply Filter</div>
                 </Button>
-              </Tooltip>
+            
             </div>
           </div>
         )}
@@ -517,7 +726,8 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
             {fileType === "csv" ? (
               <CSVLink
                 filename={"Air_monitoring_data.csv"}
-                data={filteredItems}
+                data={csvItems}
+                // data={filteredItems}
                 // data={the_FilteredData}
                 className="btn btn-primary"
               >
