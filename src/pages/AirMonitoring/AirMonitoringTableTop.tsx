@@ -20,6 +20,7 @@ import { usePDF } from "react-to-pdf";
 import toast from "react-hot-toast";
 import moment from "moment";
 import { data_type } from "../../types/airMonitoringDataType";
+import { MdClear } from "react-icons/md";
 const { RangePicker } = DatePicker;
 
 interface FilterValues {
@@ -439,7 +440,8 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
       {/* SEARCH. FILTER, SHARE,DOWNLOAD COMPONENTS------------------------------------------------- */}
       <div className="w-full lg:flex items-center gap-x-[30px] mt-[16px]">
         <div className="flex gap-x-[16px] lg:w-[30%]">
-          <Input
+           <div className="relative">
+           <Input
             placeholder="Search for data... "
             prefix={
               <img
@@ -448,10 +450,24 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
                 className="w-[17.5px] h-[17.5px]"
               />
             }
-            className="h-[46px] w-[90%] bg-transparent"
+            className="h-[46px] w-[100%] bg-transparent"
             value={searchQuery}
             onChange={handleSearchChange}
           />
+             {searchQuery.length > 0 ? (
+                  <div
+                    className="absolute right-[5px] top-[20%] z-[500] cursor-pointer"
+                    onClick={() => {
+                      setSearchQuery("");
+                    }}
+                  >
+                    <MdClear color="red" size={30} />
+                  </div>
+                ) : (
+                  ""
+                )}
+           </div>
+       
           <Button
             type="primary"
             onClick={clickFunction}
