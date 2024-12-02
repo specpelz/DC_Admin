@@ -25,10 +25,8 @@ const { RangePicker } = DatePicker;
 interface FilterValues {
   dateRange: [Dayjs | null, Dayjs | null];
   date: Dayjs | null;
-  country: string | null;
-  state: string | null;
-  lga: string | null;
-  city: string | null;
+  serial_number: string | null;
+  location: string | null;
 }
 
 interface SelectOption {
@@ -102,10 +100,8 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
   const [filterValues, setFilterValues] = useState<FilterValues>({
     dateRange: [null, null],
     date: null,
-    country: null,
-    state: null,
-    lga: null,
-    city: null,
+    serial_number:  null,
+    location:  null,
   });
 
   const air_monitoring_data = useAirMonitoringStore(
@@ -117,78 +113,94 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
 
 
 
-  const getLocation = async (
-    latitude: string, 
-    longitude: string, 
-    type: 'country' | 'state' | 'city' | 'lga'
-  ): Promise<string> => {
-    const lat = latitude;
-    const long = longitude;
-    const apiKey = "AIzaSyDzofLb9GTpwTJDg2U-l0Ez-Ya4iw5dVss";
+  // const getLocation = async (
+  //   latitude: string, 
+  //   longitude: string, 
+  //   type: 'country' | 'state' | 'city' | 'lga'
+  // ): Promise<string> => {
+  //   const lat = latitude;
+  //   const long = longitude;
+  //   const apiKey = "AIzaSyDzofLb9GTpwTJDg2U-l0Ez-Ya4iw5dVss";
 
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${apiKey}`;
+  //   const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${apiKey}`;
 
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
+  //   try {
+  //     const response = await fetch(url);
+  //     const data = await response.json();
 
-      if (data.results && data.results.length > 0) {
-        const addressComponents = data.results[3]?.address_components || [];
+  //     if (data.results && data.results.length > 0) {
+  //       const addressComponents = data.results[3]?.address_components || [];
         
-        const componentMap: Record<string, string> = {};
-        addressComponents.forEach((component: any) => {
-          if (component.types.includes("country")) {
-            componentMap['country'] = component.long_name;
-          } else if (component.types.includes("administrative_area_level_1")) {
-            componentMap['state'] = component.long_name;
-          } else if (component.types.includes("administrative_area_level_2")) {
-            componentMap['city'] = component.long_name;
-          } else if (component.types.includes("administrative_area_level_3")) {
-            componentMap['lga'] = component.long_name;
-          }
-        });
+  //       const componentMap: Record<string, string> = {};
+  //       addressComponents.forEach((component: any) => {
+  //         if (component.types.includes("country")) {
+  //           componentMap['country'] = component.long_name;
+  //         } else if (component.types.includes("administrative_area_level_1")) {
+  //           componentMap['state'] = component.long_name;
+  //         } else if (component.types.includes("administrative_area_level_2")) {
+  //           componentMap['city'] = component.long_name;
+  //         } else if (component.types.includes("administrative_area_level_3")) {
+  //           componentMap['lga'] = component.long_name;
+  //         }
+  //       });
 
-        return componentMap[type] || componentMap["state"];
-      } else {
-        console.log("No results found.");
-        return data.results[3]?.address_components[0].componentMap["state"]
-      }
-    } catch (error) {
-      console.error("Error fetching location data:", error);
-      return 'Unknown';
-    }
-  };
-
-
+  //       return componentMap[type] || componentMap["state"];
+  //     } else {
+  //       console.log("No results found.");
+  //       return data.results[3]?.address_components[0].componentMap["state"]
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching location data:", error);
+  //     return 'Unknown';
+  //   }
+  // };
 
 
 
-
-
-
-
-useEffect(() => {
-  const fetchLocations = async () => {
-    const newCSVData = await Promise.all(
-      filteredItems.map(async (item) => ({
-        id: item.id,
-        device_uid: item.device_uid,
-        country: await getLocation(item.lat, item.lon, "country"),
-        state: await getLocation(item.lat, item.lon, "state"),
-        city: await getLocation(item.lat, item.lon, "city"),
-        lga: await getLocation(item.lat, item.lon, "country"),
-        lat: item.lat,
-        lon: item.lon,
-        createdAt: moment(item.createdAt).format("YYYY-MM-DD"),
-        updatedAt: moment(item.updatedAt).format("YYYY-MM-DD"),
+  useEffect(() => {
+    const flattenData = filteredItems.flatMap((item) =>
+      (item.airReading).map((air) => ({
+        ...item,
+        airReadingId: air.id,
+        aqi: air.aqi,
+        humidity: air.humidity,
+        pm01_0: air.pm01_0,
+        pm02_5: air.pm02_5,
+        pm10_0: air.pm10_0,
+        pressure: air.pressure,
+        temperature: air.temperature,
+        voltage: air.voltage,
+        captured: air.captured,
+        airReadingCreatedAt: air.createdAt,
       }))
     );
+  
+    setCsvItems(flattenData);
+  }, [filteredItems]);
 
-    setCsvItems(newCSVData);
-  };
+// useEffect(() => {
+//   const fetchLocations = () => {
+//     const newCSVData = filteredItems.map((item) => ({
+//         id: item.id,
+//         device_uid: item.device_uid,
+//         serial_number: item.serial_number,
+//         location: item.location,
+//         lat: item.lat,
+//         lon: item.lon,
+//         createdAt: moment(item.createdAt).format("YYYY-MM-DD"),
+//         updatedAt: moment(item.updatedAt).format("YYYY-MM-DD"),
+//       }))
+  
 
-  fetchLocations();
-}, [filteredItems]);
+//     setCsvItems(newCSVData);
+//   };
+
+//   fetchLocations();
+// }, [filteredItems]);
+
+
+ 
+
 
 
 
@@ -204,10 +216,9 @@ useEffect(() => {
     setFilteredItems(air_monitoring_data);
   }, [air_monitoring_data]);
 
-  const [countryOptions, setCountryOptions] = useState<SelectOption[]>([]);
-  const [stateOptions, setStateOptions] = useState<SelectOption[]>([]);
-  const [lgaOptions, setLgaOptions] = useState<SelectOption[]>([]);
-  const [cityOptions, setCityOptions] = useState<SelectOption[]>([]);
+  const [communityOptions, setCommunityOptions] = useState<SelectOption[]>([]);
+  const [locationOption, setLocationOption] = useState<SelectOption[]>([]);
+
 
 
 
@@ -240,19 +251,17 @@ useEffect(() => {
  
 
 
-  const generateFilterOptions = async () => {
-    const processedData = await Promise.all(
-      filteredItems.map(async (data) => ({
+  const generateFilterOptions = () => {
+    // const processedData = filteredItems.map((data) => ({
+    const processedData = air_monitoring_data.map((data) => ({
         ...data,
-        country: await getLocation(data.lat, data.lon, "country"),
-        state: await getLocation(data.lat, data.lon, "state"),
-        city: await getLocation(data.lat, data.lon, "city"),
-        lga: await getLocation(data.lat, data.lon, "lga"),
+        serial_number: data.serial_number,
+        location: data.location,
       }))
-    );
+    
   
     const uniqueOptions = (field: keyof typeof processedData[0]) => {
-      return Array.from(new Set(processedData.map((item) => item[field]))).map(
+      return Array.from(new Set(processedData.map((item) => item[field]  as string))).map(
         (value, key) => ({
           value: value,
           label: value,
@@ -261,10 +270,9 @@ useEffect(() => {
       );
     };
   
-    setCountryOptions(uniqueOptions("country"));
-    setStateOptions(uniqueOptions("state"));
-    setLgaOptions(uniqueOptions("lga"));
-    setCityOptions(uniqueOptions("city"));
+    setCommunityOptions(uniqueOptions("serial_number"));
+    setLocationOption(uniqueOptions("location"));
+
   };
 
 
@@ -301,14 +309,12 @@ useEffect(() => {
 
 
   const applyFilter = async () => {
-    const filteredData = await Promise.all(
-      air_monitoring_data.map(async (item) => {
+    const filteredData =  air_monitoring_data.map((item) => {
         const itemDate = moment(item.createdAt);
         
-        const country = await getLocation(item.lat, item.lon, "country");
-        const state = await getLocation(item.lat, item.lon, "state");
-        const city = await getLocation(item.lat, item.lon, "city");
-        const lga = await getLocation(item.lat, item.lon, "lga");
+        const serial_number = item.serial_number
+        const location = item.location
+    
   
         const singleDateMatch =
           !filterValues.date ||
@@ -322,23 +328,21 @@ useEffect(() => {
           (itemDate.isSameOrAfter(startDate.toDate()) &&
             itemDate.isSameOrBefore(endDate.toDate()));
   
-        const countryMatch = !filterValues.country || country === filterValues.country;
-        const stateMatch = !filterValues.state || state === filterValues.state;
-        const lgaMatch = !filterValues.lga || lga === filterValues.lga;
-        const cityMatch = !filterValues.city || city === filterValues.city;
+        const locationMatch = !filterValues.location || location === filterValues.location;
+        const serialNumberMatch = !filterValues.serial_number || serial_number === filterValues.serial_number;
+       
   
         return (
           dateRangeMatch &&
           singleDateMatch &&
-          countryMatch &&
-          stateMatch &&
-          lgaMatch &&
-          cityMatch
-            ? { ...item, country, state, city, lga }
+          locationMatch &&
+          serialNumberMatch 
+      
+            ? { ...item, serial_number, location }
             : null
         );
       })
-    );
+  
   
     const finalFilteredData = filteredData.filter(Boolean) as data_type[];
   
@@ -359,10 +363,9 @@ useEffect(() => {
     setFilterValues({
       dateRange: [null, null],
       date: null,
-      country: null,
-      state: null,
-      lga: null,
-      city: null,
+      serial_number: null,
+      location: null,
+
     });
     setFilteredItems(air_monitoring_data);
     setShowFilter_v2(false);
@@ -409,15 +412,12 @@ useEffect(() => {
       const filteredResults: data_type[] = [];
   
       for (const item of result) {
-        const country = await getLocation(item.lat, item.lon, "country");
-        const state = await getLocation(item.lat, item.lon, "state");
-        const city = await getLocation(item.lat, item.lon, "city");
-        const lga = await getLocation(item.lat, item.lon, "lga");
+        const serial_number = item.serial_number
+        const location = item.location
         const matchesSearch = 
-          country.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          state.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          city.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          lga.toLowerCase().includes(searchQuery.toLowerCase());
+        serial_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        location.toLowerCase().includes(searchQuery.toLowerCase()) 
+      
   
         if (matchesSearch) {
           filteredResults.push(item);
@@ -588,48 +588,28 @@ useEffect(() => {
               </div>
               <div className="lg:w-[20%] ">
                 <Select_v2
-                  name="country"
-                  label="Country"
-                  placeholder="Select country"
+                  name="community"
+                  label="Community"
+                  placeholder="Select community"
                   required={false}
-                  options={countryOptions}
-                  value={filterValues.country || undefined}
-                  onChange={(value) => handleFilterChange(value, "country")}
+                  options={communityOptions}
+                  value={filterValues.serial_number || undefined}
+                  onChange={(value) => handleFilterChange(value, "serial_number")}
                 />
               </div>
               <div className="lg:w-[20%] ">
                 <Select_v2
-                  name="state"
-                  label="State"
-                  placeholder="Select state"
+                  name="location"
+                  label="Location"
+                  placeholder="Select location"
                   required={false}
-                  options={stateOptions}
-                  value={filterValues.state || undefined}
-                  onChange={(value) => handleFilterChange(value, "state")}
+                  options={locationOption}
+                  value={filterValues.location || undefined}
+                  onChange={(value) => handleFilterChange(value, "location")}
                 />
               </div>
-              <div className="lg:w-[20%] ">
-                <Select_v2
-                  name="lga"
-                  label="L.G.A"
-                  placeholder="Select L.G.A"
-                  required={false}
-                  options={lgaOptions}
-                  value={filterValues.lga || undefined}
-                  onChange={(value) => handleFilterChange(value, "lga")}
-                />
-              </div>
-              <div className="lg:w-[20%] ">
-                <Select_v2
-                  name="city"
-                  label="City"
-                  required={false}
-                  placeholder="Select city"
-                  options={cityOptions}
-                  value={filterValues.city || undefined}
-                  onChange={(value) => handleFilterChange(value, "city")}
-                />
-              </div>
+      
+         
             </div>
             <div className="lg:w-[40%]">
               <Space direction="vertical" className="w-full">
@@ -726,9 +706,10 @@ useEffect(() => {
             {fileType === "csv" ? (
               <CSVLink
                 filename={"Air_monitoring_data.csv"}
+           
                 data={csvItems}
-                // data={filteredItems}
-                // data={the_FilteredData}
+                
+        
                 className="btn btn-primary"
               >
                 <div className="text-[16px] font-[400]">Download</div>
