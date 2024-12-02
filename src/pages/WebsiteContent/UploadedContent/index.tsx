@@ -91,7 +91,7 @@ const UploadedContent: React.FC<UploadedContentProps> = ({
       if (response.ok) {
         message.success(`Content has been deleted successfully.`);
         setIsModalVisible(false);
-        fetchContentDetails(); // Re-fetch content after deletion
+        fetchContentDetails();
 
         // Check if there are no items on the current page, then go to page 1
         const remainingItems = filteredContent.length - 1; // subtract the deleted item
