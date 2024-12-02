@@ -112,10 +112,6 @@ const UploadedContent: React.FC<UploadedContentProps> = ({
     }
   };
 
-  console.log("FilteredContent", filteredContent); // Check how many items remain after filtering
-  console.log("ContentDetails", ContentDetails); // Check total number of items before filtering
-  console.log("webContent", webContent); // Check number of items after pagination
-
   return (
     <>
       <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-0 justify-between lg:items-center">
