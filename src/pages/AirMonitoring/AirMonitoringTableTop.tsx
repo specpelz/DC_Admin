@@ -19,7 +19,7 @@ import { CSVLink } from "react-csv";
 import { usePDF } from "react-to-pdf";
 import toast from "react-hot-toast";
 import moment from "moment";
-import { data_type } from "../../types/airMonitoringDataType";
+import { data_type, FlattenedDataType } from "../../types/airMonitoringDataType";
 import { MdClear } from "react-icons/md";
 const { RangePicker } = DatePicker;
 
@@ -92,7 +92,7 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
     setSearchQuery(e.target.value);
   };
 
-  const [csvItems, setCsvItems] = useState<data_type[]>([]);
+  const [csvItems, setCsvItems] = useState<FlattenedDataType[]>([]);
   const [filteredItems, setFilteredItems] = useState<data_type[]>([]);
   const [filter_input_values, set_filter_input_values] =
     useState<boolean>(false);
@@ -114,90 +114,126 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
 
 
 
-  // const getLocation = async (
-  //   latitude: string, 
-  //   longitude: string, 
-  //   type: 'country' | 'state' | 'city' | 'lga'
-  // ): Promise<string> => {
-  //   const lat = latitude;
-  //   const long = longitude;
-  //   const apiKey = "AIzaSyDzofLb9GTpwTJDg2U-l0Ez-Ya4iw5dVss";
 
-  //   const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${apiKey}`;
 
-  //   try {
-  //     const response = await fetch(url);
-  //     const data = await response.json();
-
-  //     if (data.results && data.results.length > 0) {
-  //       const addressComponents = data.results[3]?.address_components || [];
-        
-  //       const componentMap: Record<string, string> = {};
-  //       addressComponents.forEach((component: any) => {
-  //         if (component.types.includes("country")) {
-  //           componentMap['country'] = component.long_name;
-  //         } else if (component.types.includes("administrative_area_level_1")) {
-  //           componentMap['state'] = component.long_name;
-  //         } else if (component.types.includes("administrative_area_level_2")) {
-  //           componentMap['city'] = component.long_name;
-  //         } else if (component.types.includes("administrative_area_level_3")) {
-  //           componentMap['lga'] = component.long_name;
-  //         }
-  //       });
-
-  //       return componentMap[type] || componentMap["state"];
-  //     } else {
-  //       console.log("No results found.");
-  //       return data.results[3]?.address_components[0].componentMap["state"]
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching location data:", error);
-  //     return 'Unknown';
-  //   }
-  // };
 
 
 
   useEffect(() => {
-    const flattenData = filteredItems.flatMap((item) =>
-      (item.airReading).map((air) => ({
-        ...item,
-        airReadingId: air.id,
-        aqi: air.aqi,
-        humidity: air.humidity,
-        pm01_0: air.pm01_0,
-        pm02_5: air.pm02_5,
-        pm10_0: air.pm10_0,
-        pressure: air.pressure,
-        temperature: air.temperature,
-        voltage: air.voltage,
-        captured: air.captured,
-        airReadingCreatedAt: air.createdAt,
-      }))
-    );
+    const flattenedData = filteredItems.flatMap((item) => {
+      // Flatten airReading
+      const airReadingsFlattened = item.airReading.map((air) => ({
+        deviceId: item.id,
+        deviceUid: item.device_uid,
+        serialNumber: item.serial_number,
+        location: item.location,
+        latitude: item.lat,
+        longitude: item.lon,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        readingType: "Air Reading",
+        readingId: air.id,
+        aqi: Number(air.aqi), // Ensure number type
+        humidity: Number(air.humidity), // Ensure number type
+        pm01_0: Number(air.pm01_0), // Ensure number type
+        pm02_5: Number(air.pm02_5), // Ensure number type
+        pm10_0: Number(air.pm10_0), // Ensure number type
+        pressure: Number(air.pressure), // Ensure number type
+        temperature: Number(air.temperature), // Ensure number type
+        voltage: Number(air.voltage), // Ensure number type
+        captured: Number(air.captured), // Ensure number type
+        readingCreatedAt: air.createdAt,
+      }));
   
-    setCsvItems(flattenData);
+      // Flatten histories
+      const historiesFlattened = item.histories.map((history) => ({
+        deviceId: item.id,
+        deviceUid: item.device_uid,
+        serialNumber: item.serial_number,
+        location: item.location,
+        latitude: item.lat,
+        longitude: item.lon,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        readingType: "History",
+        readingId: history.id,
+        aqi: Number(history.aqi), // Ensure number type
+        humidity: null, // Histories don't have humidity
+        pm01_0: Number(history.pm1_0), // Ensure number type
+        pm02_5: Number(history.pm2_5), // Ensure number type
+        pm10_0: Number(history.pm10_0), // Ensure number type
+        pressure: null, // Histories don't have pressure
+        temperature: null, // Histories don't have temperature
+        voltage: null, // Histories don't have voltage
+        captured: null, // Histories don't have captured
+        readingCreatedAt: history.date,
+      }));
+  
+      // Combine airReadings and histories
+      return [...airReadingsFlattened, ...historiesFlattened];
+    });
+    setCsvItems(flattenedData);
   }, [filteredItems]);
 
-// useEffect(() => {
-//   const fetchLocations = () => {
-//     const newCSVData = filteredItems.map((item) => ({
-//         id: item.id,
-//         device_uid: item.device_uid,
-//         serial_number: item.serial_number,
-//         location: item.location,
-//         lat: item.lat,
-//         lon: item.lon,
-//         createdAt: moment(item.createdAt).format("YYYY-MM-DD"),
-//         updatedAt: moment(item.updatedAt).format("YYYY-MM-DD"),
-//       }))
+
+
+
+
+
+  // Define headers for CSV
+  const headers = [
+    { label: "Device ID", key: "deviceId" },
+    { label: "Device UID", key: "deviceUid" },
+    { label: "Serial Number", key: "serialNumber" },
+    { label: "Location", key: "location" },
+    { label: "Latitude", key: "latitude" },
+    { label: "Longitude", key: "longitude" },
+    { label: "Device Created At", key: "createdAt" },
+    { label: "Device Updated At", key: "updatedAt" },
+    { label: "Reading Type", key: "readingType" },
+    { label: "Reading ID", key: "readingId" },
+    { label: "AQI", key: "aqi" },
+    { label: "Humidity", key: "humidity" },
+    { label: "PM01.0", key: "pm01_0" },
+    { label: "PM02.5", key: "pm02_5" },
+    { label: "PM10.0", key: "pm10_0" },
+    { label: "Pressure", key: "pressure" },
+    { label: "Temperature", key: "temperature" },
+    { label: "Voltage", key: "voltage" },
+    { label: "Captured", key: "captured" },
+    { label: "Reading Created At", key: "readingCreatedAt" },
+  ];
+
+
+
+
+
+
+
+
+
+
+
+  // useEffect(() => {
+  //   const flattenData = filteredItems.flatMap((item) =>
+  //     (item.airReading).map((air) => ({
+  //       ...item,
+  //       airReadingId: air.id,
+  //       aqi: air.aqi,
+  //       humidity: air.humidity,
+  //       pm01_0: air.pm01_0,
+  //       pm02_5: air.pm02_5,
+  //       pm10_0: air.pm10_0,
+  //       pressure: air.pressure,
+  //       temperature: air.temperature,
+  //       voltage: air.voltage,
+  //       captured: air.captured,
+  //       airReadingCreatedAt: air.createdAt,
+  //     }))
+  //   );
   
-
-//     setCsvItems(newCSVData);
-//   };
-
-//   fetchLocations();
-// }, [filteredItems]);
+  //   setCsvItems(flattenData);
+  // }, [filteredItems]);
 
 
  
@@ -505,34 +541,7 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
               >
                 Filter
               </Button>
-              <Button
-                onClick={() => {
-               
-                  toast.success("Preparing file for print!", {
-                    duration: 2000,
-                    position: 'bottom-center',
-                    style: {
-                      background: '#4CAF50',
-                      color: 'white',
-                      fontWeight: 'bold',
-                      padding: '12px 20px',
-                      borderRadius: '8px'
-                    },
-                    // icon: '✅',
-                  });
-                  toPDF();
-                }}
-                className="h-[46px]  w-[30%] xl:w-[18%] bg-transparent"
-                icon={
-                  <img
-                    src="/print.svg"
-                    alt="image"
-                    className="w-[17.5px] h-[17.5px]"
-                  />
-                }
-              >
-                Print
-              </Button>
+         
               <Button
                 className="h-[46px] w-[30%] xl:flex-grow bg-transparent"
                 onClick={showModal}
@@ -724,7 +733,7 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
                 filename={"Air_monitoring_data.csv"}
            
                 data={csvItems}
-                
+                headers={headers}
         
                 className="btn btn-primary"
               >
