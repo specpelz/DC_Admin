@@ -71,6 +71,7 @@ export interface data_type {
   captured: string;
   airReadingCreatedAt: string;
   airReading:airReadingDataType[];
+  histories:historiesDataType[];
 }
 
   
@@ -95,6 +96,16 @@ export interface data_type {
     voltage: string;
     captured: string;
     airReadingCreatedAt: string;
+  }
+  export interface historiesDataType{
+    id: string;
+    airReadingId: string;
+    aqi: string;
+    humidity: string;
+    pm1_0: string;
+    pm2_5:string;
+    pm10_0: string;
+    date:string;
   }
 // export interface data_type {
 //     lon: string;
@@ -122,24 +133,26 @@ export interface data_type {
   }
 
 
-  export interface FlattenedData {
-    id: string;
-    device_uid: string;
-    serial_number: string;
+  export interface FlattenedDataType {
+    deviceId: string;
+    deviceUid: string;
+    serialNumber: string;
     location: string;
-    lat: string;
-    lon: string;
+    latitude: string;
+    longitude: string;
     createdAt: string;
     updatedAt: string;
-    airReadingId: string;
-    aqi: string;
-    humidity: string;
-    pm01_0: string;
-    pm02_5: string;
-    pm10_0: string;
-    pressure: string;
-    temperature: string;
-    voltage: string;
-    captured: string;
-    airReadingCreatedAt: string;
-  };
+    readingType: string; // "Air Reading" or "History"
+    readingId: string;
+    aqi: number | null;
+    humidity: number | null;
+    pm01_0: number | null;
+    pm02_5: number | null;
+    pm10_0: number | null;
+    pressure: number | null;
+    temperature: number | null;
+    voltage: number | null;
+    captured: number | null;
+    readingCreatedAt: string;
+  }
+  
