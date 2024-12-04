@@ -91,7 +91,7 @@ const UploadedContent: React.FC<UploadedContentProps> = ({
       if (response.ok) {
         message.success(`Content has been deleted successfully.`);
         setIsModalVisible(false);
-        fetchContentDetails(); // Re-fetch content after deletion
+        fetchContentDetails();
 
         // Check if there are no items on the current page, then go to page 1
         const remainingItems = filteredContent.length - 1; // subtract the deleted item
@@ -111,10 +111,6 @@ const UploadedContent: React.FC<UploadedContentProps> = ({
       setIsDeleting(false);
     }
   };
-
-  console.log("FilteredContent", filteredContent); // Check how many items remain after filtering
-  console.log("ContentDetails", ContentDetails); // Check total number of items before filtering
-  console.log("webContent", webContent); // Check number of items after pagination
 
   return (
     <>
