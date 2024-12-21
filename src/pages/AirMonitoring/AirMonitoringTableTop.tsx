@@ -16,7 +16,7 @@ import useAirMonitoringStore from "@store/airMonitoring";
 import Select_v2 from "@components/dashboard/select/Select_v2";
 import type { Dayjs } from "dayjs";
 import { CSVLink } from "react-csv";
-import { usePDF } from "react-to-pdf";
+// import { usePDF } from "react-to-pdf";
 import toast from "react-hot-toast";
 import moment from "moment";
 import { data_type, FlattenedDataType } from "../../types/airMonitoringDataType";
@@ -438,9 +438,9 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
     console.log("Modal closed without confirmation");
   };
 
-  const {
+  // const {
     //  toPDF, 
-    targetRef } = usePDF({ filename: "page.pdf" });
+    // targetRef } = usePDF({ filename: "page.pdf" });
 
   const [fileType, setFileType] = useState<string | number>("excel");
 
@@ -685,7 +685,9 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
             paragraph={{ rows: 5 }}
           />
         ) : (
-          <div ref={targetRef}>
+          <div 
+          // ref={targetRef}
+          >
             <AirMonitoringTable
               // searchQuery={searchQuery}
               filtered={filteredItems}
