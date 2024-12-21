@@ -48,7 +48,7 @@ const UploadedContent: React.FC<UploadedContentProps> = ({
     setSelectedContent(null);
   };
 
-  // Filter content based on search term (matches title or description)
+  // Filter content based on search term 
   const filteredContent = ContentDetails.filter(
     (item) =>
       item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
