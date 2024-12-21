@@ -65,10 +65,10 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
         },
         // icon: '✅',
       });
-    } else if (fileType === "pdf") {
+    } else if (fileType === "excel") {
     
 
-      toast.success("Downloading PDF!", {
+      toast.success("Downloading Excel!", {
         duration: 2000,
         position: 'bottom-center',
         style: {
@@ -80,7 +80,7 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
         },
         // icon: '✅',
       });
-      toPDF();
+      // toPDF();
     }
     setIsModalVisible(false);
   };
@@ -438,9 +438,11 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
     console.log("Modal closed without confirmation");
   };
 
-  const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
+  const {
+    //  toPDF, 
+    targetRef } = usePDF({ filename: "page.pdf" });
 
-  const [fileType, setFileType] = useState<string | number>("pdf");
+  const [fileType, setFileType] = useState<string | number>("excel");
 
   const filterData = async () => {
     let result: data_type[] = air_monitoring_data;
@@ -712,9 +714,9 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
             label="File Type"
             placeholder="Select file type"
             required={false}
-            defaultValue="pdf"
+            defaultValue="excel"
             options={[
-              { value: "pdf", label: "PDF" },
+              { value: "excel", label: "Excel" },
               { value: "csv", label: "CSV" },
             ]}
             onChange={(value) => setFileType(value)}
@@ -728,7 +730,19 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
             onClick={handleDownload}
             className="w-[150px] h-[40px] text-[16px] font-[400]  bg-BrandPrimary"
           >
-            {fileType === "csv" ? (
+         
+              <CSVLink
+                filename={"Air_monitoring_data.csv"}
+           
+                data={csvItems}
+                headers={headers}
+        
+                className="btn btn-primary"
+              >
+                <div className="text-[16px] font-[400]">Download</div>
+              </CSVLink>
+          
+            {/* {fileType === "csv" ? (
               <CSVLink
                 filename={"Air_monitoring_data.csv"}
            
@@ -741,7 +755,7 @@ const AirMonitoringTableTop: React.FC<AirMonitoringTableTopProps> = ({
               </CSVLink>
             ) : (
               <div className="text-[16px] font-[400]">Download</div>
-            )}
+            )} */}
           </Button>
         </div>
       </Modal>
