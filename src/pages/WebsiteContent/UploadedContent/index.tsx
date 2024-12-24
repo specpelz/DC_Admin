@@ -66,8 +66,8 @@ const UploadedContent: React.FC<UploadedContentProps> = ({
   const [IsDeleting, setIsDeleting] = useState(false);
 
   const showDeleteModal = (item: ContentDetail) => {
-    setSelectedContent(item); // Set the selected content for the modal
-    setSelectedContentId(item.id); // Set the ID of the content to delete
+    setSelectedContent(item); 
+    setSelectedContentId(item.id); 
     setIsModalVisible(true);
   };
 
